@@ -10,7 +10,7 @@ An AI-first ambient screensaver experience for the television. A single AI agent
 |---|---|
 | `Glance_TV_Prototype.html` | The working prototype — a single, self-contained HTML file. Open it in a browser. |
 | `Glance_TV_Experience_PRD.md` | The full Product Experience PRD (v3). |
-| `images/` | All feed visuals, generated via Nano Banana (Gemini 2.5 Flash Image) at 1920×1080. |
+| `assets/` | All feed visuals, generated via Nano Banana (Gemini 2.5 Flash Image) at 1920×1080. |
 | `L0 Content - NP.xlsx` | Source L0 content reference. |
 
 ## Running it

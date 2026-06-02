@@ -212,6 +212,34 @@
   .gen-badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--violet-300); box-shadow: 0 0 8px var(--violet-300); animation: pulseBadge 2.4s ease-in-out infinite; }
   @keyframes pulseBadge { 0%,100% {opacity:1;transform:scale(1);} 50% {opacity:0.45;transform:scale(1.5);} }
 
+  /* ===== SHOP CARD — small product chips inline with the CTA (max 3) ===== */
+  /* CTA row holds the button on the left and product chips to its right */
+  .card.shop-card .card-actions { flex-wrap: wrap; gap: 16px; align-items: center; }
+  .shop-products {
+    display: inline-flex; gap: 12px; align-items: center;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.8s cubic-bezier(0.32,0.72,0,1), transform 0.8s cubic-bezier(0.32,0.72,0,1);
+  }
+  .card.reveal-after.revealed .card-actions .shop-products { opacity: 1; transform: translateY(0); transition-delay: 480ms; }
+  .shop-product {
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer; position: relative;
+    padding: 7px 14px 7px 7px; border-radius: 100px;
+    background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.14);
+    backdrop-filter: blur(24px) saturate(150%); -webkit-backdrop-filter: blur(24px) saturate(150%);
+    transition: transform 0.35s cubic-bezier(0.32,0.72,0,1), border-color 0.3s, box-shadow 0.3s;
+  }
+  .shop-product:hover { transform: translateY(-2px); border-color: rgba(216,204,255,0.5); box-shadow: 0 8px 22px rgba(126,104,242,0.35); }
+  .shop-product.selected { border-color: var(--violet-300); box-shadow: 0 0 0 1.5px var(--violet-400), 0 8px 22px rgba(155,134,255,0.45); }
+  .shop-product.selected .shop-product-img::after {
+    content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(126,104,242,0.78); color: #fff; font-size: 14px; font-weight: 700; border-radius: 50%;
+    animation: tilePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .shop-product-img { position: relative; flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; background-size: cover; background-position: center top; background-color: rgba(155,134,255,0.1); }
+  .shop-product-info { display: flex; flex-direction: column; line-height: 1.15; }
+  .shop-product-name { font-size: 13px; font-weight: 500; color: var(--ink-0); letter-spacing: -0.01em; white-space: nowrap; }
+  .shop-product-price { font-size: 12px; font-weight: 500; color: var(--violet-200); font-variant-numeric: tabular-nums; }
+
   /* ===== HERO INTRO — agent front and center ===== */
   .card.hero-intro .card-image {
     background: radial-gradient(ellipse at 50% 42%, rgba(155,134,255,0.32) 0%, transparent 58%),
@@ -447,7 +475,7 @@
   <div class="glance-mark">Glance</div>
   <div class="time-mark" id="timeMark">Just now</div>
 
-  <div class="card hero-intro" data-image="images/intro_hero.jpg" data-time-label="Just now"
+  <div class="card hero-intro" data-image="assets/intro_hero.jpg" data-time-label="Just now"
        data-hero-typed="I'm your AI assistant — I turn your idle screen into a living feed of the city, your taste, and the night ahead, made just for you." data-dwell="8000" data-question="Nice to meet you — shall we?">
     <div class="card-image"></div>
     <div class="hero-content">
@@ -458,7 +486,7 @@
     </div>
   </div>
 
-  <div class="card hero-intro" data-image="images/intro_getting_to_know.jpg" data-time-label="Just now"
+  <div class="card hero-intro" data-image="assets/intro_getting_to_know.jpg" data-time-label="Just now"
        data-hero-typed="Tell me three things and I&#x27;ll shape a feed that feels unmistakably yours." data-dwell="7000" data-question="I&#x27;m ready when you are.">
     <div class="card-image"></div>
     <div class="hero-content">
@@ -475,7 +503,7 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Tap to confirm</div>
       <div class="pref-tiles cols-3" data-choice-group="location" data-advance-on-pick="true" data-no-explore="true">
-        <button class="pref-tile selected" data-value="bangalore" data-label="Bangalore" style="background-image:url('images/feed_built_room.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">📍</span><div class="pref-tile-title">Yes, Bangalore</div><div class="pref-tile-meta">Spot on — that's home</div></div></button><button class="pref-tile" data-value="elsewhere" data-label="another city" style="background-image:url('images/travel_airport_lounge.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">✈️</span><div class="pref-tile-title">I'm elsewhere</div><div class="pref-tile-meta">Set a different city</div></div></button>
+        <button class="pref-tile selected" data-value="bangalore" data-label="Bangalore" style="background-image:url('assets/feed_built_room.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">📍</span><div class="pref-tile-title">Yes, Bangalore</div><div class="pref-tile-meta">Spot on — that's home</div></div></button><button class="pref-tile" data-value="elsewhere" data-label="another city" style="background-image:url('content/images/travel_airport_lounge.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">✈️</span><div class="pref-tile-title">I'm elsewhere</div><div class="pref-tile-meta">Set a different city</div></div></button>
       </div>
     </div>
   </div>
@@ -486,7 +514,7 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick one</div>
       <div class="pref-tiles" data-choice-group="evening" data-advance-on-pick="true">
-        <button class="pref-tile" data-value="calm" data-label="calm evenings" style="background-image:url('images/reading_nook.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌙</span><div class="pref-tile-title">Calm &amp; slow</div><div class="pref-tile-meta">Vinyl, candles, no agenda</div></div></button><button class="pref-tile" data-value="leanback" data-label="lean-back nights" style="background-image:url('images/feed_built_room.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎬</span><div class="pref-tile-title">Lean back</div><div class="pref-tile-meta">Watching, scrolling, easy</div></div></button><button class="pref-tile" data-value="social" data-label="evenings out" style="background-image:url('images/indiranagar_night.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Out with people</div><div class="pref-tile-meta">Dinner, drinks, plans</div></div></button><button class="pref-tile" data-value="make" data-label="making things" style="background-image:url('images/pottery_studio.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎨</span><div class="pref-tile-title">Make something</div><div class="pref-tile-meta">Crafts, cooking, projects</div></div></button>
+        <button class="pref-tile" data-value="calm" data-label="calm evenings" style="background-image:url('content/images/reading_nook.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌙</span><div class="pref-tile-title">Calm &amp; slow</div><div class="pref-tile-meta">Vinyl, candles, no agenda</div></div></button><button class="pref-tile" data-value="leanback" data-label="lean-back nights" style="background-image:url('assets/feed_built_room.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎬</span><div class="pref-tile-title">Lean back</div><div class="pref-tile-meta">Watching, scrolling, easy</div></div></button><button class="pref-tile" data-value="social" data-label="evenings out" style="background-image:url('content/images/indiranagar_night.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Out with people</div><div class="pref-tile-meta">Dinner, drinks, plans</div></div></button><button class="pref-tile" data-value="make" data-label="making things" style="background-image:url('content/images/pottery_studio.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎨</span><div class="pref-tile-title">Make something</div><div class="pref-tile-meta">Crafts, cooking, projects</div></div></button>
       </div>
     </div>
   </div>
@@ -497,7 +525,7 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick one</div>
       <div class="pref-tiles" data-choice-group="bangalore" data-advance-on-pick="true">
-        <button class="pref-tile" data-value="parks" data-label="the parks" style="background-image:url('images/cubbon_park_morning.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌳</span><div class="pref-tile-title">Cubbon &amp; the parks</div><div class="pref-tile-meta">Slow mornings, green city</div></div></button><button class="pref-tile" data-value="food" data-label="the food scene" style="background-image:url('images/fine_dining.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍛</span><div class="pref-tile-title">The food scene</div><div class="pref-tile-meta">MTR, Karavalli, chef tables</div></div></button><button class="pref-tile" data-value="nightlife" data-label="Indiranagar nights" style="background-image:url('images/indiranagar_night.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎶</span><div class="pref-tile-title">Indiranagar nights</div><div class="pref-tile-meta">Cafés, gigs, late dinners</div></div></button><button class="pref-tile" data-value="heritage" data-label="the heritage side" style="background-image:url('images/temple_heritage.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏛️</span><div class="pref-tile-title">The heritage side</div><div class="pref-tile-meta">Palaces, crafts, old stories</div></div></button>
+        <button class="pref-tile" data-value="parks" data-label="the parks" style="background-image:url('content/images/cubbon_park_morning.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌳</span><div class="pref-tile-title">Cubbon &amp; the parks</div><div class="pref-tile-meta">Slow mornings, green city</div></div></button><button class="pref-tile" data-value="food" data-label="the food scene" style="background-image:url('content/images/fine_dining.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍛</span><div class="pref-tile-title">The food scene</div><div class="pref-tile-meta">MTR, Karavalli, chef tables</div></div></button><button class="pref-tile" data-value="nightlife" data-label="Indiranagar nights" style="background-image:url('content/images/indiranagar_night.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎶</span><div class="pref-tile-title">Indiranagar nights</div><div class="pref-tile-meta">Cafés, gigs, late dinners</div></div></button><button class="pref-tile" data-value="heritage" data-label="the heritage side" style="background-image:url('content/images/temple_heritage.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏛️</span><div class="pref-tile-title">The heritage side</div><div class="pref-tile-meta">Palaces, crafts, old stories</div></div></button>
       </div>
     </div>
   </div>
@@ -508,13 +536,13 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick a few</div>
       <div class="pref-tiles" data-choice-group="week" data-multi="true">
-        <button class="pref-tile selected" data-value="cooking" data-label="cooking in" style="background-image:url('images/south_indian_breakfast.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍳</span><div class="pref-tile-title">Cooking in</div><div class="pref-tile-meta">Recipes, ingredients</div></div></button><button class="pref-tile" data-value="eatingout" data-label="eating out" style="background-image:url('images/naru_ramen_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🥂</span><div class="pref-tile-title">Eating out</div><div class="pref-tile-meta">Reservations, new spots</div></div></button><button class="pref-tile selected" data-value="weekend" data-label="a weekend trip" style="background-image:url('images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🚗</span><div class="pref-tile-title">Weekend trip</div><div class="pref-tile-meta">Routes, stays, getaways</div></div></button><button class="pref-tile" data-value="unwind" data-label="unwinding" style="background-image:url('images/reading_nook.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛋️</span><div class="pref-tile-title">Just unwinding</div><div class="pref-tile-meta">Reading, calm content</div></div></button>
+        <button class="pref-tile selected" data-value="cooking" data-label="cooking in" style="background-image:url('content/images/south_indian_breakfast.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍳</span><div class="pref-tile-title">Cooking in</div><div class="pref-tile-meta">Recipes, ingredients</div></div></button><button class="pref-tile" data-value="eatingout" data-label="eating out" style="background-image:url('content/images/naru_ramen_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🥂</span><div class="pref-tile-title">Eating out</div><div class="pref-tile-meta">Reservations, new spots</div></div></button><button class="pref-tile selected" data-value="weekend" data-label="a weekend trip" style="background-image:url('content/images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🚗</span><div class="pref-tile-title">Weekend trip</div><div class="pref-tile-meta">Routes, stays, getaways</div></div></button><button class="pref-tile" data-value="unwind" data-label="unwinding" style="background-image:url('content/images/reading_nook.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛋️</span><div class="pref-tile-title">Just unwinding</div><div class="pref-tile-meta">Reading, calm content</div></div></button>
       </div>
       <div class="card-actions pref-multi-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question">Build my feed with these.</span><span class="cta-yes">Yes</span></button></div>
     </div>
   </div>
 
-  <div class="card concept" data-image="images/build_feed.jpg" data-time-label="Building"
+  <div class="card concept" data-image="assets/build_feed.jpg" data-time-label="Building"
        data-typed="Reading your taste, pulling the city, making one thing just for tonight." data-mood="thinking" data-dwell="8000" data-question="Take me in">
     <div class="card-image"></div>
     <div class="card-content">
@@ -526,7 +554,7 @@
   </div>
 
 
-  <div class="card weather-card" data-wimg="images/weather_rainy_bangalore.jpg" data-time-label="7:43 PM · Bangalore"
+  <div class="card weather-card" data-wimg="content/images/weather_rainy_bangalore.jpg" data-time-label="7:43 PM · Bangalore"
        data-weather-lead="Let&#x27;s start with right now — the city&#x27;s handing you the {evening} you asked for." data-dwell="7000" data-question="Want cozy picks for tonight?">
     <div class="card-image"></div>
     <div class="weather-content">
@@ -538,7 +566,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/coorgi_coffee.jpg" data-time-label="7:45 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/coorgi_coffee.jpg" data-time-label="7:45 PM · Bangalore"
        data-typed="Let&#x27;s start slow, the way you like — a Coorg coffee ritual for your {evening}." data-mood="confident" data-dwell="7000" data-question="Find Coorg estates that ship to you?">
     <div class="card-image"></div>
     <div class="card-tag">Culture · Culinary</div>
@@ -550,7 +578,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/naru_ramen_bar.jpg" data-time-label="7:47 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/naru_ramen_bar.jpg" data-time-label="7:47 PM · Bangalore"
        data-typed="Since you love {bangalore}, here&#x27;s news — a ramen counter opens Friday, 12 mins from you." data-mood="proud" data-dwell="7000" data-question="Get on the reservation list?">
     <div class="card-image"></div>
     <div class="card-tag">Opening Friday · Indiranagar</div>
@@ -562,7 +590,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/monsoon_street.jpg" data-time-label="7:49 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/monsoon_street.jpg" data-time-label="7:49 PM · Bangalore"
        data-typed="The drizzle turned your neighbourhood into something worth watching tonight." data-mood="confident" data-dwell="7000" data-question="See what&#x27;s open nearby?">
     <div class="card-image"></div>
     <div class="card-tag">Tonight · near you</div>
@@ -574,7 +602,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/reading_nook.jpg" data-time-label="7:51 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/reading_nook.jpg" data-time-label="7:51 PM · Bangalore"
        data-typed="The rain&#x27;s made for this — let me set up a slow reading hour for you." data-mood="confident" data-dwell="7000" data-question="Queue your reading list?">
     <div class="card-image"></div>
     <div class="card-tag">Wellness · Quiet hours</div>
@@ -586,7 +614,7 @@
     </div>
   </div>
 
-  <div class="card concept-generated has-gen-badge reveal-after" data-image="images/ai_calm_scene.jpg" data-time-label="7:54 PM · Bangalore"
+  <div class="card concept-generated has-gen-badge reveal-after" data-image="assets/ai_calm_scene.jpg" data-time-label="7:54 PM · Bangalore"
        data-typed="And here&#x27;s something only for you — I generated this from {evening} and tonight&#x27;s rain." data-mood="proud" data-dwell="7000" data-question="Save this to your evening loop?">
     <div class="card-image"></div>
     <div class="gen-badge">Made for you · just now</div>
@@ -604,12 +632,12 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick one</div>
       <div class="pref-tiles cols-3" data-choice-group="tonight" data-advance-on-pick="true">
-        <button class="pref-tile" data-value="cooking" data-label="cooking in" style="background-image:url('images/south_indian_breakfast.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍳</span><div class="pref-tile-title">Cooking in</div><div class="pref-tile-meta">Slow recipe, warm kitchen</div></div></button><button class="pref-tile" data-value="ordering" data-label="ordering in" style="background-image:url('images/street_food.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🥡</span><div class="pref-tile-title">Ordering in</div><div class="pref-tile-meta">Comfort, fast, easy</div></div></button><button class="pref-tile" data-value="out" data-label="going out" style="background-image:url('images/rooftop_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍷</span><div class="pref-tile-title">Going out</div><div class="pref-tile-meta">Reservation, bar, dinner</div></div></button>
+        <button class="pref-tile" data-value="cooking" data-label="cooking in" style="background-image:url('content/images/south_indian_breakfast.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍳</span><div class="pref-tile-title">Cooking in</div><div class="pref-tile-meta">Slow recipe, warm kitchen</div></div></button><button class="pref-tile" data-value="ordering" data-label="ordering in" style="background-image:url('content/images/street_food.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🥡</span><div class="pref-tile-title">Ordering in</div><div class="pref-tile-meta">Comfort, fast, easy</div></div></button><button class="pref-tile" data-value="out" data-label="going out" style="background-image:url('content/images/rooftop_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍷</span><div class="pref-tile-title">Going out</div><div class="pref-tile-meta">Reservation, bar, dinner</div></div></button>
       </div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/south_indian_breakfast.jpg" data-time-label="7:58 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/south_indian_breakfast.jpg" data-time-label="7:58 PM · Bangalore"
        data-typed="Cooking in tonight? Here&#x27;s a warm one-pot that suits the weather." data-mood="confident" data-dwell="7000" data-question="Send the recipe to your phone?">
     <div class="card-image"></div>
     <div class="card-tag">Cooking · Tonight</div>
@@ -621,7 +649,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/filter_coffee_cafe.jpg" data-time-label="8:00 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/filter_coffee_cafe.jpg" data-time-label="8:00 PM · Bangalore"
        data-typed="Your coffee streak says you&#x27;ll want to know these new roasters." data-mood="confident" data-dwell="7000" data-question="Map the closest three?">
     <div class="card-image"></div>
     <div class="card-tag">Culture · Cafés</div>
@@ -633,7 +661,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/farmers_market.jpg" data-time-label="8:02 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/farmers_market.jpg" data-time-label="8:02 PM · Bangalore"
        data-typed="Since you&#x27;re cooking this week, the weekend market is worth the early alarm." data-mood="confident" data-dwell="7000" data-question="Set a Sunday reminder?">
     <div class="card-image"></div>
     <div class="card-tag">This weekend · 8 AM</div>
@@ -645,7 +673,7 @@
     </div>
   </div>
 
-  <div class="card weather-card" data-wimg="images/cubbon_park_morning.jpg" data-time-label="8:04 PM · Bangalore"
+  <div class="card weather-card" data-wimg="content/images/cubbon_park_morning.jpg" data-time-label="8:04 PM · Bangalore"
        data-weather-lead="Good news for tomorrow — the rain clears and your morning opens right up." data-dwell="7000" data-question="Plan a morning out?">
     <div class="card-image"></div>
     <div class="weather-content">
@@ -657,7 +685,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/cubbon_park_morning.jpg" data-time-label="8:06 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/cubbon_park_morning.jpg" data-time-label="8:06 PM · Bangalore"
        data-typed="With clear skies tomorrow, here&#x27;s the calm start you don&#x27;t usually get." data-mood="confident" data-dwell="7000" data-question="Add a Sunday morning walk?">
     <div class="card-image"></div>
     <div class="card-tag">Outdoors · Tomorrow</div>
@@ -669,7 +697,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/yoga_sunrise.jpg" data-time-label="8:08 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/yoga_sunrise.jpg" data-time-label="8:08 PM · Bangalore"
        data-typed="A calm body for a calm evening person — tomorrow&#x27;s clear sky is the excuse." data-mood="confident" data-dwell="7000" data-question="Book a sunrise slot?">
     <div class="card-image"></div>
     <div class="card-tag">Wellness · Sunrise</div>
@@ -681,7 +709,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/bookstore.jpg" data-time-label="8:10 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/bookstore.jpg" data-time-label="8:10 PM · Bangalore"
        data-typed="For your quiet side — an indie bookshop most people walk past." data-mood="confident" data-dwell="7000" data-question="See this week&#x27;s staff picks?">
     <div class="card-image"></div>
     <div class="card-tag">Culture · Indie</div>
@@ -693,7 +721,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/garden_cafe.jpg" data-time-label="8:12 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/garden_cafe.jpg" data-time-label="8:12 PM · Bangalore"
        data-typed="A calm-evening kind of place — tucked into a garden, lit like a memory." data-mood="confident" data-dwell="7000" data-question="Save it for the weekend?">
     <div class="card-image"></div>
     <div class="card-tag">Cafés · Al fresco</div>
@@ -705,7 +733,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/street_food.jpg" data-time-label="8:14 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/street_food.jpg" data-time-label="8:14 PM · Bangalore"
        data-typed="If tonight turns into a wander, this is the street to point you at." data-mood="confident" data-dwell="7000" data-question="Pin the must-try stalls?">
     <div class="card-image"></div>
     <div class="card-tag">Food · Tonight</div>
@@ -723,13 +751,13 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick a few</div>
       <div class="pref-tiles" data-choice-group="taste-cuisine" data-multi="true">
-        <button class="pref-tile selected" data-value="southindian" data-label="South Indian" style="background-image:url('images/south_indian_breakfast.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍛</span><div class="pref-tile-title">South Indian</div><div class="pref-tile-meta">Filter coffee, dosa, thalis</div></div></button><button class="pref-tile" data-value="asian" data-label="Asian" style="background-image:url('images/naru_ramen_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍜</span><div class="pref-tile-title">Asian</div><div class="pref-tile-meta">Ramen, bao, dumplings</div></div></button><button class="pref-tile" data-value="cafes" data-label="cafés &amp; bakes" style="background-image:url('images/filter_coffee_cafe.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">☕</span><div class="pref-tile-title">Cafés &amp; bakes</div><div class="pref-tile-meta">Coffee, brunch, pastries</div></div></button><button class="pref-tile" data-value="fine" data-label="fine dining" style="background-image:url('images/fine_dining.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Fine dining</div><div class="pref-tile-meta">Tasting menus, chef tables</div></div></button>
+        <button class="pref-tile selected" data-value="southindian" data-label="South Indian" style="background-image:url('content/images/south_indian_breakfast.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍛</span><div class="pref-tile-title">South Indian</div><div class="pref-tile-meta">Filter coffee, dosa, thalis</div></div></button><button class="pref-tile" data-value="asian" data-label="Asian" style="background-image:url('content/images/naru_ramen_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍜</span><div class="pref-tile-title">Asian</div><div class="pref-tile-meta">Ramen, bao, dumplings</div></div></button><button class="pref-tile" data-value="cafes" data-label="cafés &amp; bakes" style="background-image:url('content/images/filter_coffee_cafe.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">☕</span><div class="pref-tile-title">Cafés &amp; bakes</div><div class="pref-tile-meta">Coffee, brunch, pastries</div></div></button><button class="pref-tile" data-value="fine" data-label="fine dining" style="background-image:url('content/images/fine_dining.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Fine dining</div><div class="pref-tile-meta">Tasting menus, chef tables</div></div></button>
       </div>
       <div class="card-actions pref-multi-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question">Tune my food picks.</span><span class="cta-yes">Yes</span></button></div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/karavalli_thali.jpg" data-time-label="8:18 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/karavalli_thali.jpg" data-time-label="8:18 PM · Bangalore"
        data-typed="For your {bangalore} streak — coastal Karnataka, done beautifully at Karavalli." data-mood="confident" data-dwell="7000" data-question="Send the menu to your phone?">
     <div class="card-image"></div>
     <div class="card-tag">Restaurants · Heritage</div>
@@ -747,37 +775,44 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick a few</div>
       <div class="pref-tiles" data-choice-group="style" data-multi="true">
-        <button class="pref-tile selected" data-value="minimal" data-label="minimal & linen" style="background-image:url('images/fashion_boutique.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🤍</span><div class="pref-tile-title">Minimal &amp; linen</div><div class="pref-tile-meta">Clean, breathable, easy</div></div></button><button class="pref-tile" data-value="handloom" data-label="handloom & heritage" style="background-image:url('images/fashion_handloom.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🧵</span><div class="pref-tile-title">Handloom &amp; heritage</div><div class="pref-tile-meta">Weaves, silks, craft</div></div></button><button class="pref-tile" data-value="street" data-label="streetwear" style="background-image:url('images/fashion_sneakers.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">👟</span><div class="pref-tile-title">Streetwear</div><div class="pref-tile-meta">Sneakers, drops, bold</div></div></button>
+        <button class="pref-tile selected" data-value="minimal" data-label="minimal & linen" style="background-image:url('assets/fashion_boutique.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🤍</span><div class="pref-tile-title">Minimal &amp; linen</div><div class="pref-tile-meta">Clean, breathable, easy</div></div></button><button class="pref-tile" data-value="handloom" data-label="handloom & heritage" style="background-image:url('assets/fashion_handloom.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🧵</span><div class="pref-tile-title">Handloom &amp; heritage</div><div class="pref-tile-meta">Weaves, silks, craft</div></div></button><button class="pref-tile" data-value="street" data-label="streetwear" style="background-image:url('assets/fashion_sneakers.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">👟</span><div class="pref-tile-title">Streetwear</div><div class="pref-tile-meta">Sneakers, drops, bold</div></div></button>
       </div>
       <div class="card-actions pref-multi-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question">Tune my style picks.</span><span class="cta-yes">Yes</span></button></div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/fashion_handloom.jpg" data-time-label="8:21 PM · Bangalore"
-       data-typed="Festive season's near — and a handloom label you'd love just dropped its edit." data-mood="proud" data-dwell="7000" data-question="See the collection?">
+  <div class="card reveal-after shop-card layout-bl" data-image="assets/look_festive_hero.jpg" data-time-label="8:21 PM · Bangalore"
+       data-typed="Festive season's near — here's a handloom edit in your colours. Tap a piece you like." data-mood="proud" data-dwell="8000" data-question="Add picks to your bag?">
     <div class="card-image"></div>
-    <div class="card-tag">Fashion · Handloom</div>
+    <div class="card-tag">Fashion · Festive handloom</div>
     <div class="card-content">
-      <div class="card-title">A festive<br>handloom edit.</div>
-      <div class="card-sub">Hand-woven silks in jewel tones — limited pieces, made the slow way.</div>
+      <div class="card-title">The festive<br>handloom edit.</div>
+      <div class="card-sub">Hand-woven, jewel-toned, made the slow way. Three to start with —</div>
       <div class="agent-line"><span class="typed-text"></span><span class="agent-mascot"></span></div>
-      <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div>
+      <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button><div class="shop-products">
+        <button class="shop-product" data-value="saree"><div class="shop-product-img" style="background-image:url('assets/prod_silk_saree.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Emerald zari saree</div><div class="shop-product-price">₹ 8,900</div></div></button>
+        <button class="shop-product" data-value="kurta"><div class="shop-product-img" style="background-image:url('assets/prod_kurta_set.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Cream kurta set</div><div class="shop-product-price">₹ 4,200</div></div></button>
+        <button class="shop-product" data-value="juttis"><div class="shop-product-img" style="background-image:url('assets/prod_juttis.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Gold embroidered juttis</div><div class="shop-product-price">₹ 1,800</div></div></button>
+      </div></div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/fashion_boutique.jpg" data-time-label="8:23 PM · Bangalore"
-       data-typed="A boutique on your side of town just curated a capsule for the monsoon." data-mood="confident" data-dwell="7000" data-question="Book a styling visit?">
+  <div class="card reveal-after shop-card layout-bl" data-image="assets/look_linen_hero.jpg" data-time-label="8:23 PM · Bangalore"
+       data-typed="For the monsoon, an easy linen capsule that breathes. Pick what catches your eye." data-mood="confident" data-dwell="8000" data-question="Add picks to your bag?">
     <div class="card-image"></div>
-    <div class="card-tag">Fashion · Boutique</div>
+    <div class="card-tag">Fashion · Linen capsule</div>
     <div class="card-content">
-      <div class="card-title">A monsoon<br>capsule wardrobe.</div>
-      <div class="card-sub">Ten pieces, endless combinations — linen, layers, easy elegance.</div>
+      <div class="card-title">An easy<br>linen capsule.</div>
+      <div class="card-sub">Effortless, breathable, endlessly mixable. The three essentials —</div>
       <div class="agent-line"><span class="typed-text"></span><span class="agent-mascot"></span></div>
-      <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div>
+      <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button><div class="shop-products">
+        <button class="shop-product" data-value="shirt"><div class="shop-product-img" style="background-image:url('assets/prod_linen_shirt.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Beige linen shirt</div><div class="shop-product-price">₹ 2,600</div></div></button>
+        <button class="shop-product" data-value="trousers"><div class="shop-product-img" style="background-image:url('assets/prod_wide_trousers.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Wide-leg trousers</div><div class="shop-product-price">₹ 3,100</div></div></button>
+      </div></div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/vinyl_night_event.jpg" data-time-label="8:20 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/vinyl_night_event.jpg" data-time-label="8:20 PM · Bangalore"
        data-typed="One more worth catching — a vinyl night that fits your {evening} side, 82% gone." data-mood="confident" data-dwell="7000" data-question="Hold two tickets for Saturday?">
     <div class="card-image"></div>
     <div class="card-tag">82% sold · Saturday 9 PM</div>
@@ -789,7 +824,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/ayurvedic_wellness.jpg" data-time-label="8:22 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/ayurvedic_wellness.jpg" data-time-label="8:22 PM · Bangalore"
        data-typed="And to close the week out — an Ayurvedic ritual that fits {evening} entirely." data-mood="confident" data-dwell="7000" data-question="Book a slot this weekend?">
     <div class="card-image"></div>
     <div class="card-tag">Wellness · Rituals</div>
@@ -807,12 +842,12 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick one</div>
       <div class="pref-tiles" data-choice-group="weekend-vibe" data-advance-on-pick="true">
-        <button class="pref-tile" data-value="hills" data-label="hill stations" style="background-image:url('images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏔️</span><div class="pref-tile-title">Hill stations</div><div class="pref-tile-meta">Cool air, winding roads</div></div></button><button class="pref-tile" data-value="coastal" data-label="a coastal drive" style="background-image:url('images/lake_sunset.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌊</span><div class="pref-tile-title">Coastal drive</div><div class="pref-tile-meta">Konkan, sea breeze, sunsets</div></div></button><button class="pref-tile" data-value="heritage" data-label="a heritage town" style="background-image:url('images/temple_heritage.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛕</span><div class="pref-tile-title">Heritage town</div><div class="pref-tile-meta">Mysore, Hampi, old India</div></div></button><button class="pref-tile" data-value="tea" data-label="a tea estate" style="background-image:url('images/tea_estate.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍃</span><div class="pref-tile-title">Tea estate</div><div class="pref-tile-meta">Misty hills, slow mornings</div></div></button>
+        <button class="pref-tile" data-value="hills" data-label="hill stations" style="background-image:url('content/images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏔️</span><div class="pref-tile-title">Hill stations</div><div class="pref-tile-meta">Cool air, winding roads</div></div></button><button class="pref-tile" data-value="coastal" data-label="a coastal drive" style="background-image:url('content/images/lake_sunset.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌊</span><div class="pref-tile-title">Coastal drive</div><div class="pref-tile-meta">Konkan, sea breeze, sunsets</div></div></button><button class="pref-tile" data-value="heritage" data-label="a heritage town" style="background-image:url('content/images/temple_heritage.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛕</span><div class="pref-tile-title">Heritage town</div><div class="pref-tile-meta">Mysore, Hampi, old India</div></div></button><button class="pref-tile" data-value="tea" data-label="a tea estate" style="background-image:url('content/images/tea_estate.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍃</span><div class="pref-tile-title">Tea estate</div><div class="pref-tile-meta">Misty hills, slow mornings</div></div></button>
       </div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/nandi_hills.jpg" data-time-label="8:26 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/nandi_hills.jpg" data-time-label="8:26 PM · Bangalore"
        data-typed="And for {weekend} — the closest escape to you, the Nandi Hills ride." data-mood="confident" data-dwell="7000" data-question="Plan the route for you?">
     <div class="card-image"></div>
     <div class="card-tag">Sports · Escapes</div>
@@ -824,7 +859,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/tea_estate.jpg" data-time-label="8:28 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/tea_estate.jpg" data-time-label="8:28 PM · Bangalore"
        data-typed="If the hills call this {weekend}, here&#x27;s the slow version of it." data-mood="confident" data-dwell="7000" data-question="Check stay availability?">
     <div class="card-image"></div>
     <div class="card-tag">Travel · 3 hrs away</div>
@@ -842,13 +877,13 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick a few</div>
       <div class="pref-tiles" data-choice-group="travel-style" data-multi="true">
-        <button class="pref-tile selected" data-value="roadtrip" data-label="road trips" style="background-image:url('images/travel_coorg.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🚗</span><div class="pref-tile-title">Road trips</div><div class="pref-tile-meta">Coorg, Chikmagalur, drives</div></div></button><button class="pref-tile" data-value="beaches" data-label="beach escapes" style="background-image:url('images/travel_goa_beach.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏖️</span><div class="pref-tile-title">Beach escapes</div><div class="pref-tile-meta">Goa, Gokarna, the coast</div></div></button><button class="pref-tile" data-value="nature" data-label="nature stays" style="background-image:url('images/travel_wayanad.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌿</span><div class="pref-tile-title">Nature stays</div><div class="pref-tile-meta">Wayanad, forests, treehouses</div></div></button>
+        <button class="pref-tile selected" data-value="roadtrip" data-label="road trips" style="background-image:url('content/images/travel_coorg.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🚗</span><div class="pref-tile-title">Road trips</div><div class="pref-tile-meta">Coorg, Chikmagalur, drives</div></div></button><button class="pref-tile" data-value="beaches" data-label="beach escapes" style="background-image:url('content/images/travel_goa_beach.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏖️</span><div class="pref-tile-title">Beach escapes</div><div class="pref-tile-meta">Goa, Gokarna, the coast</div></div></button><button class="pref-tile" data-value="nature" data-label="nature stays" style="background-image:url('content/images/travel_wayanad.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌿</span><div class="pref-tile-title">Nature stays</div><div class="pref-tile-meta">Wayanad, forests, treehouses</div></div></button>
       </div>
       <div class="card-actions pref-multi-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question">Tune my travel picks.</span><span class="cta-yes">Yes</span></button></div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/travel_coorg.jpg" data-time-label="8:31 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/travel_coorg.jpg" data-time-label="8:31 PM · Bangalore"
        data-typed="A long weekend's coming up — and Coorg is greenest right after the rains." data-mood="proud" data-dwell="7000" data-question="See homestays under your range?">
     <div class="card-image"></div>
     <div class="card-tag">Travel · 5 hrs away</div>
@@ -860,7 +895,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/travel_hampi.jpg" data-time-label="8:33 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/travel_hampi.jpg" data-time-label="8:33 PM · Bangalore"
        data-typed="For the heritage side of you — Hampi at sunrise is something else entirely." data-mood="confident" data-dwell="7000" data-question="Map a two-day trip?">
     <div class="card-image"></div>
     <div class="card-tag">Travel · Heritage</div>
@@ -878,13 +913,13 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick what I should handle</div>
       <div class="pref-tiles" data-choice-group="weekend-plan" data-multi="true">
-        <button class="pref-tile selected" data-value="stays" data-label="the stays" style="background-image:url('images/tea_estate.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏨</span><div class="pref-tile-title">Find stays</div><div class="pref-tile-meta">Under your usual range</div></div></button><button class="pref-tile selected" data-value="dinner" data-label="a dinner table" style="background-image:url('images/karavalli_thali.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Hold a table</div><div class="pref-tile-meta">Saturday night</div></div></button><button class="pref-tile" data-value="route" data-label="the route" style="background-image:url('images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🗺️</span><div class="pref-tile-title">Plan the route</div><div class="pref-tile-meta">Stops, timing, playlist</div></div></button><button class="pref-tile" data-value="walk" data-label="a morning walk" style="background-image:url('images/cubbon_park_morning.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌳</span><div class="pref-tile-title">A morning walk</div><div class="pref-tile-meta">Before you leave</div></div></button>
+        <button class="pref-tile selected" data-value="stays" data-label="the stays" style="background-image:url('content/images/tea_estate.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏨</span><div class="pref-tile-title">Find stays</div><div class="pref-tile-meta">Under your usual range</div></div></button><button class="pref-tile selected" data-value="dinner" data-label="a dinner table" style="background-image:url('content/images/karavalli_thali.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Hold a table</div><div class="pref-tile-meta">Saturday night</div></div></button><button class="pref-tile" data-value="route" data-label="the route" style="background-image:url('content/images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🗺️</span><div class="pref-tile-title">Plan the route</div><div class="pref-tile-meta">Stops, timing, playlist</div></div></button><button class="pref-tile" data-value="walk" data-label="a morning walk" style="background-image:url('content/images/cubbon_park_morning.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌳</span><div class="pref-tile-title">A morning walk</div><div class="pref-tile-meta">Before you leave</div></div></button>
       </div>
       <div class="card-actions pref-multi-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question">Yes — take this off my plate.</span><span class="cta-yes">Yes</span></button></div>
     </div>
   </div>
 
-  <div class="card concept" data-image="images/final_offer.jpg" data-time-label="8:32 PM · Bangalore"
+  <div class="card concept" data-image="assets/final_offer.jpg" data-time-label="8:32 PM · Bangalore"
        data-typed="I&#x27;ll hold the stay, book the table, and ping you Friday with everything ready." data-mood="proud" data-dwell="6000" data-question="Perfect — do it.">
     <div class="card-image"></div>
     <div class="card-content">
@@ -903,7 +938,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/jazz_lounge.jpg" data-time-label="9:02 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/jazz_lounge.jpg" data-time-label="9:02 PM · Bangalore"
        data-typed="Your jazz Tuesdays are a pattern now — they are playing again tonight." data-mood="proud" data-dwell="7000" data-question="Reserve your corner table?">
     <div class="card-image"></div>
     <div class="card-tag">Tonight · 9 PM</div>
@@ -915,7 +950,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/craft_brewery.jpg" data-time-label="9:05 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/craft_brewery.jpg" data-time-label="9:05 PM · Bangalore"
        data-typed="You rated their saison five stars — it is back on tap this week." data-mood="confident" data-dwell="7000" data-question="Hold a table for two?">
     <div class="card-image"></div>
     <div class="card-tag">New on tap · Indiranagar</div>
@@ -927,7 +962,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/fine_dining.jpg" data-time-label="9:08 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/fine_dining.jpg" data-time-label="9:08 PM · Bangalore"
        data-typed="Remember that pop-up you raved about? The chef went permanent." data-mood="proud" data-dwell="7000" data-question="Get on the waitlist?">
     <div class="card-image"></div>
     <div class="card-tag">Chefs table · Saturday</div>
@@ -939,7 +974,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/rooftop_bar.jpg" data-time-label="9:12 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/rooftop_bar.jpg" data-time-label="9:12 PM · Bangalore"
        data-typed="You open every rooftop card I send — this one just reopened." data-mood="confident" data-dwell="7000" data-question="Book the 6 PM slot?">
     <div class="card-image"></div>
     <div class="card-tag">Sundowner · near you</div>
@@ -951,7 +986,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/running_trail.jpg" data-time-label="9:16 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/running_trail.jpg" data-time-label="9:16 PM · Bangalore"
        data-typed="Twelve-day streak — I lined up a fresh route to keep it interesting." data-mood="proud" data-dwell="7000" data-question="Load tomorrow&#x27;s run?">
     <div class="card-image"></div>
     <div class="card-tag">Streak · day 12</div>
@@ -963,7 +998,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/cycling_road.jpg" data-time-label="9:19 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/cycling_road.jpg" data-time-label="9:19 PM · Bangalore"
        data-typed="You have added kilometres each weekend. Ready for the 60K?" data-mood="confident" data-dwell="7000" data-question="Plan the route?">
     <div class="card-image"></div>
     <div class="card-tag">Weekend ride</div>
@@ -975,7 +1010,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/home_workout.jpg" data-time-label="9:23 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/home_workout.jpg" data-time-label="9:23 PM · Bangalore"
        data-typed="Two skipped gym days — let us not make it three. Twenty minutes?" data-mood="hesitant" data-dwell="7000" data-question="Start the session?">
     <div class="card-image"></div>
     <div class="card-tag">Today · 20 min</div>
@@ -987,7 +1022,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/art_gallery.jpg" data-time-label="9:27 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/art_gallery.jpg" data-time-label="9:27 PM · Bangalore"
        data-typed="Your saved exhibitions all lean abstract — Friday&#x27;s opening fits perfectly." data-mood="confident" data-dwell="7000" data-question="RSVP for the preview?">
     <div class="card-image"></div>
     <div class="card-tag">Opening · Friday</div>
@@ -999,7 +1034,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/pottery_studio.jpg" data-time-label="9:31 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/pottery_studio.jpg" data-time-label="9:31 PM · Bangalore"
        data-typed="You bookmarked this back in March. Spots just opened up." data-mood="proud" data-dwell="7000" data-question="Claim a weekend seat?">
     <div class="card-image"></div>
     <div class="card-tag">New batch · weekends</div>
@@ -1011,7 +1046,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/live_music_gig.jpg" data-time-label="9:35 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/live_music_gig.jpg" data-time-label="9:35 PM · Bangalore"
        data-typed="Your most-played band is in town tonight — and it is nearly full." data-mood="confident" data-dwell="7000" data-question="Grab the last seats?">
     <div class="card-image"></div>
     <div class="card-tag">Tonight · nearly full</div>
@@ -1023,7 +1058,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/design_store.jpg" data-time-label="9:38 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/design_store.jpg" data-time-label="9:38 PM · Bangalore"
        data-typed="You have saved their work twice now — new pieces just landed." data-mood="confident" data-dwell="7000" data-question="See the new collection?">
     <div class="card-image"></div>
     <div class="card-tag">New arrivals</div>
@@ -1035,7 +1070,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/smart_home.jpg" data-time-label="9:42 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/smart_home.jpg" data-time-label="9:42 PM · Bangalore"
        data-typed="Your smart-home setup is half-built — this hub finishes it." data-mood="confident" data-dwell="7000" data-question="See if it fits your setup?">
     <div class="card-image"></div>
     <div class="card-tag">Upgrade · for you</div>
@@ -1047,7 +1082,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/ev_car.jpg" data-time-label="9:46 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/ev_car.jpg" data-time-label="9:46 PM · Bangalore"
        data-typed="You keep coming back to EVs — maybe it is time to actually drive one." data-mood="hesitant" data-dwell="7000" data-question="Book a test drive?">
     <div class="card-image"></div>
     <div class="card-tag">Test drive · weekend</div>
@@ -1059,7 +1094,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/temple_heritage.jpg" data-time-label="9:50 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/temple_heritage.jpg" data-time-label="9:50 PM · Bangalore"
        data-typed="That Mysore trip you saved is still waiting. Here is the slow way to do it." data-mood="confident" data-dwell="7000" data-question="Map a Sunday plan?">
     <div class="card-image"></div>
     <div class="card-tag">Day trip · Sunday</div>
@@ -1071,7 +1106,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/lake_sunset.jpg" data-time-label="9:54 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/lake_sunset.jpg" data-time-label="9:54 PM · Bangalore"
        data-typed="You lingered on the last sunset I showed. Here is one ten minutes away." data-mood="proud" data-dwell="7000" data-question="Get directions?">
     <div class="card-image"></div>
     <div class="card-tag">This evening</div>
@@ -1083,7 +1118,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/stargazing.jpg" data-time-label="9:58 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/stargazing.jpg" data-time-label="9:58 PM · Bangalore"
        data-typed="Last time the clouds ruined it. Saturday&#x27;s forecast is finally clear." data-mood="confident" data-dwell="7000" data-question="Plan the drive?">
     <div class="card-image"></div>
     <div class="card-tag">New moon · Saturday</div>
@@ -1095,7 +1130,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/street_food.jpg" data-time-label="10:02 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/street_food.jpg" data-time-label="10:02 PM · Bangalore"
        data-typed="You keep coming back to this one. Let us just go this weekend." data-mood="proud" data-dwell="7000" data-question="Pin the route?">
     <div class="card-image"></div>
     <div class="card-tag">Weekend craving</div>
@@ -1107,7 +1142,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/south_indian_breakfast.jpg" data-time-label="10:06 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/south_indian_breakfast.jpg" data-time-label="10:06 PM · Bangalore"
        data-typed="Sunday breakfast is sacred for you. Here is one worth the wait." data-mood="confident" data-dwell="7000" data-question="Check the wait time?">
     <div class="card-image"></div>
     <div class="card-tag">Sunday ritual</div>
@@ -1119,7 +1154,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/mysore_silk.jpg" data-time-label="10:10 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/mysore_silk.jpg" data-time-label="10:10 PM · Bangalore"
        data-typed="That artisan you bought from has a festive drop — I saved you a look." data-mood="proud" data-dwell="7000" data-question="See the new pieces?">
     <div class="card-image"></div>
     <div class="card-tag">Heritage · curated</div>
@@ -1131,7 +1166,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/tea_estate.jpg" data-time-label="10:14 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/tea_estate.jpg" data-time-label="10:14 PM · Bangalore"
        data-typed="You nearly booked this last month — the price just came down." data-mood="hesitant" data-dwell="7000" data-question="Finish the booking?">
     <div class="card-image"></div>
     <div class="card-tag">Long weekend</div>
@@ -1143,7 +1178,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/filter_coffee_cafe.jpg" data-time-label="10:18 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/filter_coffee_cafe.jpg" data-time-label="10:18 PM · Bangalore"
        data-typed="This opened right on your usual coffee route. You will want to know." data-mood="confident" data-dwell="7000" data-question="See the menu?">
     <div class="card-image"></div>
     <div class="card-tag">New roaster · saved area</div>
@@ -1155,7 +1190,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/garden_cafe.jpg" data-time-label="10:22 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/garden_cafe.jpg" data-time-label="10:22 PM · Bangalore"
        data-typed="You saved this for a slow Sunday. This weekend looks like the one." data-mood="proud" data-dwell="7000" data-question="Book a table?">
     <div class="card-image"></div>
     <div class="card-tag">Brunch · Sunday</div>
@@ -1167,7 +1202,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/bookstore.jpg" data-time-label="10:26 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/bookstore.jpg" data-time-label="10:26 PM · Bangalore"
        data-typed="The author you follow is reading at your local — small room, fills fast." data-mood="confident" data-dwell="7000" data-question="Reserve a seat?">
     <div class="card-image"></div>
     <div class="card-tag">Author event · Thursday</div>
@@ -1179,7 +1214,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/vinyl_night_event.jpg" data-time-label="10:30 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/vinyl_night_event.jpg" data-time-label="10:30 PM · Bangalore"
        data-typed="Two months running for you — the vinyl night is back, new theme." data-mood="proud" data-dwell="7000" data-question="Same table as last time?">
     <div class="card-image"></div>
     <div class="card-tag">Series · monthly</div>
@@ -1191,7 +1226,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/ayurvedic_wellness.jpg" data-time-label="10:34 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/ayurvedic_wellness.jpg" data-time-label="10:34 PM · Bangalore"
        data-typed="Four weeks since your last reset. You always feel better after." data-mood="confident" data-dwell="7000" data-question="Rebook the same therapist?">
     <div class="card-image"></div>
     <div class="card-tag">Renewal · due</div>
@@ -1203,7 +1238,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/naru_ramen_bar.jpg" data-time-label="10:38 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/naru_ramen_bar.jpg" data-time-label="10:38 PM · Bangalore"
        data-typed="Good news — the ramen counter you waitlisted can seat you Friday." data-mood="proud" data-dwell="7000" data-question="Confirm the booking?">
     <div class="card-image"></div>
     <div class="card-tag">You are on the list</div>
@@ -1215,7 +1250,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/indiranagar_night.jpg" data-time-label="10:42 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/indiranagar_night.jpg" data-time-label="10:42 PM · Bangalore"
        data-typed="Your saved spots cluster in one lane — here is the easy Friday route." data-mood="confident" data-dwell="7000" data-question="Build the night out?">
     <div class="card-image"></div>
     <div class="card-tag">Friday · your scene</div>
@@ -1227,7 +1262,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/nandi_hills.jpg" data-time-label="10:46 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/nandi_hills.jpg" data-time-label="10:46 PM · Bangalore"
        data-typed="You loved the Nandi ride. Saturday&#x27;s the rare clear sunrise to repeat it." data-mood="proud" data-dwell="7000" data-question="Set the 4 AM alarm?">
     <div class="card-image"></div>
     <div class="card-tag">Sunrise · this weekend</div>
@@ -1239,7 +1274,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/cubbon_park_morning.jpg" data-time-label="10:50 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/cubbon_park_morning.jpg" data-time-label="10:50 PM · Bangalore"
        data-typed="The Cubbon chess regulars asked about you. They are there Sunday." data-mood="confident" data-dwell="7000" data-question="Plan to drop by?">
     <div class="card-image"></div>
     <div class="card-tag">Chess · Sundays</div>
@@ -1251,7 +1286,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/coorgi_coffee.jpg" data-time-label="10:54 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/coorgi_coffee.jpg" data-time-label="10:54 PM · Bangalore"
        data-typed="The estate you ordered from is back — first roast of the season." data-mood="proud" data-dwell="7000" data-question="Reorder your usual?">
     <div class="card-image"></div>
     <div class="card-tag">Restock · saved estate</div>
@@ -1263,7 +1298,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/rooftop_bar.jpg" data-time-label="10:58 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/rooftop_bar.jpg" data-time-label="10:58 PM · Bangalore"
        data-typed="Riya&#x27;s birthday is Friday — I found a rooftop that fits her taste." data-mood="confident" data-dwell="7000" data-question="Reserve for the group?">
     <div class="card-image"></div>
     <div class="card-tag">Birthday · a friend</div>
@@ -1275,7 +1310,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/fine_dining.jpg" data-time-label="11:02 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/fine_dining.jpg" data-time-label="11:02 PM · Bangalore"
        data-typed="Your anniversary&#x27;s in two weeks. This table books a month out — act now." data-mood="proud" data-dwell="7000" data-question="Lock the date?">
     <div class="card-image"></div>
     <div class="card-tag">Anniversary · saved date</div>
@@ -1287,7 +1322,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/tea_estate.jpg" data-time-label="11:06 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/tea_estate.jpg" data-time-label="11:06 PM · Bangalore"
        data-typed="Monsoon means the hills are quiet and cheap — your kind of timing." data-mood="confident" data-dwell="7000" data-question="See the dates?">
     <div class="card-image"></div>
     <div class="card-tag">Monsoon offer</div>
@@ -1299,7 +1334,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/art_gallery.jpg" data-time-label="11:10 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/art_gallery.jpg" data-time-label="11:10 PM · Bangalore"
        data-typed="The show you saved closes Sunday. Do not let this one slip." data-mood="hesitant" data-dwell="7000" data-question="Go this week?">
     <div class="card-image"></div>
     <div class="card-tag">Last days</div>
@@ -1311,7 +1346,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/craft_brewery.jpg" data-time-label="11:14 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/craft_brewery.jpg" data-time-label="11:14 PM · Bangalore"
        data-typed="Your quiz crew is on for Wednesday. Want me to remind the group?" data-mood="confident" data-dwell="7000" data-question="Send the group nudge?">
     <div class="card-image"></div>
     <div class="card-tag">Quiz night · Wednesday</div>
@@ -1323,7 +1358,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/design_store.jpg" data-time-label="11:18 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/design_store.jpg" data-time-label="11:18 PM · Bangalore"
        data-typed="Three wishlist pieces just went on sale. They will not last the weekend." data-mood="proud" data-dwell="7000" data-question="See what dropped?">
     <div class="card-image"></div>
     <div class="card-tag">Sale · saved items</div>
@@ -1335,19 +1370,23 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/fashion_street_style.jpg" data-time-label="11:20 PM · Bangalore"
-       data-typed="The label you ordered from last season just dropped its festive line — your size is in." data-mood="proud" data-dwell="7000" data-question="See the new drop?">
+  <div class="card reveal-after shop-card layout-bl" data-image="assets/look_street_hero.jpg" data-time-label="11:20 PM · Bangalore"
+       data-typed="The streetwear label you ordered from just dropped — and your size is in. Tap what you like." data-mood="proud" data-dwell="8000" data-question="Add to your bag?">
     <div class="card-image"></div>
     <div class="card-tag">Fashion · You bought here</div>
     <div class="card-content">
-      <div class="card-title">Their festive<br>line is live.</div>
-      <div class="card-sub">The brand whose kurta you loved is back — bolder, and in your size.</div>
+      <div class="card-title">The new drop<br>is live.</div>
+      <div class="card-sub">Bolder than last season, and in your size. Three from the line —</div>
       <div class="agent-line"><span class="typed-text"></span><span class="agent-mascot"></span></div>
-      <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div>
+      <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button><div class="shop-products">
+        <button class="shop-product" data-value="sneakers"><div class="shop-product-img" style="background-image:url('assets/prod_sneakers_white.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">White court sneakers</div><div class="shop-product-price">₹ 6,500</div></div></button>
+        <button class="shop-product" data-value="tee"><div class="shop-product-img" style="background-image:url('assets/prod_oversized_tee.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Oversized graphic tee</div><div class="shop-product-price">₹ 1,900</div></div></button>
+        <button class="shop-product" data-value="cargo"><div class="shop-product-img" style="background-image:url('assets/prod_cargo_pants.jpg');"></div><div class="shop-product-info"><div class="shop-product-name">Olive cargo pants</div><div class="shop-product-price">₹ 3,400</div></div></button>
+      </div></div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/travel_goa_beach.jpg" data-time-label="11:21 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/travel_goa_beach.jpg" data-time-label="11:21 PM · Bangalore"
        data-typed="Goa flights dipped for the dates you searched last week. The window won't stay open." data-mood="confident" data-dwell="7000" data-question="See the fares?">
     <div class="card-image"></div>
     <div class="card-tag">Travel · Price drop</div>
@@ -1359,7 +1398,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/travel_wayanad.jpg" data-time-label="11:23 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/travel_wayanad.jpg" data-time-label="11:23 PM · Bangalore"
        data-typed="That Wayanad treehouse you saved has one weekend left open this season." data-mood="hesitant" data-dwell="7000" data-question="Hold the dates?">
     <div class="card-image"></div>
     <div class="card-tag">Travel · Almost booked</div>
@@ -1371,7 +1410,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/yoga_sunrise.jpg" data-time-label="11:22 PM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/yoga_sunrise.jpg" data-time-label="11:22 PM · Bangalore"
        data-typed="Two yoga sessions left on your pack before it expires. Let us use them." data-mood="hesitant" data-dwell="7000" data-question="Book both this week?">
     <div class="card-image"></div>
     <div class="card-tag">Class pack · expiring</div>
@@ -1383,7 +1422,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/lake_sunset.jpg" data-time-label="11:26 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/lake_sunset.jpg" data-time-label="11:26 PM · Bangalore"
        data-typed="For the photographer in you — a golden-hour walk by the lake Saturday." data-mood="confident" data-dwell="7000" data-question="Join the walk?">
     <div class="card-image"></div>
     <div class="card-tag">Photo walk · Saturday</div>
@@ -1395,7 +1434,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/street_food.jpg" data-time-label="11:30 PM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/street_food.jpg" data-time-label="11:30 PM · Bangalore"
        data-typed="A food festival lands this week — packed with cuisines you have saved." data-mood="proud" data-dwell="7000" data-question="Pin your must-tries?">
     <div class="card-image"></div>
     <div class="card-tag">Festival · this week</div>
@@ -1407,7 +1446,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/monsoon_street.jpg" data-time-label="11:34 PM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/monsoon_street.jpg" data-time-label="11:34 PM · Bangalore"
        data-typed="Rain is back tonight. Want the easy night-in, fully sorted?" data-mood="confident" data-dwell="7000" data-question="Set up the evening?">
     <div class="card-image"></div>
     <div class="card-tag">Tonight · staying in</div>
@@ -1425,7 +1464,7 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick a few</div>
       <div class="pref-tiles" data-choice-group="more-of" data-multi="true">
-        <button class="pref-tile" data-value="nights" data-label="nights out" style="background-image:url('images/rooftop_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍸</span><div class="pref-tile-title">Nights out</div><div class="pref-tile-meta">Bars, gigs, dinners</div></div></button><button class="pref-tile" data-value="fitness" data-label="fitness" style="background-image:url('images/running_trail.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏃</span><div class="pref-tile-title">Fitness</div><div class="pref-tile-meta">Runs, rides, classes</div></div></button><button class="pref-tile" data-value="culture" data-label="culture" style="background-image:url('images/art_gallery.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎭</span><div class="pref-tile-title">Culture</div><div class="pref-tile-meta">Art, books, music</div></div></button><button class="pref-tile" data-value="escapes" data-label="escapes" style="background-image:url('images/tea_estate.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">⛰️</span><div class="pref-tile-title">Escapes</div><div class="pref-tile-meta">Weekends away</div></div></button>
+        <button class="pref-tile" data-value="nights" data-label="nights out" style="background-image:url('content/images/rooftop_bar.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍸</span><div class="pref-tile-title">Nights out</div><div class="pref-tile-meta">Bars, gigs, dinners</div></div></button><button class="pref-tile" data-value="fitness" data-label="fitness" style="background-image:url('content/images/running_trail.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🏃</span><div class="pref-tile-title">Fitness</div><div class="pref-tile-meta">Runs, rides, classes</div></div></button><button class="pref-tile" data-value="culture" data-label="culture" style="background-image:url('content/images/art_gallery.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🎭</span><div class="pref-tile-title">Culture</div><div class="pref-tile-meta">Art, books, music</div></div></button><button class="pref-tile" data-value="escapes" data-label="escapes" style="background-image:url('content/images/tea_estate.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">⛰️</span><div class="pref-tile-title">Escapes</div><div class="pref-tile-meta">Weekends away</div></div></button>
       </div>
       <div class="card-actions pref-multi-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question">Show me more of these.</span><span class="cta-yes">Yes</span></button></div>
     </div>
@@ -1437,12 +1476,12 @@
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
       <div class="pref-hint">Pick one</div>
       <div class="pref-tiles" data-choice-group="old-weekend" data-advance-on-pick="true">
-        <button class="pref-tile" data-value="repeat" data-label="the usual" style="background-image:url('images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🔁</span><div class="pref-tile-title">The usual</div><div class="pref-tile-meta">Nandi sunrise ride</div></div></button><button class="pref-tile" data-value="coast" data-label="the coast" style="background-image:url('images/lake_sunset.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌊</span><div class="pref-tile-title">The coast</div><div class="pref-tile-meta">A drive to the sea</div></div></button><button class="pref-tile" data-value="stayin" data-label="a slow one" style="background-image:url('images/reading_nook.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛋️</span><div class="pref-tile-title">A slow one</div><div class="pref-tile-meta">Home, books, rest</div></div></button><button class="pref-tile" data-value="heritage" data-label="heritage" style="background-image:url('images/temple_heritage.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛕</span><div class="pref-tile-title">Heritage</div><div class="pref-tile-meta">A temple town</div></div></button>
+        <button class="pref-tile" data-value="repeat" data-label="the usual" style="background-image:url('content/images/nandi_hills.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🔁</span><div class="pref-tile-title">The usual</div><div class="pref-tile-meta">Nandi sunrise ride</div></div></button><button class="pref-tile" data-value="coast" data-label="the coast" style="background-image:url('content/images/lake_sunset.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🌊</span><div class="pref-tile-title">The coast</div><div class="pref-tile-meta">A drive to the sea</div></div></button><button class="pref-tile" data-value="stayin" data-label="a slow one" style="background-image:url('content/images/reading_nook.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛋️</span><div class="pref-tile-title">A slow one</div><div class="pref-tile-meta">Home, books, rest</div></div></button><button class="pref-tile" data-value="heritage" data-label="heritage" style="background-image:url('content/images/temple_heritage.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🛕</span><div class="pref-tile-title">Heritage</div><div class="pref-tile-meta">A temple town</div></div></button>
       </div>
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/jazz_lounge.jpg" data-time-label="11:38 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/jazz_lounge.jpg" data-time-label="11:38 AM · Bangalore"
        data-typed="A late jazz set tonight — the quiet kind of nightcap you like." data-mood="confident" data-dwell="7000" data-question="Save me a seat?">
     <div class="card-image"></div>
     <div class="card-tag">Late set · tonight</div>
@@ -1454,7 +1493,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/filter_coffee_cafe.jpg" data-time-label="11:41 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/filter_coffee_cafe.jpg" data-time-label="11:41 AM · Bangalore"
        data-typed="You drink it every day — want to learn to make it properly?" data-mood="confident" data-dwell="7000" data-question="Book the workshop?">
     <div class="card-image"></div>
     <div class="card-tag">Morning · tomorrow</div>
@@ -1466,7 +1505,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/farmers_market.jpg" data-time-label="11:44 AM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/farmers_market.jpg" data-time-label="11:44 AM · Bangalore"
        data-typed="Your market vendors restock Saturday. Early bird gets the heirlooms." data-mood="proud" data-dwell="7000" data-question="Set the alarm?">
     <div class="card-image"></div>
     <div class="card-tag">Saturday · 8 AM</div>
@@ -1478,7 +1517,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/garden_cafe.jpg" data-time-label="11:47 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/garden_cafe.jpg" data-time-label="11:47 AM · Bangalore"
        data-typed="For a change of desk — a garden café that actually has fast wifi." data-mood="confident" data-dwell="7000" data-question="Check today&#x27;s seats?">
     <div class="card-image"></div>
     <div class="card-tag">Work-from-café</div>
@@ -1490,7 +1529,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/cycling_road.jpg" data-time-label="11:50 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/cycling_road.jpg" data-time-label="11:50 AM · Bangalore"
        data-typed="Your cycling group rolls out Sunday. Breakfast is the real reward." data-mood="confident" data-dwell="7000" data-question="RSVP to the ride?">
     <div class="card-image"></div>
     <div class="card-tag">Group ride · Sunday</div>
@@ -1502,7 +1541,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/home_workout.jpg" data-time-label="11:53 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/home_workout.jpg" data-time-label="11:53 AM · Bangalore"
        data-typed="A strength plan that uses exactly the gear you have. No excuses left." data-mood="confident" data-dwell="7000" data-question="Start week one?">
     <div class="card-image"></div>
     <div class="card-tag">New program</div>
@@ -1514,7 +1553,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/bookstore.jpg" data-time-label="11:56 AM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/bookstore.jpg" data-time-label="11:56 AM · Bangalore"
        data-typed="The people whose taste you trust all read this one. Your turn." data-mood="proud" data-dwell="7000" data-question="Add to your list?">
     <div class="card-image"></div>
     <div class="card-tag">Your next read</div>
@@ -1526,7 +1565,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/pottery_studio.jpg" data-time-label="11:59 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/pottery_studio.jpg" data-time-label="11:59 AM · Bangalore"
        data-typed="A drop-in clay night Friday — the unwind you keep meaning to try." data-mood="confident" data-dwell="7000" data-question="Reserve a wheel?">
     <div class="card-image"></div>
     <div class="card-tag">Open studio · Friday</div>
@@ -1538,7 +1577,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/stargazing.jpg" data-time-label="12:03 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/stargazing.jpg" data-time-label="12:03 AM · Bangalore"
        data-typed="A meteor shower peaks Saturday — and you have the gear for it." data-mood="proud" data-dwell="7000" data-question="Plan the night drive?">
     <div class="card-image"></div>
     <div class="card-tag">Meteor shower · weekend</div>
@@ -1550,7 +1589,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/lake_sunset.jpg" data-time-label="12:06 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/lake_sunset.jpg" data-time-label="12:06 AM · Bangalore"
        data-typed="A calm-water morning — the reset your Sundays have been missing." data-mood="confident" data-dwell="7000" data-question="Book a kayak?">
     <div class="card-image"></div>
     <div class="card-tag">Kayak · Sunday AM</div>
@@ -1562,7 +1601,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/temple_heritage.jpg" data-time-label="12:09 AM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/temple_heritage.jpg" data-time-label="12:09 AM · Bangalore"
        data-typed="That festival you read about last year is happening now. Go see it." data-mood="proud" data-dwell="7000" data-question="Plan the day trip?">
     <div class="card-image"></div>
     <div class="card-tag">Festival · this week</div>
@@ -1574,7 +1613,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/ev_car.jpg" data-time-label="12:12 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/ev_car.jpg" data-time-label="12:12 AM · Bangalore"
        data-typed="The EV you tracked just crossed your price line. Worth a serious look." data-mood="confident" data-dwell="7000" data-question="See the new offer?">
     <div class="card-image"></div>
     <div class="card-tag">Price drop</div>
@@ -1586,7 +1625,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/smart_home.jpg" data-time-label="12:15 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/smart_home.jpg" data-time-label="12:15 AM · Bangalore"
        data-typed="You have the pieces — let me wire them into one good-night tap." data-mood="confident" data-dwell="7000" data-question="Set up the routine?">
     <div class="card-image"></div>
     <div class="card-tag">Routine · suggested</div>
@@ -1598,7 +1637,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/design_store.jpg" data-time-label="12:18 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/design_store.jpg" data-time-label="12:18 AM · Bangalore"
        data-typed="The lamp you kept checking is back. It went fast last time." data-mood="hesitant" data-dwell="7000" data-question="Grab it now?">
     <div class="card-image"></div>
     <div class="card-tag">Restock · saved</div>
@@ -1610,7 +1649,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/craft_brewery.jpg" data-time-label="12:21 AM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/craft_brewery.jpg" data-time-label="12:21 AM · Bangalore"
        data-typed="Your favourite brewery opens its back room Saturday. Tasting included." data-mood="confident" data-dwell="7000" data-question="Book two spots?">
     <div class="card-image"></div>
     <div class="card-tag">Brewery tour · Saturday</div>
@@ -1622,7 +1661,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/rooftop_bar.jpg" data-time-label="12:24 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/rooftop_bar.jpg" data-time-label="12:24 AM · Bangalore"
        data-typed="The DJ you stream on repeat has a rooftop residency. Friday&#x27;s the night." data-mood="proud" data-dwell="7000" data-question="Get on the list?">
     <div class="card-image"></div>
     <div class="card-tag">Residency · this month</div>
@@ -1634,7 +1673,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/fine_dining.jpg" data-time-label="12:27 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/fine_dining.jpg" data-time-label="12:27 AM · Bangalore"
        data-typed="Your favourite chef just dropped a monsoon menu. You will want first dibs." data-mood="confident" data-dwell="7000" data-question="Reserve this week?">
     <div class="card-image"></div>
     <div class="card-tag">New menu · seasonal</div>
@@ -1646,7 +1685,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/south_indian_breakfast.jpg" data-time-label="12:30 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/south_indian_breakfast.jpg" data-time-label="12:30 AM · Bangalore"
        data-typed="Good news — your favourite dosa spot opened a branch near you." data-mood="proud" data-dwell="7000" data-question="Check the menu?">
     <div class="card-image"></div>
     <div class="card-tag">New branch · near you</div>
@@ -1658,7 +1697,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/indiranagar_night.jpg" data-time-label="12:33 AM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/indiranagar_night.jpg" data-time-label="12:33 AM · Bangalore"
        data-typed="A speakeasy opened in your lane. You did not hear it from me." data-mood="confident" data-dwell="7000" data-question="Get the password?">
     <div class="card-image"></div>
     <div class="card-tag">New opening · saved area</div>
@@ -1670,7 +1709,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/vinyl_night_event.jpg" data-time-label="12:36 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/vinyl_night_event.jpg" data-time-label="12:36 AM · Bangalore"
        data-typed="A record fair lands Sunday — the pressings you hunt for, in crates." data-mood="proud" data-dwell="7000" data-question="Plan your dig?">
     <div class="card-image"></div>
     <div class="card-tag">Record fair · Sunday</div>
@@ -1682,7 +1721,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/art_gallery.jpg" data-time-label="12:39 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/art_gallery.jpg" data-time-label="12:39 AM · Bangalore"
        data-typed="The artist you keep saving is teaching this weekend. Small class." data-mood="confident" data-dwell="7000" data-question="Claim a spot?">
     <div class="card-image"></div>
     <div class="card-tag">Workshop · weekend</div>
@@ -1694,7 +1733,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/tea_estate.jpg" data-time-label="12:42 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/tea_estate.jpg" data-time-label="12:42 AM · Bangalore"
        data-typed="It is harvest season at the estate you love. Rare window, going fast." data-mood="proud" data-dwell="7000" data-question="Hold the dates?">
     <div class="card-image"></div>
     <div class="card-tag">Harvest season</div>
@@ -1706,7 +1745,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-center" data-image="images/running_trail.jpg" data-time-label="12:45 AM · Bangalore"
+  <div class="card reveal-after layout-center" data-image="content/images/running_trail.jpg" data-time-label="12:45 AM · Bangalore"
        data-typed="Your pace is race-ready. This 10K runs through your favourite green." data-mood="confident" data-dwell="7000" data-question="Register now?">
     <div class="card-image"></div>
     <div class="card-tag">Race · next month</div>
@@ -1718,7 +1757,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-bl" data-image="images/ayurvedic_wellness.jpg" data-time-label="12:48 AM · Bangalore"
+  <div class="card reveal-after layout-bl" data-image="content/images/ayurvedic_wellness.jpg" data-time-label="12:48 AM · Bangalore"
        data-typed="Your therapist added a weekend couples slot. They go quickly." data-mood="confident" data-dwell="7000" data-question="Book for two?">
     <div class="card-image"></div>
     <div class="card-tag">Couples · weekend</div>
@@ -1730,7 +1769,7 @@
     </div>
   </div>
 
-  <div class="card reveal-after layout-br" data-image="images/monsoon_street.jpg" data-time-label="11:38 AM · Bangalore"
+  <div class="card reveal-after layout-br" data-image="content/images/monsoon_street.jpg" data-time-label="11:38 AM · Bangalore"
        data-typed="This is pakora-and-chai weather if there ever was. Your call how." data-mood="proud" data-dwell="7000" data-question="Get the recipe or the order?">
     <div class="card-image"></div>
     <div class="card-tag">Comfort · tonight</div>
@@ -1822,12 +1861,20 @@
     const cta = card.querySelector('.cta-button');
     if (cta) cta.addEventListener('click', () => {
       const multiGroup = card.querySelector('.pref-tiles[data-multi="true"]');
+      const shopGroup = card.querySelector('.shop-products');
       if (multiGroup) {
         const sel = [...multiGroup.querySelectorAll('.pref-tile.selected:not(.explore-tile)')].map(t=>t.dataset.label||t.dataset.value);
         showAckMulti(sel, () => goNext(true));
+      } else if (shopGroup) {
+        const picks = [...shopGroup.querySelectorAll('.shop-product.selected')].map(t=>t.querySelector('.shop-product-name').textContent);
+        showAckShop(picks, () => goNext(true));
       } else {
         goNext(true);
       }
+    });
+    // Shop product tiles — multi-select, no auto-advance (CTA confirms)
+    card.querySelectorAll('.shop-product').forEach(p => {
+      p.addEventListener('click', () => p.classList.toggle('selected'));
     });
     card.querySelectorAll('.pref-tiles').forEach(group => {
       const isMulti = group.dataset.multi==='true', advance = group.dataset.advanceOnPick==='true';
@@ -1932,6 +1979,17 @@
     if (!labels.length) msg = `No rush — I'll keep showing you a bit of everything.`;
     else if (labels.length===1) msg = `Got it — more ${labels[0]} coming your way.`;
     else { const j = joinLabels(labels.map(l=>({label:l}))); msg = `Love it — ${j}. I'll weave all of that in.`; }
+    prefAckText.textContent = msg;
+    prefAck.classList.add('show'); emitAckSparkles();
+    launchTimers.push(setTimeout(()=>{ prefAck.classList.remove('show'); }, 1950));
+    launchTimers.push(setTimeout(()=>{ if (done) done(); }, 2250));
+  }
+
+  function showAckShop(picks, done){
+    let msg;
+    if (!picks.length) msg = `No worries — I'll keep these saved for whenever you're ready.`;
+    else if (picks.length===1) msg = `Nice pick — the ${picks[0].toLowerCase()} is in your bag.`;
+    else msg = `Great taste — ${picks.length} pieces added to your bag. Want them sent to your phone?`;
     prefAckText.textContent = msg;
     prefAck.classList.add('show'); emitAckSparkles();
     launchTimers.push(setTimeout(()=>{ prefAck.classList.remove('show'); }, 1950));
