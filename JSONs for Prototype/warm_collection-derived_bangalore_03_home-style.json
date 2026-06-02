@@ -1,0 +1,75 @@
+{
+  "name": null,
+  "city": "Bangalore",
+  "user_summary": "New Glance user who skipped the first setup question but chose home/slow-living and style worlds. Sparse but leaning toward cosy interiors and personal style; still early.",
+  "profession": null,
+  "preferences": [
+    "home",
+    "fashion",
+    "wellness"
+  ],
+  "fashion_palette": [],
+  "fashion_brands": [],
+  "venues": [
+    "Home / indoors",
+    "Design & lifestyle spaces"
+  ],
+  "hobbies": [
+    "Home & interiors",
+    "Personal style"
+  ],
+  "occasions": [
+    "Calm evenings at home",
+    "Urban casual"
+  ],
+  "discovery_appetite": "low",
+  "past_activity": [
+    {
+      "action": "saved",
+      "topic": "a cosy reading-nook interior",
+      "category": "Home"
+    },
+    {
+      "action": "liked",
+      "topic": "a styled outfit flatlay",
+      "category": "Fashion"
+    }
+  ],
+  "signals": {
+    "timeOfDay": "night",
+    "weather": "cloudy",
+    "day": "Wednesday"
+  },
+  "data_quality": "sparse",
+  "collected_inputs": {
+    "source": "glance_preference_collection",
+    "onboarding": {
+      "q1_sunday_scenario": "(skipped)",
+      "q2_worlds": [
+        "Beautiful Homes & Slow Living",
+        "Style, Streets & Culture"
+      ],
+      "q3_discovery_appetite": "Keep it familiar"
+    },
+    "in_feed": {
+      "l0_interactions": [
+        {
+          "card": "cosy reading nook",
+          "signal": "save"
+        },
+        {
+          "card": "styled outfit flatlay",
+          "signal": "like"
+        }
+      ],
+      "interstitial_answers": []
+    },
+    "derivation": {
+      "preferences": "Beautiful Homes & Slow Living world -> home, wellness; Style world + liked flatlay -> fashion",
+      "venues": "home/slow-living world + saved interior -> home/indoors, design spaces",
+      "discovery_appetite": "Q3 'Keep it familiar' -> low",
+      "vibe": "Q1 skipped, so vibe is weakly inferred from 'slow living' world only -> calm (low confidence)",
+      "not_collected": "profession, fashion_brands, fashion_palette never asked -> null/empty; Q1 skip means pace/social signal is thin"
+    }
+  }
+}

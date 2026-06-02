@@ -1,0 +1,90 @@
+{
+  "name": null,
+  "city": "Bangalore",
+  "user_summary": "New Glance user who set a calm, slow-living tone in setup and leaned into nature and wellness. Early signals favour quiet escapes, scenic travel and slow mornings.",
+  "profession": null,
+  "preferences": [
+    "travel",
+    "wellness",
+    "food"
+  ],
+  "fashion_palette": [],
+  "fashion_brands": [],
+  "venues": [
+    "Quiet cafes",
+    "Nature spots / parks"
+  ],
+  "hobbies": [
+    "Slow mornings",
+    "Nature & outdoors",
+    "Wellness"
+  ],
+  "occasions": [
+    "Weekend escapes",
+    "Calm evenings at home"
+  ],
+  "discovery_appetite": "high",
+  "past_activity": [
+    {
+      "action": "liked",
+      "topic": "a misty hill-station viewpoint",
+      "category": "Travel"
+    },
+    {
+      "action": "saved",
+      "topic": "a slow-morning coffee ritual",
+      "category": "Food"
+    },
+    {
+      "action": "answered",
+      "topic": "chose 'Calm and winding down' for the evening",
+      "category": "Lifestyle"
+    }
+  ],
+  "signals": {
+    "timeOfDay": "evening",
+    "weather": "rainy",
+    "day": "Sunday"
+  },
+  "data_quality": "sparse",
+  "collected_inputs": {
+    "source": "glance_preference_collection",
+    "onboarding": {
+      "q1_sunday_scenario": "Forest Trail",
+      "q2_worlds": [
+        "Nature Escapes",
+        "Food Stories & Kitchens"
+      ],
+      "q3_discovery_appetite": "Take me somewhere new"
+    },
+    "in_feed": {
+      "l0_interactions": [
+        {
+          "card": "hill-station viewpoint",
+          "signal": "like"
+        },
+        {
+          "card": "slow-morning coffee ritual",
+          "signal": "save"
+        },
+        {
+          "card": "street-food lane",
+          "signal": "skip(fast)"
+        }
+      ],
+      "interstitial_answers": [
+        {
+          "question": "What kind of evening should Glance bring you?",
+          "answer": "Calm and winding down"
+        }
+      ]
+    },
+    "derivation": {
+      "preferences": "Forest Trail + Nature Escapes -> travel, wellness; Food Stories world + saved coffee ritual -> food",
+      "venues": "calm vibe + saved cafe ritual -> quiet cafes, nature spots",
+      "discovery_appetite": "Q3 'Take me somewhere new' -> high",
+      "vibe": "Forest Trail + 'Calm and winding down' interstitial -> slow/calm pace",
+      "not_collected": "profession, fashion_brands, fashion_palette are never asked by the product (taste-not-taxonomy) -> left null/empty"
+    }
+  }
+}

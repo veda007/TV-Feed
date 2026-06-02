@@ -1,0 +1,63 @@
+{
+  "name": null,
+  "city": "Bangalore",
+  "user_summary": "A Bangalore fitness-and-wellness oriented professional — into athleisure, running, healthy cafes and weekend trails, with a clean, performance-led style.",
+  "profession": "Corporate Professional",
+  "preferences": [
+    "fitness",
+    "wellness",
+    "food",
+    "tech"
+  ],
+  "fashion_palette": [
+    "Black",
+    "Grey",
+    "Navy",
+    "Neon accent"
+  ],
+  "fashion_brands": [
+    "Nike",
+    "Adidas",
+    "Decathlon",
+    "HRX"
+  ],
+  "venues": [
+    "Running tracks / parks",
+    "Healthy cafes",
+    "Gyms & studios"
+  ],
+  "hobbies": [
+    "Running",
+    "Fitness",
+    "Healthy eating"
+  ],
+  "occasions": [
+    "Active / training",
+    "Weekend trails",
+    "Casual work"
+  ],
+  "past_activity": [
+    {
+      "action": "clicked",
+      "topic": "running shoe restocks",
+      "category": "Fashion",
+      "count": 3
+    },
+    {
+      "action": "saved",
+      "topic": "a high-protein cafe menu",
+      "category": "Food"
+    },
+    {
+      "action": "browsed",
+      "topic": "a fitness wearable",
+      "category": "Tech"
+    }
+  ],
+  "signals": {
+    "timeOfDay": "morning",
+    "weather": "clear",
+    "day": "Saturday"
+  },
+  "data_quality": "sparse"
+}

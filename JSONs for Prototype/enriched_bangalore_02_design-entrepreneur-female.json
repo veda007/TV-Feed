@@ -1,0 +1,904 @@
+{
+  "demographics": {
+    "age": {
+      "min": 42,
+      "max": 47,
+      "avg": 44,
+      "confidence_score": 0.93
+    },
+    "head": {
+      "value": "long layered dark hair, often in a low bun, subtle greys",
+      "confidence_score": 0.95
+    },
+    "skin": {
+      "value": "well-cared, luminous, mature-smooth",
+      "confidence_score": 0.95
+    },
+    "tone": {
+      "value": "wheatish, warm golden undertones",
+      "confidence_score": 1.0
+    },
+    "gender": {
+      "value": "feminine",
+      "confidence_score": 1.0
+    },
+    "location": {
+      "value": "Bangalore",
+      "confidence_score": 0.96
+    },
+    "profession": {
+      "value": "Founder, boutique design studio",
+      "confidence_score": 0.88
+    },
+    "education_level": {
+      "value": "postgraduate (design/arts)",
+      "confidence_score": 0.8
+    },
+    "income_range": {
+      "min": 6000000,
+      "max": 12000000,
+      "avg": 8500000,
+      "confidence_score": 0.85
+    },
+    "languages_spoken": {
+      "primary": "English",
+      "secondary": [
+        "Hindi",
+        "Kannada",
+        "Tamil"
+      ],
+      "confidence_score": 0.85
+    },
+    "household": {
+      "relationship_status": {
+        "value": "married",
+        "confidence_score": 0.85
+      },
+      "kids": {
+        "has_kids": true,
+        "count": 2,
+        "ages": [
+          12,
+          15
+        ],
+        "genders": [
+          "female",
+          "male"
+        ],
+        "confidence_score": 0.78
+      },
+      "pets": {
+        "has_pets": true,
+        "count": 1,
+        "pet_types": [
+          "dog"
+        ],
+        "confidence_score": 0.6
+      }
+    },
+    "wealth": {
+      "value": "high-net-worth",
+      "category": "Affluent Entrepreneur / Established Professional",
+      "confidence_score": 0.9
+    },
+    "body_type": {
+      "value": "medium build, balanced proportions",
+      "confidence_score": 0.85
+    },
+    "hair": {
+      "color": {
+        "value": "dark brown with natural greys",
+        "confidence_score": 0.9
+      },
+      "length": {
+        "value": "long",
+        "confidence_score": 0.95
+      },
+      "style": {
+        "value": "layered, often tied back",
+        "confidence_score": 0.85
+      }
+    },
+    "height": {
+      "category": "average",
+      "measurement": null,
+      "confidence_score": 0.7
+    },
+    "device_preferences": {
+      "primary": "iPhone (latest)",
+      "secondary": [
+        "iPad Pro",
+        "MacBook"
+      ],
+      "confidence_score": 0.88
+    },
+    "social_media_activity": {
+      "level": "medium",
+      "platforms": [
+        "Instagram",
+        "Pinterest",
+        "WhatsApp"
+      ],
+      "confidence_score": 0.8
+    }
+  },
+  "category_interests": {
+    "primary_category_interests": [
+      {
+        "category": "Contemporary Indian & Fusion Wear",
+        "confidence_score": 0.94,
+        "engagement_ratio": 0.4,
+        "brand_preferences": [
+          "Anita Dongre",
+          "Raw Mango",
+          "Good Earth",
+          "Fabindia",
+          "Nicobar",
+          "Ka-Sha"
+        ],
+        "price_range": {
+          "min": 4500,
+          "max": 95000,
+          "avg": 24000,
+          "currency": "INR",
+          "confidence_score": 0.9
+        }
+      },
+      {
+        "category": "Fine & Statement Jewellery",
+        "confidence_score": 0.9,
+        "engagement_ratio": 0.3,
+        "brand_preferences": [
+          "Amrapali",
+          "Tribe by Amrapali",
+          "Tanishq",
+          "Misho"
+        ],
+        "price_range": {
+          "min": 6000,
+          "max": 250000,
+          "avg": 48000,
+          "currency": "INR",
+          "confidence_score": 0.85
+        }
+      },
+      {
+        "category": "Home Decor & Living",
+        "confidence_score": 0.88,
+        "engagement_ratio": 0.34,
+        "brand_preferences": [
+          "Good Earth",
+          "Nicobar",
+          "The Wishing Chair",
+          "Jaypore"
+        ],
+        "price_range": {
+          "min": 1500,
+          "max": 120000,
+          "avg": 18000,
+          "currency": "INR",
+          "confidence_score": 0.84
+        }
+      }
+    ],
+    "secondary_category_interests": [
+      {
+        "category": "Wellness & Skincare",
+        "parent": "Beauty",
+        "confidence_score": 0.82,
+        "engagement_ratio": 0.2,
+        "brand_preferences": [
+          "Forest Essentials",
+          "Kama Ayurveda",
+          "Tata Harper"
+        ],
+        "price_range": {
+          "min": 1200,
+          "max": 18000,
+          "avg": 5400,
+          "currency": "INR",
+          "confidence_score": 0.78
+        }
+      },
+      {
+        "category": "Sarees (Handloom)",
+        "parent": "Apparel",
+        "confidence_score": 0.85,
+        "engagement_ratio": 0.24,
+        "brand_preferences": [
+          "Raw Mango",
+          "Ekaya",
+          "handloom weavers"
+        ],
+        "price_range": {
+          "min": 8000,
+          "max": 150000,
+          "avg": 38000,
+          "currency": "INR",
+          "confidence_score": 0.8
+        }
+      }
+    ],
+    "categories": [
+      {
+        "path": "Apparel/IndianWear/Anarkali",
+        "confidence_score": 0.9,
+        "engagement_ratio": 0.3,
+        "brand_preferences": [
+          "Anita Dongre",
+          "Raw Mango"
+        ],
+        "price_range": {
+          "min": 12000,
+          "max": 95000,
+          "avg": 36000,
+          "currency": "INR",
+          "confidence_score": 0.88
+        }
+      },
+      {
+        "path": "Home/Decor/Tableware",
+        "confidence_score": 0.86,
+        "engagement_ratio": 0.26,
+        "brand_preferences": [
+          "Good Earth",
+          "Nicobar"
+        ],
+        "price_range": {
+          "min": 1500,
+          "max": 45000,
+          "avg": 9800,
+          "currency": "INR",
+          "confidence_score": 0.85
+        }
+      }
+    ],
+    "interest_evolution": {
+      "long_term_interests": [
+        {
+          "category": "Handloom & Artisanal Textiles",
+          "duration_months": 36,
+          "consistency_score": 0.96
+        },
+        {
+          "category": "Curated Home Living",
+          "duration_months": 24,
+          "consistency_score": 0.93
+        }
+      ],
+      "short_term_interests": [
+        {
+          "category": "Resort/Travel Wear",
+          "duration_months": 2,
+          "intensity_score": 0.8
+        }
+      ],
+      "trending_up": [
+        {
+          "category": "Sustainable Slow Fashion",
+          "growth_rate": 0.4,
+          "confidence_score": 0.82
+        }
+      ],
+      "trending_down": []
+    }
+  },
+  "shopping_behavior": {
+    "purchase_patterns": {
+      "overall": {
+        "min_purchase_value": 1200,
+        "max_purchase_value": 250000,
+        "avg_purchase_value": 22500,
+        "confidence_score": 0.88
+      },
+      "category_specific": [
+        {
+          "category": "Contemporary Indian & Fusion Wear",
+          "min_purchase_value": 4500,
+          "max_purchase_value": 95000,
+          "avg_purchase_value": 24000,
+          "price_segment_preferred": "luxury",
+          "confidence_score": 0.9
+        },
+        {
+          "category": "Fine & Statement Jewellery",
+          "min_purchase_value": 6000,
+          "max_purchase_value": 250000,
+          "avg_purchase_value": 48000,
+          "price_segment_preferred": "luxury",
+          "confidence_score": 0.85
+        }
+      ],
+      "purchase_frequency": {
+        "monthly": {
+          "min": 1,
+          "max": 3,
+          "avg": 2
+        },
+        "weekly": {
+          "min": null,
+          "max": null,
+          "avg": null
+        },
+        "preferred_months": [
+          "festive season",
+          "wedding season"
+        ],
+        "weekday_preferences": [
+          "weekday daytime"
+        ],
+        "time_of_day_preference": "Mid-day to Afternoon",
+        "confidence_score": 0.7
+      }
+    },
+    "brand_preferences": {
+      "brand_loyalty_behavior": "high - loyal to artisanal/heritage labels",
+      "brand_exploration_tendency": 0.45,
+      "preferred_brands": [
+        {
+          "brand": "Good Earth",
+          "interaction_count": 8,
+          "confidence_score": 0.9
+        },
+        {
+          "brand": "Raw Mango",
+          "interaction_count": 7,
+          "confidence_score": 0.88
+        },
+        {
+          "brand": "Anita Dongre",
+          "interaction_count": 6,
+          "confidence_score": 0.85
+        },
+        {
+          "brand": "Forest Essentials",
+          "interaction_count": 5,
+          "confidence_score": 0.82
+        },
+        {
+          "brand": "Amrapali",
+          "interaction_count": 4,
+          "confidence_score": 0.78
+        }
+      ],
+      "avoided_brands": [
+        "fast fashion"
+      ]
+    },
+    "payment_preferences": {
+      "methods": [
+        "credit card",
+        "UPI"
+      ],
+      "buy_now_pay_later_usage": "never",
+      "confidence_score": 0.7
+    },
+    "shopping_channel_preferences": {
+      "primary": "omnichannel",
+      "preferred_platforms": [
+        "brand boutiques",
+        "Jaypore",
+        "Ogaan",
+        "Instagram boutiques"
+      ],
+      "device_usage": {
+        "mobile": "high",
+        "desktop": "medium"
+      },
+      "confidence_score": 0.82
+    },
+    "discount_sensitivity": {
+      "level": "low",
+      "minimum_discount_threshold": null,
+      "promo_code_usage_frequency": "rarely",
+      "confidence_score": 0.7
+    },
+    "return_behavior": {
+      "return_rate": 0.08,
+      "common_return_reasons": [
+        "fit",
+        "colour not as shown"
+      ],
+      "confidence_score": 0.6
+    },
+    "occasion_preferences": [
+      "Festive & Celebrations",
+      "Business / Client Meetings",
+      "Art & Cultural Events",
+      "Fine Dining",
+      "Weddings",
+      "Travel / Resort"
+    ],
+    "surface_preferences": []
+  },
+  "fashion_preferences": {
+    "topwear": {
+      "size_preferences": {
+        "value": "M",
+        "confidence_score": 0.75
+      },
+      "fit_preferences": [
+        "relaxed fit",
+        "draped",
+        "tailored"
+      ],
+      "color_preferences": [
+        "ivory",
+        "indigo",
+        "ochre",
+        "emerald",
+        "terracotta",
+        "deep red",
+        "black"
+      ],
+      "brand_preferences": [
+        {
+          "rank": 1,
+          "brand": "Raw Mango",
+          "total_score": 90,
+          "confidence_score": 0.9,
+          "breakdown": {
+            "physical_fit": 22,
+            "demographic_match": 23,
+            "economic_fit": 22,
+            "lifestyle_alignment": 23
+          }
+        },
+        {
+          "rank": 2,
+          "brand": "Good Earth",
+          "total_score": 86,
+          "confidence_score": 0.88,
+          "breakdown": {
+            "physical_fit": 21,
+            "demographic_match": 22,
+            "economic_fit": 21,
+            "lifestyle_alignment": 22
+          }
+        }
+      ],
+      "price_range": {
+        "min": 4500,
+        "max": 95000,
+        "avg": 24000,
+        "currency": "INR",
+        "confidence_score": 0.9
+      },
+      "material_preferences": [
+        "silk",
+        "chanderi",
+        "handloom cotton",
+        "linen",
+        "mul"
+      ],
+      "style_preferences": [
+        "contemporary Indian",
+        "indo-western fusion",
+        "artisanal",
+        "minimalist luxe"
+      ],
+      "pattern_preferences": [
+        "block print",
+        "floral",
+        "geometric",
+        "solid"
+      ],
+      "texture_preferences": [
+        "handwoven",
+        "silk sheen",
+        "textured cotton"
+      ],
+      "design_details": [
+        "mandarin collar",
+        "kalidar",
+        "asymmetrical hem",
+        "hand embroidery"
+      ],
+      "occasion_styling": [
+        "festive",
+        "work",
+        "art events",
+        "dinners"
+      ],
+      "seasonal_preferences": [
+        "all-season",
+        "festive"
+      ],
+      "neckline_preferences": [
+        "boat neck",
+        "mandarin collar",
+        "v-neck",
+        "round neck"
+      ],
+      "sleeve_preferences": [
+        "full sleeves",
+        "3-4th sleeves",
+        "bell sleeves"
+      ]
+    },
+    "outerwear": {
+      "size_preferences": {
+        "value": null,
+        "confidence_score": null
+      },
+      "fit_preferences": [
+        "structured",
+        "draped",
+        "longline"
+      ],
+      "color_preferences": [
+        "ivory",
+        "charcoal",
+        "deep green",
+        "rust"
+      ],
+      "brand_preferences": [
+        {
+          "rank": 1,
+          "brand": "Fabindia",
+          "total_score": 80,
+          "confidence_score": 0.82,
+          "breakdown": {
+            "physical_fit": 20,
+            "demographic_match": 21,
+            "economic_fit": 20,
+            "lifestyle_alignment": 19
+          }
+        }
+      ],
+      "price_range": {
+        "min": 3500,
+        "max": 28000,
+        "avg": 11000,
+        "currency": "INR",
+        "confidence_score": 0.78
+      },
+      "material_preferences": [
+        "handloom wool",
+        "silk",
+        "quilted cotton",
+        "pashmina"
+      ],
+      "pattern_preferences": [
+        "solid",
+        "ikat",
+        "block print"
+      ],
+      "texture_preferences": [
+        "handwoven",
+        "quilted",
+        "soft wool"
+      ],
+      "design_details": [
+        "longline jacket",
+        "shrug",
+        "Nehru collar",
+        "cape"
+      ],
+      "seasonal_preferences": [
+        "winter",
+        "festive"
+      ],
+      "length_preferences": [
+        "longline",
+        "knee length"
+      ]
+    },
+    "bottomwear": {
+      "size_preferences": {
+        "value": null,
+        "confidence_score": null
+      },
+      "fit_preferences": [
+        "wide leg",
+        "straight palazzo",
+        "tapered"
+      ],
+      "color_preferences": [
+        "ivory",
+        "indigo",
+        "black",
+        "ochre"
+      ],
+      "brand_preferences": [
+        {
+          "rank": 1,
+          "brand": "Nicobar",
+          "total_score": 78,
+          "confidence_score": 0.8,
+          "breakdown": {
+            "physical_fit": 19,
+            "demographic_match": 20,
+            "economic_fit": 20,
+            "lifestyle_alignment": 19
+          }
+        }
+      ],
+      "price_range": {
+        "min": 2500,
+        "max": 22000,
+        "avg": 8500,
+        "currency": "INR",
+        "confidence_score": 0.72
+      },
+      "style_preferences": [
+        "contemporary Indian",
+        "minimalist",
+        "fusion"
+      ],
+      "pattern_preferences": [
+        "solid",
+        "block print"
+      ],
+      "texture_preferences": [
+        "cotton",
+        "silk",
+        "linen"
+      ],
+      "design_details": [
+        "high-rise",
+        "pleated palazzo",
+        "dhoti drape",
+        "elasticated"
+      ],
+      "length_preferences": [
+        "ankle length",
+        "floor length"
+      ],
+      "rise_preferences": [
+        "high-rise",
+        "mid-rise"
+      ]
+    },
+    "footwear": {
+      "size_preferences": {
+        "value": "UK 5",
+        "confidence_score": 0.7
+      },
+      "type_preferences": [
+        "embellished juttis",
+        "block heels",
+        "leather mules",
+        "kolhapuris",
+        "comfort flats"
+      ],
+      "brand_preferences": [
+        {
+          "rank": 1,
+          "brand": "Fizzy Goblet",
+          "total_score": 76,
+          "confidence_score": 0.76,
+          "breakdown": {
+            "physical_fit": 19,
+            "demographic_match": 20,
+            "economic_fit": 18,
+            "lifestyle_alignment": 19
+          }
+        }
+      ],
+      "price_range": {
+        "min": 1800,
+        "max": 18000,
+        "avg": 6500,
+        "currency": "INR",
+        "confidence_score": 0.68
+      },
+      "color_preferences": [
+        "gold",
+        "ivory",
+        "tan",
+        "deep red",
+        "emerald"
+      ],
+      "material_preferences": [
+        "leather",
+        "embroidered fabric",
+        "suede"
+      ],
+      "occasion_styling": [
+        "festive",
+        "work",
+        "dinners",
+        "everyday comfort"
+      ],
+      "fit_preferences": [
+        "block heel",
+        "flat",
+        "low heel"
+      ]
+    },
+    "accessories": {
+      "type_preferences": [
+        "statement earrings",
+        "silver/gold jewellery",
+        "structured tote",
+        "silk scarves",
+        "kantha clutch"
+      ],
+      "brand_preferences": [
+        {
+          "rank": 1,
+          "brand": "Amrapali",
+          "total_score": 84,
+          "confidence_score": 0.85,
+          "breakdown": {
+            "physical_fit": 20,
+            "demographic_match": 22,
+            "economic_fit": 20,
+            "lifestyle_alignment": 22
+          }
+        }
+      ],
+      "price_range": {
+        "min": 2500,
+        "max": 250000,
+        "avg": 32000,
+        "currency": "INR",
+        "confidence_score": 0.7
+      },
+      "material_preferences": [
+        "gold",
+        "silver",
+        "kundan",
+        "pearl",
+        "leather"
+      ],
+      "style_preferences": [
+        "artisanal & statement",
+        "classic & timeless"
+      ],
+      "size_preferences": null
+    }
+  },
+  "lifestyle_preferences": {
+    "health_and_fitness": {
+      "activity_level": "moderately active",
+      "workout_frequency": "3x/week",
+      "fitness_interests": [
+        "yoga",
+        "pilates",
+        "walking"
+      ],
+      "gym_membership_type": "boutique yoga studio",
+      "health_tracking_devices": [
+        "Apple Watch"
+      ],
+      "dietary_preferences": [
+        "vegetarian",
+        "ayurvedic",
+        "organic"
+      ],
+      "sleep_duration": null,
+      "wellness_spending": "high",
+      "confidence_score": 0.85
+    },
+    "travel_patterns": {
+      "annual_trips": null,
+      "trip_duration": null,
+      "booking_window": null,
+      "destination_types": [
+        "heritage/cultural",
+        "luxury resorts",
+        "international"
+      ],
+      "travel_budget": "luxury",
+      "accommodation_preferences": [
+        "heritage hotels",
+        "luxury resorts",
+        "boutique stays"
+      ],
+      "travel_party_size": "family",
+      "solo_travel_frequency": "rare",
+      "confidence_score": 0.85
+    },
+    "food_and_dining": {
+      "restaurant_visits": "regular",
+      "cuisine_preferences": [
+        "fine dining",
+        "regional Indian",
+        "modern Indian",
+        "continental"
+      ],
+      "dietary_restrictions": [
+        "vegetarian"
+      ],
+      "cooking_frequency": "medium",
+      "food_delivery_orders": "medium",
+      "preferred_dining_time": "dinner",
+      "average_meal_spend": "high",
+      "confidence_score": 0.8
+    },
+    "social_life": {
+      "social_outings": "regular",
+      "preferred_venues": [
+        "art galleries",
+        "fine-dining restaurants",
+        "design exhibitions",
+        "private clubs"
+      ],
+      "event_attendance": "regular",
+      "group_size_preference": "intimate gatherings",
+      "social_media_engagement": "curated/aspirational",
+      "confidence_score": 0.85
+    },
+    "financial_habits": {
+      "savings_rate": null,
+      "investment_behavior": "wealth-managed, art & jewellery as assets",
+      "budget_consciousness": "low",
+      "financial_app_usage": [],
+      "discretionary_spending": {
+        "fashion": "high",
+        "home": "high",
+        "wellness": "high"
+      },
+      "financial_goals": [],
+      "confidence_score": 0.85
+    },
+    "hobbies_and_interests": {
+      "categories": [
+        "interior design",
+        "art collecting",
+        "textiles",
+        "yoga",
+        "gardening",
+        "fine dining"
+      ],
+      "time_investment": null,
+      "hobby_spending": "high",
+      "skill_level": null,
+      "confidence_score": 0.82
+    },
+    "social_values": {
+      "environmental_consciousness": "high",
+      "social_causes": [
+        "artisan livelihoods",
+        "sustainable fashion"
+      ],
+      "brand_ethics_importance": "high",
+      "volunteering_frequency": null,
+      "political_engagement": null,
+      "confidence_score": 0.6
+    },
+    "entertainment_preferences": {
+      "streaming_services": [
+        "Netflix",
+        "Prime Video"
+      ],
+      "content_genres": [
+        "documentaries",
+        "world cinema",
+        "design shows"
+      ],
+      "gaming_interest": null,
+      "event_attendance": {
+        "theatre": "very likely",
+        "art_shows": "very likely",
+        "classical_music": "likely"
+      },
+      "entertainment_budget": "high",
+      "confidence_score": 0.7
+    }
+  },
+  "chat_preferences": {
+    "user_summary": "Bangalore design entrepreneur, 44. Devotee of handloom and contemporary Indian-fusion wear, fine jewellery and curated home living. Values artisanal, sustainable labels; low discount sensitivity, high brand loyalty. Yoga, art galleries, fine dining; shops festive and wedding seasons.",
+    "user_intents": [
+      "STYLE_FOCUSED",
+      "OCCASION_FORMAL",
+      "OCCASION_FESTIVE",
+      "DISCOVER_ARTISANAL",
+      "HOME_DECOR"
+    ]
+  },
+  "_metadata": {
+    "total_interactions": 84,
+    "total_impressions": 401,
+    "overall_engagement_ratio": 0.21,
+    "data_quality": "rich",
+    "primary_signal_source": "interactions",
+    "time_windows_used": [
+      "0_1_days",
+      "2_7_days",
+      "8_30_days"
+    ]
+  }
+}
