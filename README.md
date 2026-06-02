@@ -8,18 +8,38 @@ An AI-first ambient screensaver experience for the television. A single AI agent
 
 | File | What it is |
 |---|---|
-| `Glance_TV_Prototype.html` | The working prototype — a single, self-contained HTML file. Open it in a browser. |
-| `Glance_TV_Experience_PRD.md` | The full Product Experience PRD (v3). |
-| `assets/` | All feed visuals, generated via Nano Banana (Gemini 2.5 Flash Image) at 1920×1080. |
-| `L0 Content - NP.xlsx` | Source L0 content reference. |
+| `cold_start.html` | Cold-start user — intro + onboarding + context-only feed (Bangalore, weather, time). |
+| `warm_start.html` | Warm user — recap of past behaviour, then a profile-driven feed. |
+| `enriched.html` | Enriched user — deep profile + VTON on fashion cards. |
+| `content/content_bank.csv` | **The single source of truth** — all content + per-user reasoning (see below). |
+| `content/images/` | All content-bank visuals (1920×1080, generated via Nano Banana). |
+| `profiles/` | The warm + enriched user profiles that drive personalization. |
+| `assets/` | UI / chrome visuals (intro backgrounds, fashion looks, VTON placeholder). |
+| `Glance_TV_Prototype.html` | The earlier all-in-one prototype (kept for reference). |
+| `Glance_TV_Experience_PRD.md` | The full Product Experience PRD. |
 
 ## Running it
 
-No build, no dependencies. Open `Glance_TV_Prototype.html` in any modern browser.
+The three user-state feeds **read `content/content_bank.csv` directly in the browser**, so they must be served over HTTP (browsers block `fetch()` of local files via `file://`). One command, from this folder:
+
+```
+python3 -m http.server 8000
+```
+
+Then open **http://localhost:8000/cold_start.html** (or `warm_start.html` / `enriched.html`).
 
 - **↑ / ↓** — browse the feed at your own pace
 - Leave it idle — the agent auto-plays and types its reasoning
 - Click a preference tile or a **Yes** CTA to advance and shape the feed
+
+## Editing content — one file, no rebuild
+
+`content/content_bank.csv` is the **only** thing to edit. The feeds parse it on every load, so:
+
+1. Edit a row (or add one) in `content/content_bank.csv` — title, subtitle, image, and the three reasoning columns (`cold_reason`, `warm_reason`, `enriched_reason`).
+2. Reload the page. Your change is live. **No JSON to regenerate, no build step.**
+
+To put a new card into a feed, add its `id` to the feed's `GLANCE_FEED_IDS` list near the bottom of the relevant HTML file.
 
 ## The feed
 
