@@ -45,3 +45,27 @@ Images are generated on Vertex AI (`glanceai-prod-5aea`, `gemini-2.5-flash-image
 ## Contributing
 
 This is internal Glance product work. Open a PR or branch for changes; keep the prototype a single self-contained HTML file so it stays double-click runnable.
+
+---
+
+## GTV Feed Intelligence — L1/L2/L3 Reasoning Prototype
+
+A separate demo showing the progression from Cold Start → Warm Start → Enriched Start, with reasoning quality grounded in the Reasoning Copy Pack.
+
+| File | What it is |
+|---|---|
+| `index.html` | Feed intelligence app shell |
+| `css/styles.css` | Styles |
+| `js/app.js` | Feed rendering, layer switching, signals panel |
+| `js/validate.js` | 198 validation checks (runs on load, logs to console) |
+| `data/cards.json` | 22 L0 cards with L1/L2/L3 reasoning copy |
+| `data/profiles.json` | Mock L1/L2/L3 profiles with interaction + household data |
+
+**Run:**
+```bash
+python3 -m http.server 8080
+# open http://localhost:8080
+```
+Requires a local server (`fetch()` for JSON). Not `file://` runnable.
+
+**Intelligence layers:** L1 = context only · L2 = interaction history · L3 = household fit. Card metadata is the what; reasoning is the why.
