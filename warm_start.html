@@ -63,10 +63,12 @@
     padding: 96px 112px; display: flex; flex-direction: column; justify-content: flex-end;
   }
   .card-title {
-    font-size: 84px; font-weight: 600; line-height: 1.0; letter-spacing: -0.035em;
-    max-width: 1100px; color: var(--ink-0); opacity: 0; transform: translateY(18px);
+    font-size: clamp(48px, 4.6vw, 72px); font-weight: 600; line-height: 1.04; letter-spacing: -0.032em;
+    max-width: 17ch; color: var(--ink-0); opacity: 0; transform: translateY(18px); text-wrap: balance;
     transition: opacity 1.1s 0.4s cubic-bezier(0.32,0.72,0,1), transform 1.1s 0.4s cubic-bezier(0.32,0.72,0,1);
   }
+  /* Long action-led headlines auto-shrink a touch so they stay on 2–3 elegant lines */
+  .card-title:not(:empty) { hyphens: none; }
   .card.active .card-title { opacity: 1; transform: translateY(0); }
   .card-sub {
     margin-top: 18px; font-size: 20px; font-weight: 400; color: var(--ink-1);
@@ -207,33 +209,34 @@
   .gen-badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--violet-300); box-shadow: 0 0 8px var(--violet-300); animation: pulseBadge 2.4s ease-in-out infinite; }
   @keyframes pulseBadge { 0%,100% {opacity:1;transform:scale(1);} 50% {opacity:0.45;transform:scale(1.5);} }
 
-  /* ===== SHOP CARD — small product chips inline with the CTA (max 3) ===== */
-  /* CTA row holds the button on the left and product chips to its right */
-  .card.shop-card .card-actions { flex-wrap: wrap; gap: 16px; align-items: center; }
+  /* ===== SHOP CARD — two circular product tiles at the end of the CTA row, price beneath ===== */
+  .card.shop-card .card-actions { flex-wrap: wrap; gap: 18px; align-items: center; }
   .shop-products {
-    display: inline-flex; gap: 12px; align-items: center;
+    display: inline-flex; gap: 18px; align-items: flex-start; margin-left: auto;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.8s cubic-bezier(0.32,0.72,0,1), transform 0.8s cubic-bezier(0.32,0.72,0,1);
   }
   .card.reveal-after.revealed .card-actions .shop-products { opacity: 1; transform: translateY(0); transition-delay: 480ms; }
   .shop-product {
-    display: inline-flex; align-items: center; gap: 10px; cursor: pointer; position: relative;
-    padding: 7px 14px 7px 7px; border-radius: 100px;
-    background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.14);
-    backdrop-filter: blur(24px) saturate(150%); -webkit-backdrop-filter: blur(24px) saturate(150%);
-    transition: transform 0.35s cubic-bezier(0.32,0.72,0,1), border-color 0.3s, box-shadow 0.3s;
+    display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+    cursor: pointer; position: relative; padding: 0; border: none; background: none;
+    transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
   }
-  .shop-product:hover { transform: translateY(-2px); border-color: rgba(216,204,255,0.5); box-shadow: 0 8px 22px rgba(126,104,242,0.35); }
-  .shop-product.selected { border-color: var(--violet-300); box-shadow: 0 0 0 1.5px var(--violet-400), 0 8px 22px rgba(155,134,255,0.45); }
+  .shop-product:hover { transform: translateY(-3px); }
+  .shop-product-img {
+    position: relative; flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%;
+    background-size: cover; background-position: center top; background-color: rgba(155,134,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.22); box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .shop-product:hover .shop-product-img { border-color: rgba(216,204,255,0.6); box-shadow: 0 10px 26px rgba(126,104,242,0.4); }
+  .shop-product.selected .shop-product-img { border-color: var(--violet-300); box-shadow: 0 0 0 2px var(--violet-400), 0 10px 26px rgba(155,134,255,0.5); }
   .shop-product.selected .shop-product-img::after {
     content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: rgba(126,104,242,0.78); color: #fff; font-size: 14px; font-weight: 700; border-radius: 50%;
+    background: rgba(126,104,242,0.78); color: #fff; font-size: 18px; font-weight: 700; border-radius: 50%;
     animation: tilePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
   }
-  .shop-product-img { position: relative; flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; background-size: cover; background-position: center top; background-color: rgba(155,134,255,0.1); }
-  .shop-product-info { display: flex; flex-direction: column; line-height: 1.15; }
-  .shop-product-name { font-size: 13px; font-weight: 500; color: var(--ink-0); letter-spacing: -0.01em; white-space: nowrap; }
-  .shop-product-price { font-size: 12px; font-weight: 500; color: var(--violet-200); font-variant-numeric: tabular-nums; }
+  .shop-product-price { font-size: 13px; font-weight: 600; color: var(--ink-0); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
   /* ===== HERO INTRO — agent front and center ===== */
   .card.hero-intro .card-image {
@@ -450,7 +453,7 @@
 
   /* LAYOUT VARIANCE */
   .card.layout-center .card-content { justify-content: center; align-items: center; text-align: center; }
-  .card.layout-center .card-title { max-width: 1000px; }
+  .card.layout-center .card-title { max-width: 15ch; }
   .card.layout-center .card-sub { max-width: 640px; }
   .card.layout-center .agent-line { justify-content: center; max-width: 800px; }
   .card.layout-center .card-actions { justify-content: center; }
@@ -480,7 +483,7 @@
   <div class="glance-mark">Glance</div>
   <div class="state-badge">WARM START</div>
   <div class="time-mark" id="timeMark">Now</div>
-  <div class="card hero-intro" data-image="content/images/c160.jpg" data-time-label="Welcome back" data-hero-typed="You&#x27;ve shown me a little — smart-casual menswear, a tech leaning, evenings out in the city. Let me build on that." data-dwell="11000" data-question="Pick up where we left off?">
+  <div class="card hero-intro" data-image="content/images/c160.jpg" data-time-label="Welcome back" data-hero-typed="A quick picture of you so far —" data-dwell="11000" data-question="Looks right — show my feed?">
     <div class="card-image"></div>
     <div class="hero-content">
       <div class="hero-mascot"><span class="agent-mascot"></span></div>
@@ -531,7 +534,7 @@
 window.GLANCE_STATE="warm";
 window.GLANCE_CTX={city:"Bangalore", weather:"rainy", day:"Friday", timeOfDay:"evening"};
 window.GLANCE_PROFILE={"name": null, "city": "Bangalore", "user_summary": "A Bangalore tech professional with a smart-casual, modern-urbanite streak — into clean menswear, good coffee, rooftops and the city's tech-culture scene.", "profession": "Tech/Corporate Professional", "preferences": ["fashion", "tech", "social", "food", "culture"], "fashion_palette": ["Light beige", "Ecru", "Off-white", "Black"], "fashion_brands": ["Blackberrys", "Park Avenue", "Wrangler", "Blackberrys"], "venues": ["Urban cafes", "Modern indoor environments with wood accents", "Rooftop terraces"], "hobbies": ["Technology", "Social/Cultural Interest", "Contemporary Urban Fashion"], "occasions": ["Evening social outings", "Business casual work environments", "Urban cultural events", "Rama Navami temple visits"], "past_activity": [{"action": "browsed", "topic": "smart-casual menswear", "category": "Fashion"}, {"action": "clicked", "topic": "a desk-tech upgrade", "category": "Tech", "count": 2}, {"action": "saved", "topic": "a rooftop after-work spot", "category": "Social"}], "signals": {"timeOfDay": "evening", "weather": "rainy", "day": "Friday"}, "data_quality": "sparse"};
-window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", "c163", "c173", "c038", "c165", "c050", "c174", "c164", "c170", "c005", "c176", "c166", "c177", "c178"];
+window.GLANCE_FEED_IDS=["c090", "c161", "c167", "c172", "c162", "c171", "c168", "c003", "c163", "c173", "c038", "c165", "c050", "c174", "c164", "c170", "c005", "c176", "c166", "c177", "c178"];
   // ===== Shared engine (data-driven, profile-personalized) =====
   let cards = document.querySelectorAll('.card');   // mutable — re-rank rebuilds it
   const mascotTemplate = document.getElementById('mascotTemplate');
@@ -561,19 +564,34 @@ window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", 
     return fetch('content/content_bank.csv').then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
       .then(t=>{ const rows=parseCSV(t);
         rows.forEach(r=>{ BANK[r.id]=r;
-          REASONS[r.id]={ tag:(r.subcategory||r.category||'').trim().toLowerCase(), cold:r.cold_reason, warm:r.warm_reason, enr:r.enriched_reason };
+          REASONS[r.id]={ tag:(r.subcategory||r.category||'').trim().toLowerCase(), cold:r.cold_reason, warm:r.warm_reason, enr:r.enriched_reason, ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta };
         });
       });
   }
   // Build a feed card's DOM from a CSV row
   const LAYOUTS=['layout-bl','layout-center','layout-bl','layout-br'];
+  // Two product tiles per fashion card. Prices reflect each user's brand tier.
+  const SHOP_BY_STATE = {
+    cold:     { imgs:['assets/prod_linen_shirt.jpg','assets/prod_sneakers_white.jpg'], prices:['₹3,499','₹5,999'] },
+    warm:     { imgs:['assets/prod_linen_shirt.jpg','assets/prod_sneakers_white.jpg'], prices:['₹2,999','₹4,499'] },
+    enriched: { imgs:['assets/prod_tote_bag.jpg','assets/prod_juttis.jpg'],            prices:['$285','$420'] }
+  };
   function buildFeedCard(row, idx){
     const c=document.createElement('div');
-    c.className='card reveal-after '+LAYOUTS[idx%LAYOUTS.length];
+    const isFashion=(row.category||'').toLowerCase()==='fashion';
+    c.className='card reveal-after '+LAYOUTS[idx%LAYOUTS.length]+(isFashion?' shop-card':'');
     c.dataset.id=row.id; c.dataset.image=row.imageFile; c.dataset.cat=row.category;
     c.dataset.prefs=row.prefs; c.dataset.intent=row.intent; c.dataset.urgency=row.urgency; c.dataset.dwell='9000';
-    const tag = row.subcategory ? `${row.category} · ${row.subcategory}` : row.category;
     const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    // Header always names the subject: Category · Subcategory
+    const tag = row.subcategory ? `${row.category} · ${row.subcategory}` : row.category;
+    let products='';
+    if(isFashion){
+      const shop=SHOP_BY_STATE[STATE]||SHOP_BY_STATE.cold;
+      products='<div class="shop-products">'+shop.imgs.map((img,i)=>
+        `<button class="shop-product" data-value="p${i}"><span class="shop-product-img" style="background-image:url('${img}')"></span><span class="shop-product-price">${shop.prices[i]}</span></button>`
+      ).join('')+'</div>';
+    }
     c.innerHTML =
       '<div class="card-image"></div>'+
       `<div class="card-tag">${esc(tag)}</div>`+
@@ -581,18 +599,86 @@ window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", 
         `<div class="card-title">${esc(row.title)}</div>`+
         (row.subtitle?`<div class="card-sub">${esc(row.subtitle)}</div>`:'')+
         '<div class="agent-line"><span class="typed-text"></span><span class="agent-mascot"></span></div>'+
+        '<div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button>'+products+'</div>'+
+      '</div>';
+    return c;
+  }
+  // Live Bangalore weather — same for everyone (it's a real-world fact, not a preference)
+  const WEATHER = window.GLANCE_WEATHER || { glyph:"🌧️", temp:"23", condition:"Light rain", feels:"25", meta:"Humid · clearing by 9pm" };
+  function buildWeatherCard(){
+    const c=document.createElement('div'); c.className='card weather-card';
+    c.dataset.id='weather'; c.dataset.dwell='9000';
+    c.innerHTML =
+      '<div class="card-image"></div>'+
+      '<div class="weather-content">'+
+        '<div class="weather-lead"><span class="agent-mascot"></span><span class="weather-typed"></span></div>'+
+        `<div class="weather-hero"><span class="weather-glyph">${WEATHER.glyph}</span><span class="weather-temp">${WEATHER.temp}<span class="deg">°</span></span></div>`+
+        `<div class="weather-meta"><span>${WEATHER.condition}</span><span class="sep"></span><span>Feels ${WEATHER.feels}°</span><span class="sep"></span><span>${WEATHER.meta}</span></div>`+
+        '<div class="weather-sub">'+(STATE==='cold'?'Bangalore, right now. The kind of evening that sets the mood for everything below.':'Bangalore, right now — and your feed’s tuned to it.')+'</div>'+
         '<div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div>'+
       '</div>';
     return c;
   }
-  // Inject feed cards from the bank into the stage, after the baked intro/pref cards
+  // Inject feed cards from the bank into the stage, after the baked intro/pref cards.
+  // Audience guard: a card with an 'audience' value only shows to that user state.
   function injectFeed(){
     const stage=document.getElementById('stage');
-    FEED_IDS.forEach((id,idx)=>{ const row=BANK[id]; if(row){ stage.appendChild(buildFeedCard(row, idx)); } });
+    let idx=0;
+    FEED_IDS.forEach((id)=>{
+      if(id==='c090'||id==='weather'){ stage.appendChild(buildWeatherCard()); return; }  // dedicated weather layout
+      const row=BANK[id];
+      if(!row) return;
+      const aud=(row.audience||'').trim().toLowerCase();
+      if(aud && aud!==STATE) return;
+      stage.appendChild(buildFeedCard(row, idx)); idx++;
+    });
   }
 
   function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
-  const CTA_BY_INTENT = { buy:"Add to your bag?", book:"Reserve it?", plan:"Plan it for you?", learn:"Show me how?", inspire:"Save this?" };
+  // CTAs are conversational discovery prompts the agent asks — never a transaction.
+  // We can't actually book/buy, so every CTA offers to explore / understand / get tips
+  // / surface similar things. Keyed by category, with an intent-based fallback.
+  const CTA_BY_CATEGORY = {
+    fashion:      "Want to explore pieces for this look?",
+    food:         "Want more spots like this?",
+    travel:       "Want to explore more getaways like this?",
+    culture:      "Want to discover more like this?",
+    entertainment:"Want more to watch like this?",
+    music:        "Want more in this vibe?",
+    wellness:     "Want tips to ease into this?",
+    fitness:      "Want tips to get started?",
+    home:         "Want more ideas like this?",
+    tech:         "Want to understand this better?",
+    productivity: "Want tips to make it stick?",
+    finance:      "Want to learn more about this?",
+    beauty:       "Want to explore the full routine?",
+    nature:       "Want to explore more like this?",
+    food_drink:   "Want more spots like this?",
+    lifestyle:    "Want to explore more like this?",
+    sports:       "Want more like this?",
+    weekend:      "Want more ways to spend the weekend?",
+    social:       "Want more nights out like this?",
+    books:        "Want more reads like this?",
+    gaming:       "Want more like this to play?",
+    auto:         "Want to understand this better?",
+    pets:         "Want more tips like this?",
+    family:       "Want more ideas for the family?",
+    festival:     "Want more of the season like this?",
+    restaurants:  "Want more spots like this?",
+    architecture: "Want to discover more like this?",
+    luxury:       "Want to explore more like this?",
+    weather:      "Want me to tune tonight to this?"
+  };
+  const CTA_BY_INTENT = {
+    buy:    "Want to explore similar pieces?",
+    book:   "Want to discover more like this?",
+    plan:   "Want ideas to make it yours?",
+    learn:  "Want tips on how to start?",
+    inspire:"Want more like this?"
+  };
+  function ctaFor(cat, intent){
+    return CTA_BY_CATEGORY[(cat||'').toLowerCase()] || CTA_BY_INTENT[intent] || "Want to explore more like this?";
+  }
 
   // ===== LIVE INTEREST MODEL — record interest, re-rank instantly =====
   const IKEY='glance_interests_'+STATE;
@@ -636,7 +722,9 @@ window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", 
     const cat=(card.dataset.cat||'').toLowerCase();
     const intent=card.dataset.intent||'inspire';
     const r = REASONS[id] || {};
-    let reasoning, cta = CTA_BY_INTENT[intent] || "Want this?";
+    // Card-level CTA from the CSV, chosen by state; fall back to the category map.
+    const csvCta = STATE==='cold' ? r.ctaCold : STATE==='warm' ? r.ctaWarm : r.ctaEnr;
+    let reasoning, cta = (csvCta && csvCta.trim()) || ctaFor(cat, intent);
 
     // Per-card specific reasoning, chosen by state. If the user has shown
     // interest in this card's tag, prefer a "because you're into X" line.
@@ -667,14 +755,17 @@ window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", 
     return sum ? `From what I know of you — this fits.` : `Tuned to your taste.`;
   }
 
-  // VTON: on enriched fashion cards, add a "see it on you" tile
+  // VTON: enriched fashion cards link to the real try-on we generated from her photo.
+  // Each look maps to its dedicated VTON image; cards without one get no tile (no placeholders).
+  const VTON_FOR={};
   function addVton(card){
     if (STATE!=='enriched') return;
     if ((card.dataset.cat||'').toLowerCase()!=='fashion') return;
+    const vid=VTON_FOR[card.dataset.id]; if(!vid) return;
     const actions=card.querySelector('.card-actions'); if(!actions||actions.querySelector('.vton')) return;
     const v=document.createElement('div'); v.className='vton';
-    v.innerHTML='<div class="vton-thumb" style="background-image:url(assets/vton_placeholder.jpg)"></div>'+
-      '<div class="vton-text"><div class="vton-title">See it on you</div><div class="vton-meta">Try-on ready · tap to generate</div></div>';
+    v.innerHTML=`<div class="vton-thumb" style="background-image:url(content/images/${vid}.jpg)"></div>`+
+      '<div class="vton-text"><div class="vton-title">See it on you</div><div class="vton-meta">Styled on you</div></div>';
     actions.appendChild(v);
   }
 
@@ -687,6 +778,8 @@ window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", 
     const wimg=card.dataset.wimg; if(wimg) card.querySelector('.card-image').style.setProperty('--wimg',`url("${wimg}")`);
     card.querySelectorAll('.agent-mascot').forEach(m=>m.appendChild(mascotTemplate.content.cloneNode(true)));
     const al=card.querySelector('.agent-line'); if(al) al.classList.add(`mood-${card.dataset.mood||'confident'}`);
+    // Fashion product tiles — tap to select (visual only, no advance)
+    card.querySelectorAll('.shop-product').forEach(p=>p.addEventListener('click',e=>{ e.stopPropagation(); p.classList.toggle('selected'); }));
     const cta=card.querySelector('.cta-button');
     if(cta) cta.addEventListener('click',()=>{ const mg=card.querySelector('.pref-tiles[data-multi="true"]'); if(mg){const sel=[...mg.querySelectorAll('.pref-tile.selected:not(.explore-tile)')].map(t=>t.dataset.label||t.dataset.value);showAckMulti(sel,()=>goNext(true));} else if(card.classList.contains('reveal-after')){ onCardInterest(card); } else { goNext(true); } });
     card.querySelectorAll('.pref-tiles').forEach(group=>{
@@ -732,6 +825,17 @@ window.GLANCE_FEED_IDS=["c161", "c167", "c172", "c162", "c171", "c003", "c168", 
     if(card.classList.contains('reveal-after')){ const {reasoning,cta}=personalize(card); card.dataset.typed=reasoning; const q=card.querySelector('.cta-question'); if(q)q.textContent=cta; addVton(card); }
     if(card.querySelector('.build-list')) animateBuildList(card);
     const finishAuto=()=>{ if(autoMode) scheduleAuto(card); };
+    // weather card — type the lead, then reveal the temperature/metrics
+    const wEl=card.querySelector('.weather-typed');
+    if(wEl){
+      const wtxt = STATE==='cold'
+        ? `Let's start with what's outside — Bangalore right now.`
+        : `Before your picks — here's Bangalore right now.`;
+      const reveal=()=>{ card.classList.add('revealed'); const c=card.querySelector('.cta-button'); if(c){ const q=card.querySelector('.cta-question'); if(q)q.textContent='Tune tonight to the weather?'; c.classList.add('landed'); } };
+      if(typing){ launchTimers.push(setTimeout(()=>typeSlow(wEl,wtxt,()=>{ launchTimers.push(setTimeout(reveal,250)); finishAuto(); }),1000)); }
+      else { setInstant(wEl,wtxt); reveal(); finishAuto(); }
+      return;
+    }
     // hero
     const heroEl=card.querySelector('.hero-typed');
     if(heroEl){ const txt=card.dataset.heroTyped||''; if(typing){ launchTimers.push(setTimeout(()=>typeSlow(heroEl,txt,()=>{const c=card.querySelector('.cta-button'); if(c)launchTimers.push(setTimeout(()=>c.classList.add('landed'),300)); finishAuto();}),1100)); } else { setInstant(heroEl,txt); const c=card.querySelector('.cta-button'); if(c)c.classList.add('landed'); } return; }
