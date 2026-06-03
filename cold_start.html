@@ -571,7 +571,7 @@
 window.GLANCE_STATE="cold";
 window.GLANCE_CTX={city:"Bangalore", weather:"rainy", day:"Friday", timeOfDay:"evening"};
 window.GLANCE_PROFILE=null;
-window.GLANCE_FEED_IDS=["c090", "c073", "c001", "c051", "c005", "c041", "c121", "c050", "c035", "c053", "c011", "c031", "c074", "c046", "c062", "c127", "c003", "c057"];
+window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", "c035", "c053", "c011", "c031", "c074", "c046", "c062", "c127", "c003", "c057"];
   // ===== Shared engine (data-driven, profile-personalized) =====
   let cards = document.querySelectorAll('.card');   // mutable — re-rank rebuilds it
   const mascotTemplate = document.getElementById('mascotTemplate');
@@ -598,7 +598,7 @@ window.GLANCE_FEED_IDS=["c090", "c073", "c001", "c051", "c005", "c041", "c121", 
     const head=rows.shift(); return rows.filter(r=>r.length>1).map(r=>{ const o={}; head.forEach((h,j)=>o[h]=r[j]||''); return o; });
   }
   function loadBank(){
-    return fetch('content/content_bank.csv').then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
+    return fetch('content/content_bank.csv',{cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
       .then(t=>{ const rows=parseCSV(t);
         rows.forEach(r=>{ BANK[r.id]=r;
           REASONS[r.id]={ tag:(r.subcategory||r.category||'').trim().toLowerCase(), cold:r.cold_reason, warm:r.warm_reason, enr:r.enriched_reason, ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta };

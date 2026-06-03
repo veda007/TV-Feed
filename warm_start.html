@@ -561,7 +561,7 @@ window.GLANCE_FEED_IDS=["c090", "c161", "c167", "c172", "c162", "c171", "c168", 
     const head=rows.shift(); return rows.filter(r=>r.length>1).map(r=>{ const o={}; head.forEach((h,j)=>o[h]=r[j]||''); return o; });
   }
   function loadBank(){
-    return fetch('content/content_bank.csv').then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
+    return fetch('content/content_bank.csv',{cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
       .then(t=>{ const rows=parseCSV(t);
         rows.forEach(r=>{ BANK[r.id]=r;
           REASONS[r.id]={ tag:(r.subcategory||r.category||'').trim().toLowerCase(), cold:r.cold_reason, warm:r.warm_reason, enr:r.enriched_reason, ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta };
