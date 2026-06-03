@@ -496,6 +496,11 @@
   .recap-row strong { color:var(--ink-0); font-weight:500; }
   .state-badge { position:absolute; top:64px; left:56px; z-index:5; font-size:10px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--violet-300); }
 </style></head><body>
+<!-- Enriched profile switcher (E1 vs E2) -->
+<div id="profile-switcher" style="position:fixed;top:18px;right:24px;z-index:60;display:flex;gap:6px;padding:5px;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.14);border-radius:100px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
+  <button data-profile="e1" class="profile-btn active" style="padding:6px 14px;font-size:11px;border-radius:100px;border:none;background:rgba(126,104,242,0.4);color:#fff;cursor:pointer;letter-spacing:0.06em;">E1 · Established</button>
+  <button data-profile="e2" class="profile-btn" style="padding:6px 14px;font-size:11px;border-radius:100px;border:none;background:transparent;color:#D8CCFF;cursor:pointer;letter-spacing:0.06em;">E2 · Indie</button>
+</div>
 <div class="stage" id="stage">
   <div class="glance-mark">Glance</div>
   <div class="state-badge">ENRICHED START</div>
@@ -590,10 +595,17 @@ window.GLANCE_FEED_IDS=["c090", "v201", "c150", "c143", "c152", "v202", "c151", 
     const head=rows.shift(); return rows.filter(r=>r.length>1).map(r=>{ const o={}; head.forEach((h,j)=>o[h]=r[j]||''); return o; });
   }
   function loadBank(){
-    return fetch('content/content_bank.csv',{cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
+    return fetch('content_bank_merged.csv',{cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
       .then(t=>{ const rows=parseCSV(t);
         rows.forEach(r=>{ BANK[r.id]=r;
-          REASONS[r.id]={ tag:(r.subcategory||r.category||'').trim().toLowerCase(), cold:r.cold_reason, warm:r.warm_reason, enr:r.enriched_reason, ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta };
+          REASONS[r.id]={
+            tag:(r.subcategory||r.category||'').trim().toLowerCase(),
+            cold:r.cold_reason,
+            warm:r.warm_reason,
+            e1:r.enriched_reason_e1,
+            e2:r.enriched_reason_e2,
+            ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta
+          };
         });
       });
   }
@@ -648,23 +660,78 @@ window.GLANCE_FEED_IDS=["c090", "v201", "c150", "c143", "c152", "v202", "c151", 
       '</div>';
     return c;
   }
+  // ===== Reasoning-quality scorer =====
+  function reasoningScore(row, state){
+    const text = state==='cold'  ? (row.cold_reason||'')
+               : state==='warm'  ? (row.warm_reason||'')
+               : ((window.GLANCE_ENRICHED_PROFILE==='e2') ? (row.enriched_reason_e2||'') : (row.enriched_reason_e1||''));
+    if (!text) return 0;
+    let s = 0;
+    if (/₹\d|\$\d/.test(text)) s += 8;
+    if (/\b(?:Indiranagar|Koramangala|Cubbon|Malleshwaram|Lavelle|UB City|Lalbagh|VV Puram|Brigade Road|Whitefield|Sankey|Sadashivanagar|Cantonment|Ulsoor)\b/i.test(text)) s += 6;
+    if (/\b(?:Naru|CTR|Karavalli|Glen's|Soka|Farmlore|Third Wave|Bflat|NAADAM|Anita Dongre|Good Earth|Raw Mango|Fabindia|Souled Store|Suta|Doodlage|Mia by Tanishq|Rare Rabbit|Bonkers|Forest Essentials|Tata|Garmin|Sony|reMarkable|Nike|Veja|GALLERYSKE|a1000yoga|Bodycraft|Champaca|Atta Galatta|Sunny's|Evolve Back|Hoot|Toit)\b/i.test(text)) s += 6;
+    if (/\b\d{1,3}-(?:year-old|seat|km|minute|hour|day|week)\b/i.test(text)) s += 4;
+    const ctx = window.GLANCE_CTX || {};
+    if (ctx.weather==='rainy' && /\bmonsoon|rain|rainy|cool|wet|drizzl/i.test(text)) s += 4;
+    if (ctx.timeOfDay==='evening' && /\bevening|nightcap|sunset|after work|after-dark/i.test(text)) s += 4;
+    if (ctx.timeOfDay==='morning' && /\bmorning|sunrise|dawn|breakfast\b/i.test(text)) s += 4;
+    if (ctx.timeOfDay==='night'   && /\bnight|late-night|nightcap\b/i.test(text)) s += 4;
+    if (state==='enriched' && (window.GLANCE_ENRICHED_PROFILE||'e1')==='e1') {
+      if (/\b(?:vegetarian|considered|established|premium|refined|family|household|art|craft|design-led|heritage)\b/i.test(text)) s += 5;
+    } else if (state==='enriched' && window.GLANCE_ENRICHED_PROFILE==='e2') {
+      if (/\b(?:flatmate|hostel|indie|grid|aesthetic|junior|rental|sustainable|thrift|budget)\b/i.test(text) || /₹\d{2,3}\b/.test(text)) s += 5;
+    } else if (state==='warm') {
+      if (/\b(?:you opened|you tend|you return|you linger|you spend more time|you go deeper|you usually move past)\b/i.test(text)) s += 5;
+    }
+    const len = text.length;
+    if (len >= 80 && len <= 150) s += 3;
+    else if (len < 60 || len > 170) s -= 2;
+    if (/\b(?:worth a look|your kind of|a Bangalore favourite|tuned to your)\b/i.test(text)) s -= 5;
+    return s;
+  }
+
   // Inject feed cards from the bank into the stage, after the baked intro/pref cards.
   // Audience guard: a card with an 'audience' value only shows to that user state.
+  // Order is determined by reasoning quality + diversity rules.
   function injectFeed(){
     const stage=document.getElementById('stage');
-    // Pull any agent-initiative "offer" cards out of the intro; we re-insert them
-    // a few cards into the feed (data-feed-pos) so they interrupt the flow naturally.
     const offers=[...stage.querySelectorAll('.card.offer')];
     offers.forEach(o=>o.remove());
-    let idx=0;
-    FEED_IDS.forEach((id)=>{
-      if(id==='c090'||id==='weather'){ stage.appendChild(buildWeatherCard()); idx++; return; }  // dedicated weather layout
-      const row=BANK[id];
-      if(!row) return;
-      const aud=(row.audience||'').trim().toLowerCase();
-      if(aud && aud!==STATE) return;
-      stage.appendChild(buildFeedCard(row, idx)); idx++;
+
+    const candidates = FEED_IDS
+      .map(id => (id==='c090'||id==='weather') ? {id, isWeather:true, row:null}
+                                                : {id, isWeather:false, row:BANK[id]})
+      .filter(c => c.isWeather || (c.row && (!(c.row.audience||'').trim() || (c.row.audience||'').trim().toLowerCase()===STATE)));
+
+    candidates.forEach(c => {
+      c.score = c.isWeather ? 999 : reasoningScore(c.row, STATE);
+      c.cat   = c.isWeather ? 'Weather' : (c.row.category||'').trim();
     });
+    candidates.sort((a,b) => b.score - a.score);
+
+    const ordered = [];
+    const seenCount = {};
+    const remaining = [...candidates];
+    while (remaining.length) {
+      let pickIdx = -1;
+      for (let i=0; i<remaining.length; i++) {
+        const c = remaining[i];
+        const lastCat = ordered.length ? ordered[ordered.length-1].cat : null;
+        const top10Count = seenCount[c.cat] || 0;
+        if (c.cat !== lastCat && !(ordered.length < 10 && top10Count >= 2)) { pickIdx = i; break; }
+      }
+      if (pickIdx === -1) pickIdx = 0;
+      const chosen = remaining.splice(pickIdx, 1)[0];
+      ordered.push(chosen);
+      if (ordered.length <= 10) seenCount[chosen.cat] = (seenCount[chosen.cat]||0) + 1;
+    }
+
+    let idx=0;
+    ordered.forEach(c => {
+      if (c.isWeather) { stage.appendChild(buildWeatherCard()); idx++; return; }
+      stage.appendChild(buildFeedCard(c.row, idx)); idx++;
+    });
+
     // Re-insert offer cards at their target feed position (counting feed cards only).
     offers.forEach(o=>{
       const pos=parseInt(o.dataset.feedPos||'5',10);
@@ -734,7 +801,14 @@ window.GLANCE_FEED_IDS=["c090", "v201", "c150", "c143", "c152", "v202", "c151", 
     const tail=all.slice(currentIndex+1).filter(c=>c.classList.contains('reveal-after'));
     if(tail.length<2) return false;
     const score=c=>{ let s=0; cardTags(c).forEach(t=>s+=(INTERESTS[t]||0)); if(c.dataset.urgency==='timely')s+=0.15; return s; };
-    const sorted=[...tail].sort((a,b)=>score(b)-score(a));
+    // Sort by score, then run diversity pass: avoid same-category back-to-back
+    const ranked=[...tail].sort((a,b)=>score(b)-score(a));
+    const sorted=[]; const pool=[...ranked];
+    while(pool.length){
+      let idx = pool.findIndex(c => !sorted.length || (c.dataset.cat||'') !== (sorted[sorted.length-1].dataset.cat||''));
+      if(idx === -1) idx = 0;
+      sorted.push(pool.splice(idx,1)[0]);
+    }
     if(sorted.every((c,i)=>c===tail[i])) return false;      // no change
     const ref=tail[tail.length-1].nextSibling;
     sorted.forEach(c=>stage.insertBefore(c,ref));
@@ -778,9 +852,10 @@ window.GLANCE_FEED_IDS=["c090", "v201", "c150", "c143", "c152", "v202", "c151", 
         ? `More ${r.tag}, like you just showed me.`
         : (r.warm || r.cold || `A pick that fits where your taste is heading.`);
     } else { // enriched
+      const enrText = (window.GLANCE_ENRICHED_PROFILE === 'e2') ? r.e2 : r.e1;
       reasoning = tagInterested
         ? `Doubling down on ${r.tag} — you clearly like it.`
-        : (r.enr || r.warm || r.cold || `Tuned to your taste.`);
+        : (enrText || r.warm || r.cold || `Tuned to your taste.`);
     }
     return {reasoning, cta};
   }
@@ -913,6 +988,33 @@ window.GLANCE_FEED_IDS=["c090", "v201", "c150", "c143", "c152", "v202", "c151", 
   function goPrev(){ currentIndex=Math.max(currentIndex-1,0); showCard(currentIndex,false); pauseAuto(); }
   function pauseAuto(){ autoMode=false; if(autoTimer){clearTimeout(autoTimer);autoTimer=null;} if(idleResumeTimer)clearTimeout(idleResumeTimer); idleResumeTimer=setTimeout(()=>{autoMode=true; showCard(currentIndex,true);},12000); }
   document.addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){e.preventDefault();goNext(true);} if(e.key==='ArrowUp'){e.preventDefault();goPrev();} });
+
+  // ===== E1/E2 profile switcher =====
+  // Default to E1; toggle re-injects the feed with the other profile's reasoning + new ordering.
+  window.GLANCE_ENRICHED_PROFILE = window.GLANCE_ENRICHED_PROFILE || 'e1';
+  document.querySelectorAll('#profile-switcher .profile-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(btn.classList.contains('active')) return;
+      document.querySelectorAll('#profile-switcher .profile-btn').forEach(b=>{
+        const isActive = (b===btn);
+        b.classList.toggle('active', isActive);
+        b.style.background = isActive ? 'rgba(126,104,242,0.4)' : 'transparent';
+        b.style.color      = isActive ? '#fff' : '#D8CCFF';
+      });
+      window.GLANCE_ENRICHED_PROFILE = btn.dataset.profile;
+      // Clear any feed/weather cards that injectFeed produced; keep the baked intro/preference cards intact.
+      document.querySelectorAll('#stage .card.reveal-after, #stage .card.weather-card').forEach(c=>c.remove());
+      // Reset the live interest model so the new profile starts fresh.
+      INTERESTS = {};
+      saveInterests();
+      injectFeed();
+      cards = document.querySelectorAll('.card');
+      currentIndex = 0;
+      // Re-hydrate the freshly injected cards.
+      if(typeof init==='function') init();
+    });
+  });
+
   // Boot: load the CSV (single source of truth), inject the feed, then hydrate + start.
   loadBank().then(()=>{ injectFeed(); init(); })
     .catch(err=>{
