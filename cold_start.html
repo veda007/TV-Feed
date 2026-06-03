@@ -322,6 +322,23 @@
   }
   .pref-content { position: relative; z-index: 2; width: 100%; height: 100%; padding: 70px 112px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+  /* ===== OFFER CARD — agent proposes a task, then reveals "how" tiles on Yes ===== */
+  .offer-content { position: relative; z-index: 2; width: 100%; height: 100%; padding: 70px 112px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .offer-line { display: flex; align-items: center; gap: 18px; font-family: "New York", Georgia, serif;
+    font-size: 40px; font-style: italic; color: var(--violet-100); line-height: 1.25; max-width: 1040px; min-height: 56px; }
+  .offer-typed { display: inline-block; text-align: left; }
+  .offer-line .agent-mascot { transform: scale(1.25); }
+  .offer-line .agent-mascot::before { opacity: 0.85; animation: glyphSpin 5s linear infinite; }
+  .offer-cta { margin-top: 40px; transition: opacity 0.5s ease, transform 0.5s ease, max-height 0.6s ease; }
+  .offer-cta.done { opacity: 0; transform: translateY(-8px); max-height: 0; margin-top: 0; pointer-events: none; overflow: hidden; }
+  /* the "how" block is hidden until Yes */
+  .offer-how { max-height: 0; opacity: 0; overflow: hidden; transition: opacity 0.7s cubic-bezier(0.32,0.72,0,1), max-height 0.8s cubic-bezier(0.32,0.72,0,1); width: 100%; }
+  .offer-how.show { max-height: 720px; opacity: 1; }
+  .offer-how-q { font-family: "New York", Georgia, serif; font-size: 30px; font-style: italic; color: var(--violet-100); line-height: 1.25; }
+  .offer-how .pref-hint { margin-top: 14px; }
+  .offer-how .pref-tiles { margin-top: 36px; grid-template-columns: repeat(3,1fr); max-width: 1080px; margin-left: auto; margin-right: auto; }
   .pref-question { display: flex; align-items: center; gap: 18px; font-family: "New York", Georgia, serif;
     font-size: 38px; font-style: italic; color: var(--violet-100); line-height: 1.2; max-width: 1000px; min-height: 56px;
     opacity: 0; transform: translateY(10px); transition: opacity 0.9s 0.4s cubic-bezier(0.32,0.72,0,1), transform 0.9s 0.4s; }
@@ -530,6 +547,18 @@
     <div class="agent-line"><span class="typed-text"></span><span class="agent-mascot"></span></div>
     <div class="build-list"><div class="build-row pending"><span class="check"></span>Reading Bangalore + weather</div><div class="build-row pending"><span class="check"></span>Matching the time of day</div><div class="build-row pending"><span class="check"></span>Picking broadly-loved gems</div></div>
     <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div></div></div>
+  <div class="card offer" data-time-label="A nudge" data-offer-typed="Not sure what to do with tonight yet? Want me to line something up for you?" data-offer-cta="Yes — sort my evening" data-how-question="What are you in the mood for?" data-group="evening_plan" data-feed-pos="5" data-dwell="11000">
+    <div class="card-image"></div>
+    <div class="offer-content">
+      <div class="offer-line"><span class="offer-typed"></span><span class="agent-mascot"></span></div>
+      <div class="card-actions offer-cta"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div>
+      <div class="offer-how">
+        <div class="offer-how-q">What are you in the mood for?</div>
+        <div class="pref-hint">Pick one</div>
+        <div class="pref-tiles" data-choice-group="evening_plan" data-advance-on-pick="true" data-no-explore="true"><button class="pref-tile" data-value="out" data-label="getting out" style="background-image:url('content/images/c066.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">🍽️</span><div class="pref-tile-title">Get out</div><div class="pref-tile-meta">Food, drinks, a little buzz</div></div></button><button class="pref-tile" data-value="in" data-label="a cosy night in" style="background-image:url('content/images/c127.webp');"><div class="pref-tile-label"><span class="pref-tile-icon">🌙</span><div class="pref-tile-title">Stay in</div><div class="pref-tile-meta">Slow, snug, no plans</div></div></button><button class="pref-tile" data-value="explore" data-label="something new" style="background-image:url('content/images/c041.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">✨</span><div class="pref-tile-title">Try something new</div><div class="pref-tile-meta">Surprise me with the city</div></div></button></div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="scroll-hint">↑ ↓ &nbsp;browse · or let it play</div>
 <div class="pref-ack" id="prefAck"><div class="pref-ack-mascot"><span class="agent-mascot"></span></div><div class="pref-ack-text" id="prefAckText"></div></div>
@@ -660,14 +689,25 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
   // Audience guard: a card with an 'audience' value only shows to that user state.
   function injectFeed(){
     const stage=document.getElementById('stage');
+    // Pull any agent-initiative "offer" cards out of the intro; we re-insert them
+    // a few cards into the feed (data-feed-pos) so they interrupt the flow naturally.
+    const offers=[...stage.querySelectorAll('.card.offer')];
+    offers.forEach(o=>o.remove());
     let idx=0;
     FEED_IDS.forEach((id)=>{
-      if(id==='c090'||id==='weather'){ stage.appendChild(buildWeatherCard()); return; }  // dedicated weather layout
+      if(id==='c090'||id==='weather'){ stage.appendChild(buildWeatherCard()); idx++; return; }  // dedicated weather layout
       const row=BANK[id];
       if(!row) return;
       const aud=(row.audience||'').trim().toLowerCase();
       if(aud && aud!==STATE) return;
       stage.appendChild(buildFeedCard(row, idx)); idx++;
+    });
+    // Re-insert offer cards at their target feed position (counting feed cards only).
+    offers.forEach(o=>{
+      const pos=parseInt(o.dataset.feedPos||'5',10);
+      const feedCards=[...stage.querySelectorAll('.card')].filter(c=>!c.classList.contains('offer'));
+      const anchor=feedCards[pos];   // insert before the card at this index
+      if(anchor) stage.insertBefore(o,anchor); else stage.appendChild(o);
     });
   }
 
@@ -818,7 +858,10 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     // Fashion product tiles — tap to select (visual only, no advance)
     card.querySelectorAll('.shop-product').forEach(p=>p.addEventListener('click',e=>{ e.stopPropagation(); p.classList.toggle('selected'); }));
     const cta=card.querySelector('.cta-button');
-    if(cta) cta.addEventListener('click',()=>{ const mg=card.querySelector('.pref-tiles[data-multi="true"]'); if(mg){const sel=[...mg.querySelectorAll('.pref-tile.selected:not(.explore-tile)')].map(t=>t.dataset.label||t.dataset.value);showAckMulti(sel,()=>goNext(true));} else if(card.classList.contains('reveal-after')){ onCardInterest(card); } else { goNext(true); } });
+    if(cta) cta.addEventListener('click',()=>{
+      // Offer card: "Yes" doesn't advance — it reveals the "how" preference tiles.
+      if(card.classList.contains('offer') && !card.classList.contains('how-open')){ openOfferHow(card); return; }
+      const mg=card.querySelector('.pref-tiles[data-multi="true"]'); if(mg){const sel=[...mg.querySelectorAll('.pref-tile.selected:not(.explore-tile)')].map(t=>t.dataset.label||t.dataset.value);showAckMulti(sel,()=>goNext(true));} else if(card.classList.contains('reveal-after')){ onCardInterest(card); } else { goNext(true); } });
     card.querySelectorAll('.pref-tiles').forEach(group=>{
       const isMulti=group.dataset.multi==='true', adv=group.dataset.advanceOnPick==='true', noExp=group.dataset.noExplore==='true';
       if(!noExp){ group.classList.remove('cols-3'); const real=[...group.querySelectorAll('.pref-tile')].filter(t=>!t.classList.contains('explore-tile')); real.slice(3).forEach(t=>t.remove());
@@ -852,7 +895,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
   function placeCTAInstant(card){ const m=card.querySelector('.agent-line .agent-mascot'),cta=card.querySelector('.cta-button'),dock=card.querySelector('.cta-dock'),L=card.querySelector('.agent-line'); if(!m||!cta||!dock){if(cta)cta.classList.add('landed');return;} cta.classList.add('measuring'); const s=m.getBoundingClientRect(),d=dock.getBoundingClientRect(); cta.classList.remove('measuring'); m.style.transition='none'; m.style.setProperty('--dock-x',`${(d.left+d.width/2)-(s.left+s.width/2)}px`); m.style.setProperty('--dock-y',`${(d.top+d.height/2)-(s.top+s.height/2)}px`); m.classList.add('docked-cta'); L.classList.add('sent'); requestAnimationFrame(()=>{m.style.transition='';}); cta.classList.add('landed'); }
   function animateBuildList(card){ card.querySelectorAll('.build-row').forEach((r,i)=>launchTimers.push(setTimeout(()=>{r.classList.remove('pending');r.classList.add('done');},900+i*700))); }
 
-  function resetCard(card){ const cta=card.querySelector('.cta-button'); if(cta)cta.classList.remove('landed'); const L=card.querySelector('.agent-line'); if(L)L.classList.remove('sent'); const m=card.querySelector('.agent-line .agent-mascot'); if(m){m.style.transition='none';m.classList.remove('docked-cta','is-traveling');requestAnimationFrame(()=>{m.style.transition='';});} const t=card.querySelector('.typed-text'); if(t)t.textContent=''; card.querySelectorAll('.build-row').forEach(r=>{r.classList.add('pending');r.classList.remove('done');}); const pq=card.querySelector('.pref-question'); if(pq)pq.classList.remove('is-typing','asked'); const pt=card.querySelector('.pref-typed'); if(pt)pt.textContent=''; const ph=card.querySelector('.pref-hint'); if(ph)ph.classList.remove('show'); const ptl=card.querySelector('.pref-tiles'); if(ptl)ptl.classList.remove('revealed'); const ht=card.querySelector('.hero-typed'); if(ht)ht.textContent=''; card.classList.remove('revealed'); }
+  function resetCard(card){ const cta=card.querySelector('.cta-button'); if(cta)cta.classList.remove('landed'); const L=card.querySelector('.agent-line'); if(L)L.classList.remove('sent'); const m=card.querySelector('.agent-line .agent-mascot'); if(m){m.style.transition='none';m.classList.remove('docked-cta','is-traveling');requestAnimationFrame(()=>{m.style.transition='';});} const t=card.querySelector('.typed-text'); if(t)t.textContent=''; card.querySelectorAll('.build-row').forEach(r=>{r.classList.add('pending');r.classList.remove('done');}); const pq=card.querySelector('.pref-question'); if(pq)pq.classList.remove('is-typing','asked'); const pt=card.querySelector('.pref-typed'); if(pt)pt.textContent=''; const ph=card.querySelector('.pref-hint'); if(ph)ph.classList.remove('show'); const ptl=card.querySelector('.pref-tiles'); if(ptl)ptl.classList.remove('revealed'); const ht=card.querySelector('.hero-typed'); if(ht)ht.textContent=''; const ot=card.querySelector('.offer-typed'); if(ot)ot.textContent=''; const oh=card.querySelector('.offer-how'); if(oh)oh.classList.remove('show'); const oc=card.querySelector('.offer-cta'); if(oc)oc.classList.remove('done'); card.classList.remove('revealed','how-open'); }
   function dwellFor(card){ return parseInt(card.dataset.dwell||'8000',10); }
 
   function showCard(index, typing){
@@ -876,6 +919,15 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     // hero
     const heroEl=card.querySelector('.hero-typed');
     if(heroEl){ const txt=card.dataset.heroTyped||''; if(typing){ launchTimers.push(setTimeout(()=>typeSlow(heroEl,txt,()=>{const c=card.querySelector('.cta-button'); if(c)launchTimers.push(setTimeout(()=>c.classList.add('landed'),300)); finishAuto();}),1100)); } else { setInstant(heroEl,txt); const c=card.querySelector('.cta-button'); if(c)c.classList.add('landed'); } return; }
+    // offer card — agent proposes a task, mascot lands on Yes; tiles reveal on Yes
+    const oEl=card.querySelector('.offer-typed');
+    if(oEl){
+      const txt=card.dataset.offerTyped||'';
+      const landCta=()=>{ const q=card.querySelector('.offer-cta .cta-question'); if(q)q.textContent=card.dataset.offerCta||'Want me to?'; launchToCTA(card); };
+      if(typing){ launchTimers.push(setTimeout(()=>typeText(oEl,txt,()=>{ launchTimers.push(setTimeout(landCta,500)); finishAuto(); }),1000)); }
+      else { setInstant(oEl,txt); const q=card.querySelector('.offer-cta .cta-question'); if(q)q.textContent=card.dataset.offerCta||'Want me to?'; placeCTAInstant(card); finishAuto(); }
+      return;
+    }
     // pref
     const pEl=card.querySelector('.pref-question .pref-typed');
     if(pEl){ const pq=card.querySelector('.pref-question'),ph=card.querySelector('.pref-hint'),pt=card.querySelector('.pref-tiles'),txt=card.dataset.prefQuestion||''; if(typing){ launchTimers.push(setTimeout(()=>{pq.classList.add('is-typing'); typeSlow(pEl,txt,()=>{pq.classList.remove('is-typing');pq.classList.add('asked'); launchTimers.push(setTimeout(()=>ph&&ph.classList.add('show'),200)); launchTimers.push(setTimeout(()=>pt&&pt.classList.add('revealed'),400));});},1000)); } else { setInstant(pEl,txt); pq.classList.add('asked'); if(ph)ph.classList.add('show'); if(pt)pt.classList.add('revealed'); } return; }
@@ -885,7 +937,15 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     if(typing){ launchTimers.push(setTimeout(()=>typeText(typedEl,text,()=>{ if(isReveal){ launchTimers.push(setTimeout(()=>card.classList.add('revealed'),250)); launchTimers.push(setTimeout(()=>launchToCTA(card),1100)); } else { launchTimers.push(setTimeout(()=>launchToCTA(card),480)); } finishAuto(); }),1100)); }
     else { setInstant(typedEl,text); if(isReveal) card.classList.add('revealed'); placeCTAInstant(card); finishAuto(); }
   }
-  function scheduleAuto(card){ if(!autoMode)return; if(card.querySelector('.pref-tiles'))return; if(autoTimer)clearTimeout(autoTimer); autoTimer=setTimeout(()=>{ if(autoMode) goNext(false,true); }, dwellFor(card)); }
+  // Offer "Yes": acknowledge, collapse the offer line, reveal the "how" tiles.
+  function openOfferHow(card){
+    pauseAuto();
+    card.classList.add('how-open');
+    const cta=card.querySelector('.offer-cta'); if(cta) cta.classList.add('done');
+    if(prefAck){ prefAckText.textContent=`Love it — I'm on it. Just tell me how you'd like it.`; prefAck.classList.add('show'); sparkles(); launchTimers.push(setTimeout(()=>prefAck.classList.remove('show'),1700)); }
+    launchTimers.push(setTimeout(()=>{ const how=card.querySelector('.offer-how'); if(how) how.classList.add('show'); const pt=card.querySelector('.offer-how .pref-tiles'); if(pt) pt.classList.add('revealed'); },650));
+  }
+  function scheduleAuto(card){ if(!autoMode)return; if(card.querySelector('.pref-tiles')||card.classList.contains('offer'))return; if(autoTimer)clearTimeout(autoTimer); autoTimer=setTimeout(()=>{ if(autoMode) goNext(false,true); }, dwellFor(card)); }
   function goNext(manual,auto){ currentIndex=Math.min(currentIndex+1,cards.length-1); showCard(currentIndex, auto===true?true:false); if(manual) pauseAuto(); }
   function goPrev(){ currentIndex=Math.max(currentIndex-1,0); showCard(currentIndex,false); pauseAuto(); }
   function pauseAuto(){ autoMode=false; if(autoTimer){clearTimeout(autoTimer);autoTimer=null;} if(idleResumeTimer)clearTimeout(idleResumeTimer); idleResumeTimer=setTimeout(()=>{autoMode=true; showCard(currentIndex,true);},12000); }
