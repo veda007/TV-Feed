@@ -590,10 +590,17 @@ window.GLANCE_FEED_IDS=["c090", "c161", "c167", "c172", "c162", "c171", "c168", 
     const head=rows.shift(); return rows.filter(r=>r.length>1).map(r=>{ const o={}; head.forEach((h,j)=>o[h]=r[j]||''); return o; });
   }
   function loadBank(){
-    return fetch('content/content_bank.csv',{cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
+    return fetch('content_bank_merged.csv',{cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('csv '+r.status); return r.text(); })
       .then(t=>{ const rows=parseCSV(t);
         rows.forEach(r=>{ BANK[r.id]=r;
-          REASONS[r.id]={ tag:(r.subcategory||r.category||'').trim().toLowerCase(), cold:r.cold_reason, warm:r.warm_reason, enr:r.enriched_reason, ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta };
+          REASONS[r.id]={
+            tag:(r.subcategory||r.category||'').trim().toLowerCase(),
+            cold:r.cold_reason,
+            warm:r.warm_reason,
+            e1:r.enriched_reason_e1,
+            e2:r.enriched_reason_e2,
+            ctaCold:r.cold_cta, ctaWarm:r.warm_cta, ctaEnr:r.enriched_cta
+          };
         });
       });
   }
@@ -648,23 +655,78 @@ window.GLANCE_FEED_IDS=["c090", "c161", "c167", "c172", "c162", "c171", "c168", 
       '</div>';
     return c;
   }
+  // ===== Reasoning-quality scorer =====
+  function reasoningScore(row, state){
+    const text = state==='cold'  ? (row.cold_reason||'')
+               : state==='warm'  ? (row.warm_reason||'')
+               : ((window.GLANCE_ENRICHED_PROFILE==='e2') ? (row.enriched_reason_e2||'') : (row.enriched_reason_e1||''));
+    if (!text) return 0;
+    let s = 0;
+    if (/₹\d|\$\d/.test(text)) s += 8;
+    if (/\b(?:Indiranagar|Koramangala|Cubbon|Malleshwaram|Lavelle|UB City|Lalbagh|VV Puram|Brigade Road|Whitefield|Sankey|Sadashivanagar|Cantonment|Ulsoor)\b/i.test(text)) s += 6;
+    if (/\b(?:Naru|CTR|Karavalli|Glen's|Soka|Farmlore|Third Wave|Bflat|NAADAM|Anita Dongre|Good Earth|Raw Mango|Fabindia|Souled Store|Suta|Doodlage|Mia by Tanishq|Rare Rabbit|Bonkers|Forest Essentials|Tata|Garmin|Sony|reMarkable|Nike|Veja|GALLERYSKE|a1000yoga|Bodycraft|Champaca|Atta Galatta|Sunny's|Evolve Back|Hoot|Toit)\b/i.test(text)) s += 6;
+    if (/\b\d{1,3}-(?:year-old|seat|km|minute|hour|day|week)\b/i.test(text)) s += 4;
+    const ctx = window.GLANCE_CTX || {};
+    if (ctx.weather==='rainy' && /\bmonsoon|rain|rainy|cool|wet|drizzl/i.test(text)) s += 4;
+    if (ctx.timeOfDay==='evening' && /\bevening|nightcap|sunset|after work|after-dark/i.test(text)) s += 4;
+    if (ctx.timeOfDay==='morning' && /\bmorning|sunrise|dawn|breakfast\b/i.test(text)) s += 4;
+    if (ctx.timeOfDay==='night'   && /\bnight|late-night|nightcap\b/i.test(text)) s += 4;
+    if (state==='enriched' && (window.GLANCE_ENRICHED_PROFILE||'e1')==='e1') {
+      if (/\b(?:vegetarian|considered|established|premium|refined|family|household|art|craft|design-led|heritage)\b/i.test(text)) s += 5;
+    } else if (state==='enriched' && window.GLANCE_ENRICHED_PROFILE==='e2') {
+      if (/\b(?:flatmate|hostel|indie|grid|aesthetic|junior|rental|sustainable|thrift|budget)\b/i.test(text) || /₹\d{2,3}\b/.test(text)) s += 5;
+    } else if (state==='warm') {
+      if (/\b(?:you opened|you tend|you return|you linger|you spend more time|you go deeper|you usually move past)\b/i.test(text)) s += 5;
+    }
+    const len = text.length;
+    if (len >= 80 && len <= 150) s += 3;
+    else if (len < 60 || len > 170) s -= 2;
+    if (/\b(?:worth a look|your kind of|a Bangalore favourite|tuned to your)\b/i.test(text)) s -= 5;
+    return s;
+  }
+
   // Inject feed cards from the bank into the stage, after the baked intro/pref cards.
   // Audience guard: a card with an 'audience' value only shows to that user state.
+  // Order is determined by reasoning quality + diversity rules.
   function injectFeed(){
     const stage=document.getElementById('stage');
-    // Pull any agent-initiative "offer" cards out of the intro; we re-insert them
-    // a few cards into the feed (data-feed-pos) so they interrupt the flow naturally.
     const offers=[...stage.querySelectorAll('.card.offer')];
     offers.forEach(o=>o.remove());
-    let idx=0;
-    FEED_IDS.forEach((id)=>{
-      if(id==='c090'||id==='weather'){ stage.appendChild(buildWeatherCard()); idx++; return; }  // dedicated weather layout
-      const row=BANK[id];
-      if(!row) return;
-      const aud=(row.audience||'').trim().toLowerCase();
-      if(aud && aud!==STATE) return;
-      stage.appendChild(buildFeedCard(row, idx)); idx++;
+
+    const candidates = FEED_IDS
+      .map(id => (id==='c090'||id==='weather') ? {id, isWeather:true, row:null}
+                                                : {id, isWeather:false, row:BANK[id]})
+      .filter(c => c.isWeather || (c.row && (!(c.row.audience||'').trim() || (c.row.audience||'').trim().toLowerCase()===STATE)));
+
+    candidates.forEach(c => {
+      c.score = c.isWeather ? 999 : reasoningScore(c.row, STATE);
+      c.cat   = c.isWeather ? 'Weather' : (c.row.category||'').trim();
     });
+    candidates.sort((a,b) => b.score - a.score);
+
+    const ordered = [];
+    const seenCount = {};
+    const remaining = [...candidates];
+    while (remaining.length) {
+      let pickIdx = -1;
+      for (let i=0; i<remaining.length; i++) {
+        const c = remaining[i];
+        const lastCat = ordered.length ? ordered[ordered.length-1].cat : null;
+        const top10Count = seenCount[c.cat] || 0;
+        if (c.cat !== lastCat && !(ordered.length < 10 && top10Count >= 2)) { pickIdx = i; break; }
+      }
+      if (pickIdx === -1) pickIdx = 0;
+      const chosen = remaining.splice(pickIdx, 1)[0];
+      ordered.push(chosen);
+      if (ordered.length <= 10) seenCount[chosen.cat] = (seenCount[chosen.cat]||0) + 1;
+    }
+
+    let idx=0;
+    ordered.forEach(c => {
+      if (c.isWeather) { stage.appendChild(buildWeatherCard()); idx++; return; }
+      stage.appendChild(buildFeedCard(c.row, idx)); idx++;
+    });
+
     // Re-insert offer cards at their target feed position (counting feed cards only).
     offers.forEach(o=>{
       const pos=parseInt(o.dataset.feedPos||'5',10);
@@ -734,7 +796,14 @@ window.GLANCE_FEED_IDS=["c090", "c161", "c167", "c172", "c162", "c171", "c168", 
     const tail=all.slice(currentIndex+1).filter(c=>c.classList.contains('reveal-after'));
     if(tail.length<2) return false;
     const score=c=>{ let s=0; cardTags(c).forEach(t=>s+=(INTERESTS[t]||0)); if(c.dataset.urgency==='timely')s+=0.15; return s; };
-    const sorted=[...tail].sort((a,b)=>score(b)-score(a));
+    // Sort by score, then run diversity pass: avoid same-category back-to-back
+    const ranked=[...tail].sort((a,b)=>score(b)-score(a));
+    const sorted=[]; const pool=[...ranked];
+    while(pool.length){
+      let idx = pool.findIndex(c => !sorted.length || (c.dataset.cat||'') !== (sorted[sorted.length-1].dataset.cat||''));
+      if(idx === -1) idx = 0;
+      sorted.push(pool.splice(idx,1)[0]);
+    }
     if(sorted.every((c,i)=>c===tail[i])) return false;      // no change
     const ref=tail[tail.length-1].nextSibling;
     sorted.forEach(c=>stage.insertBefore(c,ref));
@@ -778,9 +847,10 @@ window.GLANCE_FEED_IDS=["c090", "c161", "c167", "c172", "c162", "c171", "c168", 
         ? `More ${r.tag}, like you just showed me.`
         : (r.warm || r.cold || `A pick that fits where your taste is heading.`);
     } else { // enriched
+      const enrText = (window.GLANCE_ENRICHED_PROFILE === 'e2') ? r.e2 : r.e1;
       reasoning = tagInterested
         ? `Doubling down on ${r.tag} — you clearly like it.`
-        : (r.enr || r.warm || r.cold || `Tuned to your taste.`);
+        : (enrText || r.warm || r.cold || `Tuned to your taste.`);
     }
     return {reasoning, cta};
   }
