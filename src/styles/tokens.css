@@ -1,0 +1,25 @@
+:root {
+  --bg: #010101;
+  --soft-black: #0B0911;
+  --deep-purple-black: #130C2C;
+  --purple-base: #21124B;
+  --surface: #141A3A;
+  --surface-2: #1B2350;
+  --purple: #7047E2;
+  --lavender: #A786E5;
+  --magenta-glow: #C24DFF;
+  --pink-glow: #FF5DA2;
+  --text-primary: #F5F3F7;
+  --text-secondary: #B7B3C0;
+  --text-tertiary: #8B8794;
+  --dim: #5D5968;
+  --cta-surface: #F4F2F7;
+  --cta-text: #111111;
+  --line: rgba(167, 134, 229, 0.16);
+  --focus: #FFFFFF;
+  --r-card: 14px;
+  --r-tile: 12px;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', sans-serif;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
