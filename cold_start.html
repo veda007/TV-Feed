@@ -737,6 +737,12 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   const mascotTemplate = document.getElementById('mascotTemplate');
   const timeMarkEl = document.getElementById('timeMark');
   let currentIndex=0, typingTimers=[], launchTimers=[], autoTimer=null, autoMode=true, idleResumeTimer=null;
+  // Preference-layer keyboard state — declared early so prefKeyHandlers['...'] assignments
+  // (in the vibe + interaction blocks) run after this, never before (avoids TDZ / blank page).
+  let prefMode = "feed";        // "feed" | "vibe-question" | "l1" | "followup"
+  const prefKeyHandlers = {};   // populated by the vibe + interaction blocks; each: (key,e)=>void
+  function setPrefMode(m){ prefMode = m || "feed"; }
+  window.setPrefMode = setPrefMode;   // let later blocks flip mode on open/close
 
   const CTX = window.GLANCE_CTX || {city:"Bangalore", weather:"rainy", day:"Friday", timeOfDay:"evening"};
   const PROFILE = window.GLANCE_PROFILE || null;
@@ -1566,11 +1572,8 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
 
   /* ===== single keyboard dispatcher (feat/preference-collection · merge doc §5) =====
      Exactly ONE keydown listener. Routes by prefMode so the feed never advances
-     underneath an open preference surface. 'feed' mode == her original behaviour. */
-  let prefMode = "feed";   // "feed" | "vibe-question" | "l1" | "followup"
-  const prefKeyHandlers = {};   // populated by Steps 4/7; each: (key,e)=>void
-  function setPrefMode(m){ prefMode = m || "feed"; }
-  window.setPrefMode = setPrefMode;   // let later steps flip mode on open/close
+     underneath an open preference surface. 'feed' mode == her original behaviour.
+     (prefMode / prefKeyHandlers / setPrefMode are declared up with the engine state.) */
   document.addEventListener('keydown',e=>{
     if(prefMode!=="feed"){
       // a preference surface owns the keys; swallow feed-nav so nothing advances underneath
