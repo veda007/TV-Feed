@@ -1356,7 +1356,9 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   function scheduleAuto(card){ if(!autoMode)return; if(card.querySelector('.pref-tiles')||card.classList.contains('offer'))return; if(autoTimer)clearTimeout(autoTimer); autoTimer=setTimeout(()=>{ if(autoMode) goNext(false,true); }, dwellFor(card)); }
   function goNext(manual,auto){ currentIndex=Math.min(currentIndex+1,cards.length-1); showCard(currentIndex, auto===true?true:false); if(manual) pauseAuto(); }
   function goPrev(){ currentIndex=Math.max(currentIndex-1,0); showCard(currentIndex,false); pauseAuto(); }
-  function pauseAuto(){ autoMode=false; if(autoTimer){clearTimeout(autoTimer);autoTimer=null;} if(idleResumeTimer)clearTimeout(idleResumeTimer); idleResumeTimer=setTimeout(()=>{autoMode=true; showCard(currentIndex,true);},12000); }
+  function pauseAuto(){ autoMode=false; if(autoTimer){clearTimeout(autoTimer);autoTimer=null;} if(idleResumeTimer)clearTimeout(idleResumeTimer);
+    // guard: never auto-resume while a preference surface owns the screen (belt-and-suspenders against the timer)
+    idleResumeTimer=setTimeout(()=>{ if(prefMode!=="feed")return; autoMode=true; showCard(currentIndex,true); },12000); }
   /* ===== preference layer: bumpInterestTags adapter (merge doc §6.2 · taxonomy §6) =====
      Mirrors her bumpInterest (line ~863) but takes raw tags instead of a card.
      prefs tokens AND rich tags land in the same INTERESTS store; only prefs match her
@@ -1484,6 +1486,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   }
   function vibeActivate(card){
     const source = VIBE_POOL.find(v=>v.id===card.dataset.id); if(!source) return;
+    if(idleResumeTimer){ clearTimeout(idleResumeTimer); idleResumeTimer=null; }  // don't let idle-resume fire behind this card
     vibeState = { card, source, focus:0, footerFocus:-1, selected:new Set(), timer:null };
     const grid=card.querySelector('.vibe-grid');
     const mh=card.querySelector('.vibe-q .agent-mascot');
@@ -1569,6 +1572,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   let vtonState=null;   // {card, focus} — focus: 0 Continue · 1 Maybe later
   function vtonActivate(card){
     vtonState={card, focus:0};
+    if(idleResumeTimer){ clearTimeout(idleResumeTimer); idleResumeTimer=null; }  // don't resume feed behind vton card
     // (mascot orb is baked into the composed vton_intro.png — no separate element to mount)
     const btns=[...card.querySelectorAll('.vton-btn')];
     btns.forEach((b,i)=>{ if(b.dataset.wired) return; b.dataset.wired='1';
@@ -1643,6 +1647,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   }
   function openL1(card){
     pauseAuto();
+    if(idleResumeTimer){ clearTimeout(idleResumeTimer); idleResumeTimer=null; }  // pauseAuto re-arms it; kill immediately
     const r=(typeof REASONS!=='undefined'&&REASONS[card.dataset.id])||{};
     const title=card.querySelector('.card-title')?card.querySelector('.card-title').textContent:(card.dataset.cat||'More');
     const sub=card.querySelector('.card-sub')?card.querySelector('.card-sub').textContent:'';
@@ -1676,6 +1681,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   function ixToFollowup(){   // exiting L1 → ask one question
     ixLayer.classList.remove('l1'); ixLayer.classList.add('asking');
     ixState.focus=0; ixState.onSkip=false; setPrefMode('followup');
+    if(idleResumeTimer){ clearTimeout(idleResumeTimer); idleResumeTimer=null; }  // belt-and-suspenders
     // 30s backstop — auto-commits whatever's selected (may be nothing → no signal)
     if(ixState.timer) clearTimeout(ixState.timer);
     ixState.timer=setTimeout(()=>ixCommit(), PREF_CONFIG.FOLLOWUP_TIMEOUT_MS);
