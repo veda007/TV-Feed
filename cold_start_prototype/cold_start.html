@@ -11,11 +11,6 @@
     --ink-1: rgba(255,255,255,0.82);
     --ink-2: rgba(255,255,255,0.56);
     --ink-3: rgba(255,255,255,0.36);
-    /* ===== preference-collection additions (feat/preference-collection) ===== */
-    --serif: "New York", Georgia, serif;        /* her existing serif, tokenised */
-    --vibe-tile-radius: 16px;                    /* vibe-question image tiles */
-    --vibe-foc-ring: var(--violet-300);          /* D-pad focus outline on tiles/options */
-    --vibe-sel: var(--violet-500);               /* multi-select picked state */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -500,50 +495,6 @@
   .recap-ic { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--violet-300),var(--violet-600)); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 4px 14px rgba(126,104,242,0.4); }
   .recap-row strong { color:var(--ink-0); font-weight:500; }
   .state-badge { position:absolute; top:64px; left:56px; z-index:5; font-size:10px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--violet-300); }
-  /* ===== vibe-question card type (feat/preference-collection · merge doc §4a) ===== */
-  .card.vibe-question .vibe-wrap { position:absolute; inset:0; z-index:2; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; padding:0 6vw; }
-  .card.vibe-question .vibe-q { display:flex; align-items:center; gap:16px; font-family:var(--serif);
-    font-style:italic; font-weight:400; font-size:clamp(28px,3.4vw,46px); color:var(--ink-0);
-    letter-spacing:-.012em; line-height:1.1; text-align:center; margin-bottom:2.6vh; }
-  .card.vibe-question .vibe-q .agent-mascot { width:34px; height:34px; flex:0 0 auto; }
-  .vibe-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; width:88vw; max-width:1500px; }
-  .vibe-tile { position:relative; aspect-ratio:4/3; border-radius:var(--vibe-tile-radius); overflow:hidden;
-    cursor:pointer; border:2.5px solid transparent; display:flex; flex-direction:column; justify-content:flex-end;
-    opacity:0; transform:translateY(14px) scale(.97);
-    transition:opacity .5s, transform .5s, border-color .25s, box-shadow .28s; }
-  .vibe-grid.revealed .vibe-tile { opacity:1; transform:translateY(0) scale(1); }
-  .vibe-grid.revealed .vibe-tile:nth-child(1){transition-delay:.05s}
-  .vibe-grid.revealed .vibe-tile:nth-child(2){transition-delay:.12s}
-  .vibe-grid.revealed .vibe-tile:nth-child(3){transition-delay:.19s}
-  .vibe-grid.revealed .vibe-tile:nth-child(4){transition-delay:.26s}
-  .vibe-grid.revealed .vibe-tile:nth-child(5){transition-delay:.33s}
-  .vibe-grid.revealed .vibe-tile:nth-child(6){transition-delay:.40s}
-  .vibe-tile .vibe-bg { position:absolute; inset:0; background-size:cover; background-position:center; z-index:0; }
-  .vibe-tile::before { content:""; position:absolute; inset:0; z-index:1;
-    background:linear-gradient(180deg,rgba(7,5,12,.05) 38%,rgba(7,5,12,.86)); }
-  .vibe-tile .vibe-label { position:relative; z-index:2; padding:14px 16px; }
-  .vibe-tile .vibe-tt { font-weight:600; font-size:clamp(15px,1.4vw,20px); line-height:1.15; color:#fff;
-    text-shadow:0 2px 12px rgba(0,0,0,.5); }
-  .vibe-tile .vibe-ts { font-size:clamp(10px,.95vw,12.5px); color:var(--ink-2); margin-top:3px; line-height:1.3; }
-  /* focus (D-pad position) = outline + shimmer — separate from selected */
-  .vibe-tile.foc { border-color:var(--vibe-foc-ring); transform:translateY(0) scale(1.05);
-    box-shadow:0 0 0 3px rgba(181,163,255,.28), 0 26px 70px rgba(0,0,0,.55); }
-  .vibe-tile.foc::after { content:""; position:absolute; top:0; left:-60%; width:50%; height:100%; z-index:3;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,.22),transparent);
-    animation:vibeShimmer 1.5s ease-in-out infinite; pointer-events:none; }
-  @keyframes vibeShimmer { 0%{left:-60%} 60%,100%{left:140%} }
-  /* selected (multi-select) = purple ring + check */
-  .vibe-tile.sel { border-color:var(--vibe-sel); box-shadow:0 0 0 2px var(--violet-400),0 18px 48px rgba(155,134,255,.5); }
-  .vibe-tile.sel.foc { box-shadow:0 0 0 3px var(--vibe-sel),0 26px 70px rgba(0,0,0,.55); }
-  .vibe-tile .vibe-check { position:absolute; top:12px; right:12px; z-index:4; width:28px; height:28px;
-    border-radius:50%; background:var(--vibe-sel); display:flex; align-items:center; justify-content:center;
-    color:#fff; font-size:14px; font-weight:800; transform:scale(0);
-    transition:transform .25s cubic-bezier(.34,1.56,.64,1); box-shadow:0 4px 14px rgba(0,0,0,.4); }
-  .vibe-tile.sel .vibe-check { transform:scale(1); }
-  .card.vibe-question .vibe-hint { margin-top:2.4vh; font-size:13px; letter-spacing:.16em; text-transform:uppercase;
-    color:var(--ink-3); opacity:0; transition:opacity .3s; }
-  .card.vibe-question .vibe-grid.revealed ~ .vibe-hint { opacity:1; }
 </style></head><body>
 <div class="stage" id="stage">
   <div class="glance-mark">Glance</div>
@@ -646,17 +597,6 @@
 
 </template>
 <script>
-/* ===== preference-collection config (feat/preference-collection · merge doc §10) =====
-   One place to tune the preference layer. */
-const PREF_CONFIG = {
-  INTERSTITIAL_EVERY: 10,                              // periodic wide question cadence (§9)
-  FIRST_PICK_ADVANCE_MS: 12000,                        // auto-advance after first selection (§4a)
-  WEIGHTS: { onboarding: 1.5, periodic: 1.0, interaction: 1.0 },  // §6 / taxonomy §6
-  DEEP_INTENTS: ['plan','book','travel','food'],       // CTAs that get the full L1→question flow (§7)
-  // TODO(team §13.5): cadence N confirmed at 10? (alts: 8 / 12)
-  // TODO(team §13.1): onboarding replaces evening+bangalore prefs (assumed) vs add
-  // TODO(team §13.2): interaction flow on DEEP_INTENTS only (assumed) vs every CTA
-};
 window.GLANCE_STATE="cold";
 window.GLANCE_CTX={city:"Bangalore", weather:"rainy", day:"Friday", timeOfDay:"evening"};
 window.GLANCE_PROFILE=null;
@@ -1050,12 +990,6 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
   function showCard(index, typing){
     clearTyping(); clearLaunchers(); if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
     const card=cards[index]; cards.forEach(resetCard); cards.forEach((c,i)=>c.classList.toggle('active',i===index)); setTimeLabel(card);
-    // vibe-question card (preference layer §4a): pause her auto-timer, hand keys to vibe mode.
-    if(card.classList.contains('vibe-question')){
-      if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}   // our 12s-from-first-pick owns advance
-      vibeActivate(card);
-      return;
-    }
     // Inject personalized reasoning + CTA for feed cards
     if(card.classList.contains('reveal-after')){ const {reasoning,cta}=personalize(card); card.dataset.typed=reasoning; const q=card.querySelector('.cta-question'); if(q)q.textContent=cta; addVton(card); }
     if(card.querySelector('.build-list')) animateBuildList(card);
@@ -1104,219 +1038,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
   function goNext(manual,auto){ currentIndex=Math.min(currentIndex+1,cards.length-1); showCard(currentIndex, auto===true?true:false); if(manual) pauseAuto(); }
   function goPrev(){ currentIndex=Math.max(currentIndex-1,0); showCard(currentIndex,false); pauseAuto(); }
   function pauseAuto(){ autoMode=false; if(autoTimer){clearTimeout(autoTimer);autoTimer=null;} if(idleResumeTimer)clearTimeout(idleResumeTimer); idleResumeTimer=setTimeout(()=>{autoMode=true; showCard(currentIndex,true);},12000); }
-  /* ===== preference layer: bumpInterestTags adapter (merge doc §6.2 · taxonomy §6) =====
-     Mirrors her bumpInterest (line ~863) but takes raw tags instead of a card.
-     prefs tokens AND rich tags land in the same INTERESTS store; only prefs match her
-     cards in reRankUpcoming today, rich tags accumulate for gap-targeting + future ranker. */
-  function bumpInterestTags(tags, w){
-    (tags||[]).forEach(t=>{ if(t) INTERESTS[t]=(INTERESTS[t]||0)+w; });
-    saveInterests();
-  }
-
-  /* ===== VIBE_POOL — the 10 vibe cards as a POOL the engine draws ONE from (merge doc §"pool") =====
-     Each option: [title, subline, imageKey, prefs[], rich[]] per SIGNAL_TAXONOMY.md §3.
-     prefs drive ranking (validated against live CSV); rich tags logged in parallel.
-     `axis` powers gap-targeting (§7). Image dir: content/images/vibe-cards/<key>.jpg */
-  const VIBE_IMG_DIR = "content/images/vibe-cards/";
-  const VIBE_POOL = [
-    { id:"vq01", axis:"region", q:"What's your kind of escape?", opts:[
-      ["Misty Coorg homestay","Coffee estates in the fog","q01_o1_coorg-homestay",["travel","hills","calm"],["cat:travel","region:hills","vibe:calm"]],
-      ["Kerala backwaters","Drifting on still water","q01_o2_kerala-backwaters",["travel","calm","nature"],["cat:travel","region:backwaters","vibe:slow"]],
-      ["Goa beach shack","Sand, sun, nowhere to be","q01_o3_goa-beach-shack",["travel","beaches","social"],["cat:travel","region:beach","vibe:social"]],
-      ["New-city street food","Lanes lit up with stalls","q01_o4_streetfood-newcity",["travel","street","food"],["cat:travel","region:city","vibe:lively"]],
-      ["Luxury resort","Poolside, waited on all day","q01_o5_luxury-resort",["travel","luxury","calm"],["cat:travel","aspiration:luxe","vibe:calm"]],
-      ["Hampi heritage","Ancient stone at sunset","q01_o6_hampi-heritage",["travel","heritage","culture"],["cat:travel","region:heritage","vibe:slow"]] ]},
-    { id:"vq02", axis:"vibe-energy", q:"How does a perfect evening wind down?", opts:[
-      ["Rainy coffee & a book","Coffee and rain on the glass","q02_o1_rainy-coffee-book",["calm","cafes"],["vibe:calm","vibe:solo","aesthetic:warm"]],
-      ["Friends cooking","Music on, something cooking","q02_o2_friends-cooking",["social","food","home"],["vibe:social","vibe:cosy"]],
-      ["Buzzy restaurant","Somewhere new to try","q02_o3_buzzy-restaurant",["food","nightlife","social"],["cat:food","vibe:lively","vibe:social"]],
-      ["Rooftop drinks","A slow drink as it lights up","q02_o4_rooftop-drinks",["nightlife","social"],["vibe:lively","aspiration:luxe"]],
-      ["Walk + early night","Fresh air, then early night","q02_o5_evening-walk",["calm","nature","wellness"],["vibe:calm","vibe:slow"]],
-      ["Theatre night","A proper night out","q02_o6_theatre-night",["culture","nightlife"],["cat:culture","vibe:social"]] ]},
-    { id:"vq03", axis:"vibe-pace", q:"Pick a morning that feels like you", opts:[
-      ["Lake loop at sunrise","Out before the city wakes","q03_o1_lake-run-sunrise",["fitness","nature"],["vibe:fast","vibe:solo"]],
-      ["Slow brunch","Eggs in the sun, no rush","q03_o2_slow-brunch",["food","calm","social"],["vibe:slow","vibe:social"]],
-      ["Balcony yoga","Stretch as the sun comes up","q03_o3_balcony-yoga",["wellness","calm"],["cat:wellness","vibe:calm","vibe:solo"]],
-      ["Sunday market","Fresh flowers and morning chai","q03_o4_sunday-market",["culture","social","parks"],["vibe:lively","vibe:social"]],
-      ["Coffee + head start","Ahead of the whole day","q03_o5_coffee-worktop",["productivity","cafes"],["vibe:fast","aesthetic:minimal"]],
-      ["Lazy lie-in","No alarm, nowhere to be","q03_o6_lazy-liein",["calm"],["vibe:slow","vibe:cosy"]] ]},
-    { id:"vq04", axis:"aesthetic", q:"What should your screen become?", opts:[
-      ["Golden hour","Warm light, long shadows","q04_o1_golden-hour",["calm"],["aesthetic:warm","aesthetic:muted","vibe:calm"]],
-      ["Neon city night","Alive and electric","q04_o2_neon-city",["nightlife"],["aesthetic:vivid","aesthetic:cool","vibe:lively"]],
-      ["Misty mountains","Cool, endless and quiet","q04_o3_misty-mountains",["nature","hills","calm"],["aesthetic:cool","aesthetic:muted","vibe:calm"]],
-      ["Candlelit & refined","Dark, rich and intimate","q04_o4_candlelit",["luxury"],["aesthetic:warm","aspiration:luxe","vibe:cosy"]],
-      ["White minimal","Clean, airy and calm","q04_o5_white-minimal",["minimal"],["aesthetic:minimal","aesthetic:cool"]],
-      ["Lantern bazaar","Warm and full of colour","q04_o6_lantern-bazaar",["culture","heritage"],["aesthetic:maximal","aesthetic:vivid","aesthetic:warm"]] ]},
-    { id:"vq05", axis:"aspiration", q:"What's a treat you'd say yes to?", opts:[
-      ["Tasting menu","Course after course, all night","q05_o1_tasting-menu",["food","luxury"],["cat:food","aspiration:luxe"]],
-      ["Street-food crawl","Hands full, no forks","q05_o2_streetfood-crawl",["food","street","social"],["cat:food","aspiration:everyday","vibe:lively"]],
-      ["Spa day","Switched off and restored","q05_o3_spa-day",["wellness","calm","luxury"],["cat:wellness","aspiration:luxe","vibe:calm"]],
-      ["A new gadget","The upgrade you keep eyeing","q05_o4_new-gadget",["tech"],["cat:tech","aspiration:everyday"]],
-      ["Designer piece","The one worth saving for","q05_o5_designer-fashion",["fashion","luxury"],["cat:fashion","aspiration:luxe"]],
-      ["Live match","Floodlights and the roar","q05_o6_live-match",["entertainment","social"],["cat:sport","vibe:social","vibe:lively"]] ]},
-    { id:"vq06", axis:"vibe-mix", q:"Your kind of weekend looks like…", opts:[
-      ["Nandi Hills trek","Dawn above the clouds","q06_o1_nandi-trek",["travel","hills","fitness"],["cat:travel","region:hills","vibe:fast"]],
-      ["Café-hop & shop","Drifting from café to café","q06_o2_cafehop-shop",["cafes","fashion","social"],["vibe:social","aspiration:everyday"]],
-      ["Slow home day","Cooking and a long series","q06_o3_slow-home-day",["home","calm","entertainment"],["vibe:slow","vibe:cosy"]],
-      ["Mysore heritage trip","Palace lit up at dusk","q06_o4_mysore-heritage",["travel","heritage","culture"],["cat:travel","region:heritage"]],
-      ["Spa-and-brunch reset","Steam, then a long brunch","q05_o3_spa-day",["wellness","food","luxury"],["cat:wellness","aspiration:luxe","vibe:calm"]],
-      ["Match with friends","Cheering at the screen","q06_o6_match-friends",["entertainment","social"],["vibe:social","vibe:lively"]] ]},
-    { id:"vq07", axis:"food", q:"Pick a table you'd want to sit at", opts:[
-      ["Darshini breakfast","Idli, hot off the steamer","q07_o1_darshini-breakfast",["food","street"],["cat:food","aspiration:everyday","region:city"]],
-      ["Fine-dining tasting","A candlelit tasting menu","q07_o2_finedining",["food","luxury"],["cat:food","aspiration:luxe","vibe:cosy"]],
-      ["Street-food stall","Sizzling and colourful","q07_o3_streetfood-stall",["food","street","social"],["cat:food","aspiration:everyday","vibe:lively"]],
-      ["Sunny brunch","Shared plates in the sun","q07_o4_sunny-brunch",["food","social","calm"],["cat:food","vibe:social","vibe:slow"]],
-      ["Home-cooked dinner","Made and eaten at home","q07_o5_home-dinner",["food","home","family"],["cat:food","vibe:cosy"]],
-      ["Family feast","A big celebration spread","q07_o6_family-feast",["food","family","social"],["cat:food","vibe:social","aesthetic:maximal"]] ]},
-    { id:"vq08", axis:"wellness", q:"How do you like to recharge?", opts:[
-      ["A walk in Cubbon Park","Green, shady and quiet","q08_o1_cubbon-walk",["parks","nature","calm"],["vibe:calm","vibe:slow"]],
-      ["A spa day","Fully switched off","q08_o2_spa-day-recharge",["wellness","luxury","calm"],["cat:wellness","aspiration:luxe","vibe:calm"]],
-      ["Slow cooking","Something slow on the stove","q08_o3_slow-cooking",["food","home","calm"],["vibe:slow","vibe:cosy"]],
-      ["A weekend escape","Out of the city for a bit","q08_o4_weekend-escape",["travel","roadtrip"],["cat:travel","region:countryside"]],
-      ["A good workout","The kind that gets you buzzing","q08_o5_workout",["fitness"],["cat:wellness","vibe:fast"]],
-      ["Book + quiet evening","A book and a warm lamp","q08_o6_book-evening",["calm"],["vibe:calm","vibe:solo","aesthetic:warm"]] ]},
-    { id:"vq09", axis:"aesthetic", q:"What catches your eye first?", opts:[
-      ["Minimal plant room","One plant, clean lines","q09_o1_minimal-plant",["minimal","home"],["aesthetic:minimal","aesthetic:muted"]],
-      ["Colourful interior","Bold, layered and warm","q09_o2_colourful-interior",["home"],["aesthetic:maximal","aesthetic:vivid","aesthetic:warm"]],
-      ["Matte-black gadget","Sleek, sharp and modern","q09_o3_matteblack-gadget",["tech","minimal"],["aesthetic:sleek","aesthetic:cool"]],
-      ["Earthy textile","Handwoven and warm","q09_o4_earthy-textile",["home","sustainability","heritage"],["aesthetic:warm","aesthetic:muted"]],
-      ["Neon mural","Loud, bright and urban","q09_o5_neon-mural",["culture"],["aesthetic:vivid","aesthetic:cool","vibe:lively"]],
-      ["Candlelit still life","Moody, dark and rich","q09_o6_candlelit-stilllife",["calm"],["aesthetic:warm","aesthetic:muted","vibe:cosy"]] ]},
-    { id:"vq10", axis:"aspiration", q:"What would you splurge a Sunday on?", opts:[
-      ["Degustation lunch","The full tasting experience","q10_o1_degustation",["food","luxury"],["cat:food","aspiration:luxe"]],
-      ["Vineyard day trip","Vines and a glass of wine","q10_o2_vineyard",["travel","luxury","roadtrip"],["cat:travel","aspiration:luxe","region:countryside"]],
-      ["Shopping spree","Bags filling up as you go","q10_o3_shopping-spree",["fashion","luxury"],["cat:fashion","aspiration:luxe"]],
-      ["Art workshop","Hands shaping clay","q10_o4_art-workshop",["culture"],["cat:culture","aspiration:everyday"]],
-      ["Sport all day","Back-to-back live games","q10_o5_sport-allday",["entertainment","social"],["cat:sport","vibe:lively"]],
-      ["Wellness retreat","Greenery, calm and quiet","q10_o6_wellness-retreat",["wellness","luxury","calm"],["cat:wellness","aspiration:luxe","vibe:calm"]] ]},
-  ];
-  const VIBE_AXES = ["region","vibe-energy","vibe-pace","aesthetic","aspiration","vibe-mix","food","wellness"];
-  let vibeShownIds = [];   // ids shown this session (no repeat until pool exhausted)
-
-  // Gap-targeting (§7 / merge §9): pick the not-yet-shown card whose primary axis has the
-  // LOWEST accumulated rich-tag weight in INTERESTS. Cold start (no signal) → Card 1.
-  function pickVibeCard(){
-    const pool = VIBE_POOL.filter(v=>!vibeShownIds.includes(v.id));
-    const live = pool.length ? pool : (vibeShownIds=[], VIBE_POOL);  // exhausted → reset
-    const axisWeight = ax => {
-      // sum INTERESTS over rich tags whose namespace/region matches this axis family
-      let s=0; for(const t in INTERESTS){ if(t.indexOf(':')<0) continue;
-        if(ax==='aesthetic'&&t.startsWith('aesthetic:'))s+=INTERESTS[t];
-        else if(ax==='aspiration'&&t.startsWith('aspiration:'))s+=INTERESTS[t];
-        else if(ax==='region'&&t.startsWith('region:'))s+=INTERESTS[t];
-        else if(ax.indexOf('vibe')===0&&t.startsWith('vibe:'))s+=INTERESTS[t];
-      } return s; };
-    const anySignal = Object.keys(INTERESTS).some(t=>t.indexOf(':')>=0);
-    if(!anySignal){ const c=live.find(v=>v.id==='vq01')||live[0]; return c; }   // cold start → escape/region
-    return live.slice().sort((a,b)=>axisWeight(a.axis)-axisWeight(b.axis))[0];
-  }
-
-  // Build a vibe-question card element (full-stage, her .card lifecycle). source = a VIBE_POOL entry.
-  function buildVibeCard(source, weightKey){
-    const c=document.createElement('div');
-    c.className='card vibe-question';
-    c.dataset.id=source.id; c.dataset.vibe='1'; c.dataset.weightKey=weightKey||'periodic';
-    c.dataset.dwell='999999';   // never auto-advance via her timer; our 12s-from-first-pick owns it
-    const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const tiles=source.opts.map(o=>{
-      const [tt,ts,key]=o;
-      return `<button class="vibe-tile" data-key="${esc(key)}">`+
-        `<span class="vibe-bg" style="background-image:url('${VIBE_IMG_DIR}${esc(key)}.jpg')"></span>`+
-        `<span class="vibe-check">✓</span>`+
-        `<span class="vibe-label"><span class="vibe-tt">${esc(tt)}</span><span class="vibe-ts">${esc(ts)}</span></span>`+
-      `</button>`;
-    }).join('');
-    c.innerHTML =
-      '<div class="card-image"></div>'+
-      '<div class="vibe-wrap">'+
-        `<div class="vibe-q"><span class="agent-mascot"></span><span>${esc(source.q)}</span></div>`+
-        `<div class="vibe-grid">${tiles}</div>`+
-        '<div class="vibe-hint">Pick any that feel like you</div>'+
-      '</div>';
-    return c;
-  }
-
-  // Per-card vibe interaction state (multi-select + single 12s-from-first-pick timer, lifted
-  // from infeed pickOpt §4a). Keyed nav handled by the dispatcher's 'vibe-question' mode.
-  let vibeState = null;   // {card, source, focus, selected:Set, timer}
-  function vibeActivate(card){
-    const source = VIBE_POOL.find(v=>v.id===card.dataset.id); if(!source) return;
-    vibeState = { card, source, focus:0, selected:new Set(), timer:null };
-    const grid=card.querySelector('.vibe-grid');
-    // reveal tiles, wire clicks
-    // clone her mascot into the question line (on-brand, per §3) — once
-    const mh=card.querySelector('.vibe-q .agent-mascot');
-    if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined'){ mh.appendChild(mascotTemplate.content.cloneNode(true)); }
-    grid.classList.remove('revealed');
-    setTimeout(()=>grid.classList.add('revealed'), 350);
-    [...grid.querySelectorAll('.vibe-tile')].forEach((t,i)=>{
-      if(t.dataset.wired) return; t.dataset.wired='1';
-      t.addEventListener('click',()=>{ vibeState.focus=i; vibeToggle(i); vibePaint(); });
-    });
-    vibeState.focus=0; vibePaint();
-    setPrefMode('vibe-question');
-  }
-  function vibePaint(){
-    if(!vibeState) return;
-    const tiles=[...vibeState.card.querySelectorAll('.vibe-tile')];
-    tiles.forEach((t,i)=>{ t.classList.toggle('foc', i===vibeState.focus);
-                           t.classList.toggle('sel', vibeState.selected.has(i)); });
-  }
-  function vibeToggle(i){
-    const s=vibeState.selected;
-    if(s.has(i)) s.delete(i); else s.add(i);
-    // start the advance clock on the FIRST selection; don't restart on later toggles (§4a)
-    if(s.size && !vibeState.timer){ vibeState.timer=setTimeout(()=>vibeCommit(), PREF_CONFIG.FIRST_PICK_ADVANCE_MS); }
-    if(!s.size && vibeState.timer){ clearTimeout(vibeState.timer); vibeState.timer=null; }
-  }
-  function vibeCommit(){
-    if(!vibeState) return;
-    const {card, source, selected, timer}=vibeState;
-    if(timer) clearTimeout(timer);
-    // collect prefs + rich tags from selected options, weighted per placement (§6)
-    const w=PREF_CONFIG.WEIGHTS[card.dataset.weightKey] || 1.0;
-    const tags=[]; const labels=[];
-    [...selected].forEach(i=>{ const o=source.opts[i]; if(!o) return;
-      tags.push(...(o[3]||[])); tags.push(...(o[4]||[])); labels.push(o[0]); });
-    vibeShownIds.push(source.id);
-    vibeState=null;
-    setPrefMode('feed');
-    if(tags.length){ bumpInterestTags(tags, w); reRankUpcoming(); }
-    // her voice ack, then resume her loop
-    if(typeof showAckMulti==='function'){ showAckMulti(labels, ()=>{ autoMode=true; goNext(true); }); }
-    else { autoMode=true; goNext(true); }
-  }
-  // vibe-question key handler (registered with the single dispatcher)
-  prefKeyHandlers['vibe-question'] = (key,e)=>{
-    if(!vibeState) return;
-    const n=vibeState.source.opts.length, COLS=3;
-    if(key==='ArrowRight'){ e.preventDefault(); if(vibeState.focus%COLS<COLS-1 && vibeState.focus+1<n) vibeState.focus++; vibePaint(); }
-    else if(key==='ArrowLeft'){ e.preventDefault(); if(vibeState.focus%COLS>0) vibeState.focus--; vibePaint(); }
-    else if(key==='ArrowDown'){ e.preventDefault(); if(vibeState.focus+COLS<n) vibeState.focus+=COLS; vibePaint(); }
-    else if(key==='ArrowUp'){ e.preventDefault(); if(vibeState.focus-COLS>=0) vibeState.focus-=COLS; vibePaint(); }
-    else if(key==='Enter'||key===' '){ e.preventDefault(); vibeToggle(vibeState.focus); vibePaint(); }
-    else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }   // skip → commit whatever's picked (may be none)
-  };
-
-  /* ===== single keyboard dispatcher (feat/preference-collection · merge doc §5) =====
-     Exactly ONE keydown listener. Routes by prefMode so the feed never advances
-     underneath an open preference surface. 'feed' mode == her original behaviour. */
-  let prefMode = "feed";   // "feed" | "vibe-question" | "l1" | "followup"
-  const prefKeyHandlers = {};   // populated by Steps 4/7; each: (key,e)=>void
-  function setPrefMode(m){ prefMode = m || "feed"; }
-  window.setPrefMode = setPrefMode;   // let later steps flip mode on open/close
-  document.addEventListener('keydown',e=>{
-    if(prefMode!=="feed"){
-      // a preference surface owns the keys; swallow feed-nav so nothing advances underneath
-      const h=prefKeyHandlers[prefMode];
-      if(h){ h(e.key,e); }
-      if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); }  // never fall through to feed nav
-      return;
-    }
-    // ----- feed mode: her original behaviour, unchanged -----
-    if(e.key==='ArrowDown'){e.preventDefault();goNext(true);}
-    if(e.key==='ArrowUp'){e.preventDefault();goPrev();}
-  });
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){e.preventDefault();goNext(true);} if(e.key==='ArrowUp'){e.preventDefault();goPrev();} });
   // Boot: load the CSV (single source of truth), inject the feed, then hydrate + start.
   loadBank().then(()=>{ injectFeed(); init(); })
     .catch(err=>{
