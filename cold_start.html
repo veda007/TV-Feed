@@ -544,6 +544,55 @@
   .card.vibe-question .vibe-hint { margin-top:2.4vh; font-size:13px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--ink-3); opacity:0; transition:opacity .3s; }
   .card.vibe-question .vibe-grid.revealed ~ .vibe-hint { opacity:1; }
+
+  /* ===== interaction follow-up layer (feat/preference-collection · merge doc §7) =====
+     L1 deep panel + bottom follow-up, rendered OVER the active feed card's image (blurred).
+     One shared overlay; her image is never swapped, only blurred (precedence rule). */
+  #ixLayer { position:fixed; inset:0; z-index:60; display:none; }
+  #ixLayer.show { display:block; }
+  #ixScrim { position:absolute; inset:0; background:rgba(7,5,12,.46); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+  .ix-l1 { position:absolute; left:0; right:0; bottom:0; z-index:2; padding:0 6vw 7vh;
+    opacity:0; transform:translateY(22px); transition:opacity .45s, transform .45s; pointer-events:none; }
+  #ixLayer.l1 .ix-l1 { opacity:1; transform:translateY(0); pointer-events:auto; }
+  #ixLayer.asking .ix-l1 { opacity:0; pointer-events:none; }
+  .ix-l1 .ix-kicker { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--violet-300); margin-bottom:12px; }
+  .ix-l1 h2 { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(30px,4vw,56px); line-height:1.04; color:var(--ink-0); max-width:64%; margin-bottom:14px; letter-spacing:-.01em; }
+  .ix-l1 .ix-blurb { font-size:clamp(15px,1.5vw,20px); color:var(--ink-1); max-width:54%; line-height:1.5; margin-bottom:22px; }
+  .ix-facts { display:flex; gap:40px; margin-bottom:26px; }
+  .ix-facts .fact .k { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:5px; }
+  .ix-facts .fact .v { font-size:19px; color:var(--ink-0); font-weight:600; }
+  .ix-l1 .ix-l1cta { display:flex; align-items:center; gap:18px; margin-bottom:14px; }
+  .ix-btn { font:inherit; font-weight:700; font-size:18px; padding:16px 34px; border-radius:999px; border:1px solid transparent;
+    background:linear-gradient(135deg,var(--violet-400),var(--violet-500)); color:#fff; cursor:pointer; transition:.18s; }
+  .ix-btn.foc, .ix-btn:hover { box-shadow:0 0 0 4px rgba(155,134,255,.4); }
+  .ix-ghost { font:inherit; font-size:16px; padding:14px 24px; border-radius:999px; background:rgba(255,255,255,.07);
+    color:var(--ink-1); border:1px solid rgba(255,255,255,.18); cursor:pointer; transition:.18s; }
+  .ix-ghost.foc, .ix-ghost:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
+  .ix-demoNote { font-size:13px; color:var(--ink-3); font-style:italic; }
+  .ix-followup { position:absolute; left:0; right:0; bottom:0; z-index:3; padding:0 6vw 7vh;
+    display:flex; flex-direction:column; align-items:flex-start; opacity:0; transform:translateY(22px);
+    transition:opacity .4s, transform .4s; pointer-events:none; }
+  #ixLayer.asking .ix-followup { opacity:1; transform:translateY(0); pointer-events:auto; }
+  .ix-followup .ix-qctx { display:flex; flex-direction:column; gap:6px; margin-bottom:6px; }
+  .ix-followup .ix-qctx .ck { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--violet-300); }
+  .ix-followup .ix-qctx .ct { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(24px,3vw,42px); line-height:1.05; color:#fff; }
+  .ix-followup .ix-q { display:flex; align-items:center; gap:13px; font-family:var(--serif); font-style:italic;
+    font-size:clamp(20px,2.2vw,30px); color:var(--ink-0); margin:10px 0 4px; }
+  .ix-followup .ix-q .agent-mascot { width:28px; height:28px; flex:0 0 auto; }
+  .ix-followup .ix-qhint { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin-bottom:18px; }
+  .ix-opts { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:min(62vw,820px); }
+  .ix-opt { position:relative; overflow:hidden; font:inherit; font-size:18px; font-weight:600; padding:20px 24px;
+    border-radius:16px; text-align:left; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.18);
+    color:var(--ink-1); cursor:pointer; transition:.18s; }
+  .ix-opt.foc { background:rgba(255,255,255,.08); border-color:var(--violet-300); color:#fff; transform:translateY(-2px);
+    box-shadow:0 0 0 3px rgba(181,163,255,.28); }
+  .ix-opt.foc::after { content:""; position:absolute; top:0; left:-60%; width:50%; height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent); animation:vibeShimmer 1.5s ease-in-out infinite; }
+  .ix-opt.picked { background:linear-gradient(135deg,var(--violet-400),var(--violet-500)); border-color:var(--violet-400); color:#fff; }
+  .ix-opt.picked::after { display:none; }
+  .ix-payoff { display:flex; align-items:center; gap:12px; margin-top:18px; font-family:var(--serif); font-style:italic;
+    font-size:17px; color:var(--violet-100); opacity:0; transition:opacity .3s; }
+  .ix-payoff.show { opacity:1; }
 </style></head><body>
 <div class="stage" id="stage">
   <div class="glance-mark">Glance</div>
@@ -645,6 +694,28 @@
   </svg>
 
 </template>
+<!-- interaction follow-up overlay (feat/preference-collection · merge doc §7) -->
+<div id="ixLayer">
+  <div id="ixScrim"></div>
+  <div class="ix-l1">
+    <div class="ix-kicker" id="ixKicker"></div>
+    <h2 id="ixTitle"></h2>
+    <div class="ix-blurb" id="ixBlurb"></div>
+    <div class="ix-facts" id="ixFacts"></div>
+    <div class="ix-l1cta">
+      <button class="ix-btn" id="ixActBtn"></button>
+      <button class="ix-ghost" id="ixBackBtn">← Back</button>
+    </div>
+    <div class="ix-demoNote">Demo only — nothing will be booked, bought, or sent.</div>
+  </div>
+  <div class="ix-followup">
+    <div class="ix-qctx" id="ixQctx"></div>
+    <div class="ix-q"><span class="agent-mascot"></span><span id="ixQ"></span></div>
+    <div class="ix-qhint">Pick any to fine-tune what you see</div>
+    <div class="ix-opts" id="ixOpts"></div>
+    <div class="ix-payoff" id="ixPayoff"></div>
+  </div>
+</div>
 <script>
 /* ===== preference-collection config (feat/preference-collection · merge doc §10) =====
    One place to tune the preference layer. */
@@ -1057,7 +1128,10 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     if(cta) cta.addEventListener('click',()=>{
       // Offer card: "Yes" doesn't advance — it reveals the "how" preference tiles.
       if(card.classList.contains('offer') && !card.classList.contains('how-open')){ openOfferHow(card); return; }
-      const mg=card.querySelector('.pref-tiles[data-multi="true"]'); if(mg){const sel=[...mg.querySelectorAll('.pref-tile.selected:not(.explore-tile)')].map(t=>t.dataset.label||t.dataset.value);showAckMulti(sel,()=>goNext(true));} else if(card.classList.contains('reveal-after')){ onCardInterest(card); } else { goNext(true); } });
+      const mg=card.querySelector('.pref-tiles[data-multi="true"]'); if(mg){const sel=[...mg.querySelectorAll('.pref-tile.selected:not(.explore-tile)')].map(t=>t.dataset.label||t.dataset.value);showAckMulti(sel,()=>goNext(true));}
+      // deep feed cards open the L1→follow-up flow (§7); everything else keeps her quick ack
+      else if(card.classList.contains('reveal-after') && isDeepCard(card)){ openL1(card); }
+      else if(card.classList.contains('reveal-after')){ onCardInterest(card); } else { goNext(true); } });
     card.querySelectorAll('.pref-tiles').forEach(group=>{
       const isMulti=group.dataset.multi==='true', adv=group.dataset.advanceOnPick==='true', noExp=group.dataset.noExplore==='true';
       if(!noExp){ group.classList.remove('cols-3'); const real=[...group.querySelectorAll('.pref-tile')].filter(t=>!t.classList.contains('explore-tile')); real.slice(3).forEach(t=>t.remove());
@@ -1343,6 +1417,143 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     else if(key==='ArrowUp'){ e.preventDefault(); if(vibeState.focus-COLS>=0) vibeState.focus-=COLS; vibePaint(); }
     else if(key==='Enter'||key===' '){ e.preventDefault(); vibeToggle(vibeState.focus); vibePaint(); }
     else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }   // skip → commit whatever's picked (may be none)
+  };
+
+  /* ===== interaction follow-up layer (feat/preference-collection · merge doc §7 · taxonomy §5) =====
+     Fires when a data-deep feed card's CTA is accepted: L0 (her card) → L1 (deep panel over
+     her blurred image) → ONE auto-derived follow-up question on exit. Non-deep cards keep her
+     quick onCardInterest ack. Options are derived from the card's OWN prefs (most-distinctive). */
+  const TAG_LABEL = {  // prefs token → human-readable "more X" follow-up label
+    travel:"more getaways", hills:"more hill escapes", beaches:"more beach trips",
+    roadtrip:"more road trips", nature:"more nature spots", parks:"more green escapes",
+    food:"more food spots", cafes:"more cafés", street:"more street food",
+    nightlife:"more nights out", social:"more social plans", culture:"more culture",
+    heritage:"more heritage", music:"more live music", entertainment:"more to watch",
+    wellness:"more wellness", fitness:"more fitness", calm:"more calm moments",
+    home:"more home ideas", minimal:"more minimal looks", tech:"more tech",
+    fashion:"more fashion", luxury:"more premium picks", productivity:"more focus tips",
+    family:"more family time", sustainability:"more sustainable picks",
+  };
+  // rarity from Phase-0 counts — lower count = more distinctive, surfaced first
+  const TAG_RARITY = { hills:2,beaches:2,luxury:2,roadtrip:6,street:5,parks:7,cafes:7,nature:7,
+    family:7,social:10,nightlife:12,heritage:12,fitness:12,music:9,sustainability:5 };
+  function deriveFollowupOpts(card){
+    const prefs=(card.dataset.prefs||'').split('|').map(s=>s.trim()).filter(Boolean);
+    const cat=(card.dataset.cat||'').toLowerCase();
+    // most-distinctive-first: sort by rarity (rare first), keep those we can label
+    const ranked=prefs.filter(t=>TAG_LABEL[t]).sort((a,b)=>(TAG_RARITY[a]||50)-(TAG_RARITY[b]||50));
+    const seen=new Set(); const opts=[];
+    ranked.forEach(t=>{ if(seen.has(t)||opts.length>=3) return; seen.add(t);
+      opts.push([TAG_LABEL[t], [t], ['cat:'+(cat||'')]]); });   // [label, prefs[], rich[]]
+    // pad with the category itself if needed
+    if(opts.length<3 && cat && TAG_LABEL[cat] && !seen.has(cat)){ opts.push([TAG_LABEL[cat],[cat],['cat:'+cat]]); seen.add(cat); }
+    // always end with diversify — no positive/negative token, session-only "show me else" (taxonomy §5)
+    opts.push(["Something different", [], [], 'diversify']);
+    return opts.slice(0,4);
+  }
+  function ixFacts(card){
+    // auto-derive 2-3 facts from CSV columns present on the card dataset
+    const f=[]; const sub=card.dataset.cat; const id=card.dataset.id;
+    const r=(typeof REASONS!=='undefined'&&REASONS[id])||{};
+    if(card.dataset.cat) f.push(["Category", card.dataset.cat]);
+    const intent=card.dataset.intent; if(intent) f.push(["You can", intent.charAt(0).toUpperCase()+intent.slice(1)]);
+    if(card.dataset.urgency==='timely') f.push(["When","Right now"]);
+    return f.slice(0,3);
+  }
+  let ixState=null;   // {card, focus, selected:Set, opts, timer, l1focus}
+  const ixLayer=document.getElementById('ixLayer');
+  function isDeepCard(card){
+    const intent=(card.dataset.intent||'').toLowerCase();
+    const cat=(card.dataset.cat||'').toLowerCase();
+    if(card.dataset.deep==='true') return true;
+    return PREF_CONFIG.DEEP_INTENTS.includes(intent) || PREF_CONFIG.DEEP_INTENTS.includes(cat);
+  }
+  function openL1(card){
+    pauseAuto();
+    const r=(typeof REASONS!=='undefined'&&REASONS[card.dataset.id])||{};
+    const title=card.querySelector('.card-title')?card.querySelector('.card-title').textContent:(card.dataset.cat||'More');
+    const sub=card.querySelector('.card-sub')?card.querySelector('.card-sub').textContent:'';
+    // L1 renders over HER image, blurred — never swapped
+    const img=card.dataset.image||'';
+    ixLayer.style.setProperty('--ix-img', img?`url("${img}")`:'none');
+    document.getElementById('ixScrim').style.backgroundImage = img?`url("${img}")`:'none';
+    document.getElementById('ixScrim').style.backgroundSize='cover';
+    document.getElementById('ixScrim').style.backgroundPosition='center';
+    document.getElementById('ixKicker').textContent=(card.dataset.cat||'')+(card.querySelector('.card-tag')?'':'');
+    document.getElementById('ixTitle').textContent=title;
+    document.getElementById('ixBlurb').textContent=sub || r.cold || 'A closer look at this pick.';
+    const facts=document.getElementById('ixFacts'); facts.innerHTML='';
+    ixFacts(card).forEach(([k,v])=>{const d=document.createElement('div');d.className='fact';d.innerHTML=`<div class="k">${k}</div><div class="v">${v}</div>`;facts.appendChild(d);});
+    const ctaText=card.querySelector('.cta-question')?card.querySelector('.cta-question').textContent:'Explore this';
+    document.getElementById('ixActBtn').textContent=ctaText||'Explore this';
+    // follow-up content (revealed on exit)
+    const opts=deriveFollowupOpts(card);
+    document.getElementById('ixQctx').innerHTML=`<span class="ck">${(card.dataset.cat||'')}</span><span class="ct">${title}</span>`;
+    document.getElementById('ixQ').textContent='Would you like more of this?';
+    const optsEl=document.getElementById('ixOpts'); optsEl.innerHTML='';
+    opts.forEach((o,i)=>{ const b=document.createElement('button'); b.className='ix-opt'; b.textContent=o[0];
+      b.onclick=()=>{ ixState.focus=i; ixPickOpt(i); }; optsEl.appendChild(b); });
+    // clone mascot into the question line once
+    const mh=document.querySelector('.ix-followup .agent-mascot');
+    if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined') mh.appendChild(mascotTemplate.content.cloneNode(true));
+    ixState={card, focus:0, l1focus:0, selected:new Set(), opts, timer:null};
+    ixLayer.classList.add('show','l1'); ixLayer.classList.remove('asking');
+    setPrefMode('l1'); ixPaint();
+  }
+  function ixToFollowup(){   // exiting L1 → ask one question
+    ixLayer.classList.remove('l1'); ixLayer.classList.add('asking');
+    ixState.focus=0; setPrefMode('followup'); ixPaint();
+  }
+  function ixPickOpt(i){
+    const o=ixState.opts[i]; const btn=document.getElementById('ixOpts').children[i];
+    btn.classList.toggle('picked');
+    const sel=ixState.selected; if(sel.has(i)) sel.delete(i); else sel.add(i);
+    // payoff (live)
+    const p=document.getElementById('ixPayoff');
+    if(sel.size){ const labels=[...sel].map(j=>ixState.opts[j][0]); p.textContent='More of that coming up — '+labels.join(', ')+'.'; p.classList.add('show'); }
+    else p.classList.remove('show');
+    // 12s-from-first-pick (§4a/§7)
+    if(sel.size && !ixState.timer){ ixState.timer=setTimeout(()=>ixCommit(), PREF_CONFIG.FIRST_PICK_ADVANCE_MS); }
+    if(!sel.size && ixState.timer){ clearTimeout(ixState.timer); ixState.timer=null; }
+  }
+  function ixPaint(){
+    document.querySelectorAll('#ixLayer .foc').forEach(e=>e.classList.remove('foc'));
+    if(prefMode==='l1'){ const items=[document.getElementById('ixActBtn'),document.getElementById('ixBackBtn')]; items[ixState.l1focus]?.classList.add('foc'); }
+    else if(prefMode==='followup'){ const opts=[...document.getElementById('ixOpts').children]; opts[ixState.focus]?.classList.add('foc'); opts.forEach((b,i)=>b.classList.toggle('picked',ixState.selected.has(i))); }
+  }
+  function ixClose(){ ixLayer.classList.remove('show','l1','asking'); }
+  function ixCommit(){
+    if(!ixState) return;
+    const {card, selected, opts, timer}=ixState;
+    if(timer) clearTimeout(timer);
+    const w=PREF_CONFIG.WEIGHTS.interaction;
+    const tags=[]; const labels=[]; let diversify=false;
+    [...selected].forEach(i=>{ const o=opts[i]; if(!o) return;
+      if(o[3]==='diversify'){ diversify=true; return; }   // no durable token (taxonomy §5)
+      tags.push(...(o[1]||[])); tags.push(...(o[2]||[])); labels.push(o[0]); });
+    ixState=null; ixClose(); setPrefMode('feed');
+    if(tags.length){ bumpInterestTags(tags, w); reRankUpcoming(); }
+    if(typeof showAckMulti==='function'){ showAckMulti(labels, ()=>{ autoMode=true; goNext(true); }); }
+    else { autoMode=true; goNext(true); }
+  }
+  document.getElementById('ixActBtn').onclick=()=>{ ixToFollowup(); };   // demo action → straight to the question
+  document.getElementById('ixBackBtn').onclick=()=>{ ixToFollowup(); };  // Back also asks once on the way out
+  prefKeyHandlers['l1']=(key,e)=>{
+    if(!ixState) return;
+    if(key==='ArrowRight'){e.preventDefault(); ixState.l1focus=Math.min(1,ixState.l1focus+1); ixPaint();}
+    else if(key==='ArrowLeft'){e.preventDefault(); ixState.l1focus=Math.max(0,ixState.l1focus-1); ixPaint();}
+    else if(key==='Enter'||key===' '){e.preventDefault(); [document.getElementById('ixActBtn'),document.getElementById('ixBackBtn')][ixState.l1focus].click();}
+    else if(key==='Backspace'){e.preventDefault(); ixToFollowup();}
+  };
+  prefKeyHandlers['followup']=(key,e)=>{
+    if(!ixState) return;
+    const n=ixState.opts.length, COLS=2;
+    if(key==='ArrowRight'){e.preventDefault(); if(ixState.focus%COLS<COLS-1 && ixState.focus+1<n) ixState.focus++; ixPaint();}
+    else if(key==='ArrowLeft'){e.preventDefault(); if(ixState.focus%COLS>0) ixState.focus--; ixPaint();}
+    else if(key==='ArrowDown'){e.preventDefault(); if(ixState.focus+COLS<n) ixState.focus+=COLS; ixPaint();}
+    else if(key==='ArrowUp'){e.preventDefault(); if(ixState.focus-COLS>=0) ixState.focus-=COLS; ixPaint();}
+    else if(key==='Enter'||key===' '){e.preventDefault(); ixPickOpt(ixState.focus); ixPaint();}
+    else if(key==='Backspace'){e.preventDefault(); ixCommit();}   // skip → commit whatever's picked (maybe none)
   };
 
   /* ===== single keyboard dispatcher (feat/preference-collection · merge doc §5) =====
