@@ -61,44 +61,89 @@
     background: linear-gradient(90deg, rgba(7,5,12,0.55) 0%, rgba(7,5,12,0) 42%, rgba(7,5,12,0) 100%);
   }
 
-  /* Card content positioning */
+  /* ============= CARD CONTENT — STAGED CHOREOGRAPHY =============
+     Stage 1 (reveal): title + sub at 1.6× scale, no agent, no cta
+     Stage 2 (settle): title + sub scale to 1.0×; agent fades in above
+     Stage 3 (type):   agent types
+     Stage 4 (land):   agent reasoning shrinks to 0.92×; cta emerges below
+  */
   .card-content {
     position: relative; z-index: 2; width: 100%; height: 100%;
-    padding: 96px 112px; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 96px 112px;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    /* Order — vertical: agent on top, then title, sub, then signals/cta */
+    /* (DOM order is agent → title → sub → signals → cta, which gives this layout naturally) */
   }
-  .card-title {
-    font-size: 84px; font-weight: 600; line-height: 1.0; letter-spacing: -0.035em;
-    max-width: 1100px; color: var(--ink-0); opacity: 0; transform: translateY(18px);
-    transition: opacity 1.0s 0.3s cubic-bezier(0.32,0.72,0,1), transform 1.0s 0.3s;
-  }
-  .card.active .card-title { opacity: 1; transform: translateY(0); }
-  .card-sub {
-    margin-top: 18px; font-size: 20px; font-weight: 400; color: var(--ink-1);
-    max-width: 680px; line-height: 1.4; letter-spacing: -0.005em; opacity: 0; transform: translateY(12px);
-    transition: opacity 1.0s 0.5s cubic-bezier(0.32,0.72,0,1), transform 1.0s 0.5s;
-  }
-  .card.active .card-sub { opacity: 1; transform: translateY(0); }
 
-  /* Layout variants */
+  /* TITLE + SUB block — scale animation on the wrapper.
+     Stage 1 (card.active, no settle): hero-sized — scale 1.85, opacity 1
+     Stage 2 (card.staged-settle):     resting — scale 1.0 */
+  .title-block {
+    display: flex; flex-direction: column;
+    transform-origin: left bottom;
+    transform: scale(1.85);
+    opacity: 0;
+    transition:
+      opacity 0.9s cubic-bezier(0.32,0.72,0,1),
+      transform 1.0s cubic-bezier(0.32,0.72,0,1);
+    will-change: transform;
+  }
+  .card.active .title-block { opacity: 1; }
+  .card.staged-settle .title-block { transform: scale(1.0); }
+
+  .card-title {
+    font-size: 64px; font-weight: 600; line-height: 1.0; letter-spacing: -0.035em;
+    max-width: 1100px; color: var(--ink-0);
+  }
+  .card-sub {
+    margin-top: 14px; font-size: 18px; font-weight: 400; color: var(--ink-1);
+    max-width: 680px; line-height: 1.4; letter-spacing: -0.005em;
+  }
+
+  /* Layout variants — affect alignment of all stacked items inside card-content */
+  .card.layout-bl .card-content { align-items: flex-start; text-align: left; }
+  .card.layout-bl .title-block { transform-origin: left bottom; }
+
   .card.layout-center .card-content { align-items: center; text-align: center; padding-bottom: 140px; }
+  .card.layout-center .title-block { transform-origin: center bottom; }
   .card.layout-center .card-title { max-width: 1000px; }
-  .card.layout-center .card-sub { max-width: 640px; }
+  .card.layout-center .card-sub { max-width: 640px; margin-left: auto; margin-right: auto; }
+
   .card.layout-br .card-content { align-items: flex-end; text-align: right; }
+  .card.layout-br .title-block { transform-origin: right bottom; }
   .card.layout-br .card-title, .card.layout-br .card-sub { margin-left: auto; }
 
-  /* AGENT LINE */
+  /* AGENT LINE — sits ABOVE title-block in DOM order */
   .agent-line {
-    display: flex; align-items: center; gap: 14px;
-    font-family: "New York", Georgia, serif; font-size: 21px; font-style: italic;
-    color: var(--violet-100); letter-spacing: -0.012em; line-height: 1.35;
-    max-width: 920px; margin-top: 36px; min-height: 38px;
-    position: relative; z-index: 5; pointer-events: none; opacity: 0; transform: translateY(8px);
-    transition: opacity 0.7s 0.9s cubic-bezier(0.32,0.72,0,1), transform 0.7s 0.9s;
+    display: flex; align-items: flex-start; gap: 14px;
+    font-family: "New York", Georgia, serif; font-size: 22px; font-style: italic;
+    color: var(--violet-100); letter-spacing: -0.012em; line-height: 1.4;
+    max-width: 880px; min-height: 38px;
+    margin-bottom: 28px;
+    position: relative; z-index: 5; pointer-events: none;
+    /* Initially hidden, slightly oversized so it can shrink on land */
+    opacity: 0;
+    transform: translateY(8px) scale(1.0);
+    transition:
+      opacity 0.6s cubic-bezier(0.32,0.72,0,1),
+      transform 0.7s cubic-bezier(0.32,0.72,0,1);
   }
-  .card.active .agent-line { opacity: 1; transform: translateY(0); }
-  .typed-text { display: inline-block; line-height: 1.35; text-align: left; }
-  .card.layout-center .agent-line { margin: 36px auto 0; }
-  .card.layout-br .agent-line { margin-left: auto; }
+  /* Stage 2: agent appears above title block (still big-ish) */
+  .card.staged-settle .agent-line { opacity: 1; transform: translateY(0) scale(1.0); }
+  /* Stage 4: agent line shrinks slightly + dims to "quieter authority" once landed */
+  .card.staged-land .agent-line {
+    transform: translateY(0) scale(0.92);
+    transform-origin: left top;
+    color: rgba(216, 204, 255, 0.78);
+  }
+
+  .card.layout-center .agent-line { margin-left: auto; margin-right: auto; }
+  .card.layout-center .agent-line { transform-origin: center top !important; }
+  .card.layout-br .agent-line { margin-left: auto; transform-origin: right top !important; }
+  .card.layout-bl .agent-line { transform-origin: left top !important; }
+
+  .typed-text { display: inline-block; line-height: 1.4; text-align: left; padding-top: 4px; }
 
   /* MASCOT */
   .agent-mascot {
@@ -167,37 +212,61 @@
   .agent-line.mood-proud .agent-mascot::before { opacity: 0.85; animation-duration: 4s; }
   .agent-line.mood-thinking .mascot-svg .pupil { transform: translateY(-1px) translateX(0.6px); }
 
-  /* CTA */
-  .card-actions { margin-top: 32px; display: flex; align-items: center; gap: 24px; }
+  /* CTA — solid persona-color button (real-button feel, opaque) */
+  .card-actions { margin-top: 32px; display: flex; align-items: center; gap: 16px; }
   .card.layout-center .card-actions { justify-content: center; }
   .card.layout-br .card-actions { justify-content: flex-end; }
 
   .cta-button {
-    display: inline-flex; align-items: center; gap: 12px; padding: 13px 22px 13px 14px;
-    background: linear-gradient(135deg, var(--persona-soft) 0%, rgba(126,104,242,0.06) 100%);
-    border: 0.5px solid color-mix(in srgb, var(--persona) 40%, transparent);
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 14px 22px 14px 26px;
+    background: var(--persona);
+    border: none;
     border-radius: 100px;
-    font-size: 15px; font-weight: 500; color: var(--ink-0); letter-spacing: -0.008em;
-    backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%);
-    box-shadow: 0 6px 22px var(--persona-glow), inset 0 1px 0 rgba(255,255,255,0.18);
-    position: relative; opacity: 0; transform: translateY(8px); pointer-events: none;
-    transition: opacity 600ms cubic-bezier(0.32,0.72,0,1), transform 600ms, box-shadow 400ms, background 0.8s ease, border-color 0.8s ease;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px; font-weight: 600; letter-spacing: -0.008em;
+    color: #14091f;  /* deep dark for contrast against any persona color */
+    box-shadow:
+      0 8px 28px color-mix(in srgb, var(--persona) 55%, transparent),
+      0 2px 4px rgba(0,0,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.45);
+    position: relative;
+    opacity: 0; transform: translateY(10px);
+    pointer-events: none;
+    cursor: pointer;
+    transition:
+      opacity 0.55s cubic-bezier(0.32,0.72,0,1),
+      transform 0.55s cubic-bezier(0.32,0.72,0,1),
+      box-shadow 0.3s,
+      background 0.6s ease;
   }
   .cta-button.landed { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .cta-button:hover { box-shadow: 0 10px 28px var(--persona-glow), inset 0 1px 0 rgba(255,255,255,0.24); }
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 12px 36px color-mix(in srgb, var(--persona) 70%, transparent),
+      0 4px 8px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+  }
   .cta-question {
-    font-family: "New York", Georgia, serif; font-style: italic; font-weight: 400; color: var(--ink-0);
-    letter-spacing: -0.012em; font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    color: #14091f;
+    letter-spacing: -0.008em;
+    font-size: 15px;
   }
-  .cta-yes {
-    display: inline-flex; align-items: center; margin-left: 6px; padding: 5px 12px; border-radius: 100px;
-    background: linear-gradient(135deg, var(--persona) 0%, color-mix(in srgb, var(--persona) 60%, black) 100%);
-    color: #1B0F36;
-    font-family: -apple-system, sans-serif; font-style: normal; font-size: 13px; font-weight: 600;
-    box-shadow: 0 4px 14px var(--persona-glow), inset 0 1px 0 rgba(255,255,255,0.5);
-    transition: background 0.8s ease, box-shadow 0.8s ease;
+  .cta-arrow {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(20, 9, 31, 0.12);
+    color: #14091f;
+    font-size: 14px; font-weight: 700;
+    transition: transform 0.25s ease;
   }
-  .cta-dock { flex-shrink: 0; width: 26px; height: 26px; display: inline-block; }
+  .cta-button:hover .cta-arrow { transform: translateX(3px); }
 
   /* CATEGORY TAG */
   .card-tag {
@@ -627,31 +696,60 @@
   .intro-foot::before { content: "↓"; margin-right: 8px; opacity: 0.7; animation: introBob 2s ease-in-out infinite; display: inline-block; }
   @keyframes introBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
 
-  /* ============= REASONING SUMMARY: SIGNAL CHIPS (always-visible row) ============= */
-  .signal-summary {
-    margin-top: 18px;
+  /* ============= SIGNALS PILL + EXPANDABLE PANEL ============= */
+  /* Inline pill at end of agent line. Click → panel expands inline (after the line) */
+  .signals-toggle {
+    flex-shrink: 0;
+    align-self: center;
+    display: none;  /* hidden until landed */
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+    padding: 4px 10px 4px 8px;
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.16);
+    border-radius: 100px;
+    color: rgba(255,255,255,0.72);
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    pointer-events: auto;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .card.staged-land .signals-toggle { display: inline-flex; }
+  .signals-toggle svg { width: 11px; height: 11px; opacity: 0.85; }
+  .signals-toggle:hover, .signals-toggle:focus, .signals-toggle.expanded {
+    background: color-mix(in srgb, var(--persona) 18%, rgba(255,255,255,0.06));
+    border-color: color-mix(in srgb, var(--persona) 50%, transparent);
+    color: var(--ink-0);
+  }
+  .signals-toggle.expanded { transform: translateY(-1px); }
+
+  /* Panel — sits between agent-line and title-block, expands inline */
+  .signals-panel {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+    transition: max-height 0.45s cubic-bezier(0.32,0.72,0,1), opacity 0.35s ease, margin-bottom 0.4s;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    align-items: center;
     max-width: 880px;
   }
-  .card.layout-center .signal-summary { justify-content: center; margin-left: auto; margin-right: auto; }
-  .card.layout-br .signal-summary { justify-content: flex-end; margin-left: auto; }
-
-  .signal-summary-label {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 700;
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.36);
-    margin-right: 6px;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+  .signals-panel.shown {
+    max-height: 240px;
+    opacity: 1;
+    margin-bottom: 22px;
   }
-  .signal-summary.shown .signal-summary-label { opacity: 1; transform: translateY(0); }
+  .card.layout-center .signals-panel { justify-content: center; margin-left: auto; margin-right: auto; }
+  .card.layout-br .signals-panel { justify-content: flex-end; margin-left: auto; }
 
   .signal-pill {
     display: inline-flex;
@@ -659,40 +757,35 @@
     gap: 7px;
     padding: 5px 12px 5px 9px;
     border-radius: 100px;
-    background: rgba(15,10,24,0.5);
+    background: rgba(15,10,24,0.55);
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
-    border: 0.5px solid color-mix(in srgb, var(--type-color, var(--persona)) 36%, rgba(255,255,255,0.05));
-    color: rgba(255,255,255,0.84);
+    border: 0.5px solid color-mix(in srgb, var(--type-color, var(--persona)) 38%, rgba(255,255,255,0.05));
+    color: rgba(255,255,255,0.86);
     letter-spacing: -0.005em;
-    opacity: 0;
     transform: translateY(4px);
-    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.6s ease;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  .signal-summary.shown .signal-pill { opacity: 1; transform: translateY(0); }
-  .signal-summary.shown .signal-pill:nth-of-type(1) { transition-delay: 0ms; }
-  .signal-summary.shown .signal-pill:nth-of-type(2) { transition-delay: 110ms; }
-  .signal-summary.shown .signal-pill:nth-of-type(3) { transition-delay: 220ms; }
-  .signal-summary.shown .signal-pill:nth-of-type(4) { transition-delay: 330ms; }
-  .signal-summary.shown .signal-pill:nth-of-type(5) { transition-delay: 440ms; }
+  .signals-panel.shown .signal-pill { opacity: 1; transform: translateY(0); }
+  .signals-panel.shown .signal-pill:nth-of-type(1) { transition-delay: 80ms; }
+  .signals-panel.shown .signal-pill:nth-of-type(2) { transition-delay: 160ms; }
+  .signals-panel.shown .signal-pill:nth-of-type(3) { transition-delay: 240ms; }
+  .signals-panel.shown .signal-pill:nth-of-type(4) { transition-delay: 320ms; }
 
   .signal-pill-icon {
     flex-shrink: 0;
-    width: 13px; height: 13px;
+    width: 12px; height: 12px;
     color: var(--type-color, var(--persona));
-    opacity: 0.95;
     display: inline-flex; align-items: center; justify-content: center;
   }
   .signal-pill-icon svg { width: 100%; height: 100%; display: block; }
-
   .signal-pill-text {
     font-family: "New York", Georgia, serif;
     font-style: italic;
     font-size: 12px;
     line-height: 1.3;
   }
-
-  /* Type-specific border tint (used to differentiate types beyond persona color) */
   .signal-pill.type-user        { --type-color: var(--persona); }
   .signal-pill.type-context     { --type-color: rgba(160,200,255,0.85); }
   .signal-pill.type-third-party { --type-color: rgba(255,200,150,0.92); }
@@ -933,21 +1026,24 @@ function renderFeed() {
       <div class="card-image" style="background-image: url('${card.image}')"></div>
       <div class="card-tag">${card.tag}</div>
       <div class="card-content">
-        <div class="card-title">${card.title}</div>
-        <div class="card-sub">${card.sub}</div>
         <div class="agent-line mood-${getActivePersona().defaultMood}">
           <span class="agent-mascot"></span>
           <span class="typed-text"></span>
+          <button type="button" class="signals-toggle" tabindex="0" aria-expanded="false" aria-label="View signals informing this card">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4.5v.01M7 6.5v3.5"/></svg>
+            <span class="signals-toggle-label">Signals</span>
+          </button>
         </div>
-        <div class="signal-summary" role="region" aria-label="Signals informing this card">
-          <span class="signal-summary-label">Signals</span>
+        <div class="signals-panel" role="region" aria-label="Signal details"></div>
+        <div class="title-block">
+          <div class="card-title">${card.title}</div>
+          <div class="card-sub">${card.sub}</div>
         </div>
         <div class="card-actions">
-          <div class="cta-button">
-            <span class="cta-dock"></span>
+          <button type="button" class="cta-button">
             <span class="cta-question">${card.ctaQuestion[activePersonaId]}</span>
-            <span class="cta-yes">Yes</span>
-          </div>
+            <span class="cta-arrow">→</span>
+          </button>
         </div>
       </div>
     `;
@@ -978,15 +1074,18 @@ function activateCard(idx, animateTyping = true) {
   const typedEl = cardEl.querySelector('.typed-text');
   const ctaBtn = cardEl.querySelector('.cta-button');
   const ctaQuestion = cardEl.querySelector('.cta-question');
-  const sigSummary = cardEl.querySelector('.signal-summary');
+  const sigPanel = cardEl.querySelector('.signals-panel');
+  const sigToggle = cardEl.querySelector('.signals-toggle');
   const text = card.agentLine[activePersonaId];
   const signals = (card.signals && card.signals[activePersonaId]) || [];
 
-  // Reset
+  // RESET — stage 1
+  cardEl.classList.remove('staged-settle', 'staged-land');
   ctaBtn.classList.remove('landed');
-  if (sigSummary) sigSummary.classList.remove('shown');
+  if (sigPanel) { sigPanel.classList.remove('shown'); }
+  if (sigToggle) { sigToggle.classList.remove('expanded'); sigToggle.setAttribute('aria-expanded', 'false'); }
   typedEl.textContent = '';
-  renderSignalSummary(sigSummary, signals);
+  renderSignalsPanel(sigPanel, signals);
 
   // Mood per persona
   lineEl.classList.remove('mood-curious','mood-confident','mood-proud','mood-thinking','mood-hesitant');
@@ -996,17 +1095,27 @@ function activateCard(idx, animateTyping = true) {
   ctaQuestion.textContent = card.ctaQuestion[activePersonaId];
 
   if (animateTyping) {
+    // Stage 1 → Stage 2 (settle): title shrinks, agent fades in
+    setTimeout(() => {
+      cardEl.classList.add('staged-settle');
+    }, 1800);
+
+    // Stage 3 (type): start typing once settle has begun
     setTimeout(() => {
       lineEl.classList.add('is-typing');
       typeSlow(typedEl, text, () => {
         lineEl.classList.remove('is-typing');
-        if (signals.length && sigSummary) setTimeout(() => sigSummary.classList.add('shown'), 250);
-        setTimeout(() => ctaBtn.classList.add('landed'), signals.length ? 800 : 300);
+        // Stage 4 (land): agent shrinks, signals toggle visible, CTA emerges
+        setTimeout(() => {
+          cardEl.classList.add('staged-land');
+          ctaBtn.classList.add('landed');
+        }, 350);
       });
-    }, 800);
+    }, 2300);
   } else {
+    // Instant mode (used when navigating fast)
+    cardEl.classList.add('staged-settle', 'staged-land');
     typedEl.textContent = text;
-    if (signals.length && sigSummary) sigSummary.classList.add('shown');
     ctaBtn.classList.add('landed');
   }
 }
@@ -1018,22 +1127,32 @@ const SIGNAL_ICONS = {
   'preference': '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5l1.7 3.7 4 .4-3 2.7.9 4-3.6-2.1-3.6 2.1.9-4-3-2.7 4-.4z"/></svg>',
 };
 
-function renderSignalSummary(container, signals) {
+function renderSignalsPanel(container, signals) {
   if (!container) return;
-  // Clear existing pills, keep label
-  container.querySelectorAll('.signal-pill').forEach(p => p.remove());
-  signals.forEach(sig => {
-    const pill = document.createElement('span');
-    pill.className = `signal-pill type-${sig.type}`;
-    pill.innerHTML = `<span class="signal-pill-icon">${SIGNAL_ICONS[sig.type] || ''}</span><span class="signal-pill-text">${escHtml(sig.text)}</span>`;
-    container.appendChild(pill);
-  });
+  container.innerHTML = signals.map(sig =>
+    `<span class="signal-pill type-${sig.type}"><span class="signal-pill-icon">${SIGNAL_ICONS[sig.type] || ''}</span><span class="signal-pill-text">${escHtml(sig.text)}</span></span>`
+  ).join('');
 }
 
-// (chip handlers no longer needed — pills are static)
+// Toggle the signals panel open/closed
+function toggleSignalsPanel(cardEl) {
+  const toggle = cardEl.querySelector('.signals-toggle');
+  const panel = cardEl.querySelector('.signals-panel');
+  if (!toggle || !panel) return;
+  const expanded = toggle.classList.toggle('expanded');
+  toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  panel.classList.toggle('shown', expanded);
+}
+
 function bindChipHandlers(cardEl) {
-  // legacy stub — left for compatibility with renderFeed
-  return;
+  const toggle = cardEl.querySelector('.signals-toggle');
+  if (!toggle || toggle.dataset.bound) return;
+  toggle.dataset.bound = '1';
+  toggle.addEventListener('click', (e) => { e.stopPropagation(); toggleSignalsPanel(cardEl); });
+  toggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleSignalsPanel(cardEl); }
+    else if (e.key === 'Escape' && toggle.classList.contains('expanded')) { e.preventDefault(); toggleSignalsPanel(cardEl); }
+  });
 }
 
 // Live-swap reasoning on persona change for current card
@@ -1054,17 +1173,21 @@ function reswapCurrentCard() {
   const typedEl = cardEl.querySelector('.typed-text');
   const ctaBtn = cardEl.querySelector('.cta-button');
   const ctaQuestion = cardEl.querySelector('.cta-question');
-  const sigSummary = cardEl.querySelector('.signal-summary');
+  const sigPanel = cardEl.querySelector('.signals-panel');
+  const sigToggle = cardEl.querySelector('.signals-toggle');
   const signals = (card.signals && card.signals[activePersonaId]) || [];
 
+  // Live-swap: keep title/sub at rest (don't re-run choreography).
+  // Card is already in staged-land; only the agent line + signals + CTA swap.
   clearTyping();
   ctaBtn.classList.remove('landed');
-  if (sigSummary) sigSummary.classList.remove('shown');
+  if (sigPanel) sigPanel.classList.remove('shown');
+  if (sigToggle) { sigToggle.classList.remove('expanded'); sigToggle.setAttribute('aria-expanded','false'); }
   lineEl.classList.add('swapping');
 
   setTimeout(() => {
     typedEl.textContent = '';
-    renderSignalSummary(sigSummary, signals);
+    renderSignalsPanel(sigPanel, signals);
     lineEl.classList.remove('swapping');
     lineEl.classList.remove('mood-curious','mood-confident','mood-proud','mood-thinking','mood-hesitant');
     lineEl.classList.add(`mood-${getActivePersona().defaultMood}`);
@@ -1073,8 +1196,8 @@ function reswapCurrentCard() {
     lineEl.classList.add('is-typing');
     typeSlow(typedEl, card.agentLine[activePersonaId], () => {
       lineEl.classList.remove('is-typing');
-      if (signals.length && sigSummary) setTimeout(() => sigSummary.classList.add('shown'), 200);
-      setTimeout(() => ctaBtn.classList.add('landed'), signals.length ? 700 : 300);
+      // Card is already in staged-land — just re-show the CTA
+      setTimeout(() => ctaBtn.classList.add('landed'), 200);
     });
   }, 300);
 }
