@@ -561,7 +561,8 @@
      One shared overlay; her image is never swapped, only blurred (precedence rule). */
   #ixLayer { position:fixed; inset:0; z-index:60; display:none; }
   #ixLayer.show { display:block; }
-  #ixScrim { position:absolute; inset:0; background:rgba(7,5,12,.46); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+  #ixScrim { position:absolute; inset:0; background:rgba(7,5,12,0.82); backdrop-filter:blur(28px) saturate(120%); -webkit-backdrop-filter:blur(28px) saturate(120%); }
+  #ixLayer.asking #ixScrim { background:rgba(7,5,12,0.9); }
   .ix-l1 { position:absolute; left:0; right:0; bottom:0; z-index:2; padding:0 6vw 7vh;
     opacity:0; transform:translateY(22px); transition:opacity .45s, transform .45s; pointer-events:none; }
   #ixLayer.l1 .ix-l1 { opacity:1; transform:translateY(0); pointer-events:auto; }
@@ -580,46 +581,31 @@
     color:var(--ink-1); border:1px solid rgba(255,255,255,.18); cursor:pointer; transition:.18s; }
   .ix-ghost.foc, .ix-ghost:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
   .ix-demoNote { font-size:13px; color:var(--ink-3); font-style:italic; }
-  .ix-followup { position:absolute; left:0; right:0; bottom:0; z-index:3; padding:0 6vw 7vh;
-    display:flex; flex-direction:column; align-items:flex-start; opacity:0; transform:translateY(22px);
-    transition:opacity .4s, transform .4s; pointer-events:none; }
+  /* follow-up: full-screen takeover — centered, large question, dark backdrop owns the screen */
+  .ix-followup { position:absolute; inset:0; z-index:3; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:0 8vw;
+    opacity:0; transform:translateY(16px); transition:opacity .4s, transform .4s; pointer-events:none; }
   #ixLayer.asking .ix-followup { opacity:1; transform:translateY(0); pointer-events:auto; }
-  .ix-followup .ix-qctx { display:flex; flex-direction:column; gap:6px; margin-bottom:6px; }
-  .ix-followup .ix-qctx .ck { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--violet-300); }
-  .ix-followup .ix-qctx .ct { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(24px,3vw,42px); line-height:1.05; color:#fff; }
-  .ix-followup .ix-q { display:flex; align-items:center; gap:13px; font-family:var(--serif); font-style:italic;
-    font-size:clamp(20px,2.2vw,30px); color:var(--ink-0); margin:10px 0 4px; }
-  .ix-followup .ix-q .agent-mascot { width:28px; height:28px; flex:0 0 auto; }
-  .ix-followup .ix-qhint { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin-bottom:18px; }
-  .ix-opts { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:min(62vw,820px); }
-  .ix-opt { position:relative; overflow:hidden; font:inherit; font-size:18px; font-weight:600; padding:20px 24px;
-    border-radius:16px; text-align:left; background:rgba(7,5,12,0.55); border:1px solid rgba(255,255,255,.22);
-    color:var(--ink-1); cursor:pointer; transition:.18s; }
-  .ix-opt.foc { background:rgba(255,255,255,.08); border-color:var(--violet-300); color:#fff; transform:translateY(-2px);
-    box-shadow:0 0 0 3px rgba(181,163,255,.28); }
+  .ix-followup .ix-qctx { display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:14px; }
+  .ix-followup .ix-qctx .ck { font-size:14px; letter-spacing:.04em; text-transform:none; color:var(--violet-200); }
+  .ix-followup .ix-qctx .ct { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(22px,2.4vw,34px); color:#fff; line-height:1.1; text-shadow:0 2px 16px rgba(0,0,0,.6); }
+  .ix-followup .ix-q { justify-content:center; gap:16px; font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(34px,4.4vw,60px); color:#fff; text-shadow:0 2px 20px rgba(0,0,0,.7); margin:6px 0 10px; }
+  .ix-followup .ix-q .agent-mascot { width:38px; height:38px; flex:0 0 auto; }
+  .ix-followup .ix-qhint { text-transform:none; letter-spacing:.02em; font-size:15px; color:var(--ink-2); margin-bottom:34px; }
+  .ix-opts { display:flex; flex-direction:column; gap:16px; width:min(620px,80vw); margin:0 auto; }
+  .ix-opt { position:relative; overflow:hidden; font:inherit; font-size:21px; font-weight:600; padding:22px 28px;
+    border-radius:18px; text-align:center; text-transform:none; background:rgba(255,255,255,0.10);
+    border:1.5px solid rgba(255,255,255,0.28); color:#fff; cursor:pointer; transition:.18s; }
+  .ix-opt.foc { background:rgba(255,255,255,0.16); border-color:var(--violet-300); color:#fff; transform:translateY(-2px);
+    box-shadow:0 0 0 3px rgba(181,163,255,.4); }
   .ix-opt.foc::after { content:""; position:absolute; top:0; left:-60%; width:50%; height:100%;
     background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent); animation:vibeShimmer 1.5s ease-in-out infinite; }
   .ix-opt.picked { background:linear-gradient(135deg,var(--violet-400),var(--violet-500)); border-color:var(--violet-400); color:#fff; }
   .ix-opt.picked::after { display:none; }
-  .ix-payoff { display:flex; align-items:center; gap:12px; margin-top:18px; font-family:var(--serif); font-style:italic;
-    font-size:17px; color:var(--violet-100); opacity:0; transition:opacity .3s; }
+  .ix-payoff { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:26px;
+    font-family:var(--serif); font-style:italic; font-size:19px; color:var(--violet-100); opacity:0; transition:opacity .3s; }
   .ix-payoff.show { opacity:1; }
-
-  /* ===== FIX: follow-up text legibility over bright feed images ===== */
-  /* bottom-anchored gradient concentrates protection where the text is */
-  .ix-followup::before,
-  .ix-l1::before {
-    content:""; position:absolute; left:0; right:0; bottom:0; top:-10%; z-index:-1; pointer-events:none;
-    background:linear-gradient(180deg, rgba(7,5,12,0) 0%, rgba(7,5,12,0.55) 45%, rgba(7,5,12,0.86) 100%);
-  }
-  /* text shadows so even the gradient's top edge stays safe */
-  .ix-followup .ix-qctx .ck,
-  .ix-followup .ix-qhint { text-shadow:0 1px 8px rgba(0,0,0,0.7); }
-  .ix-followup .ix-q,
-  .ix-followup .ix-qctx .ct,
-  .ix-l1 h2, .ix-l1 .ix-blurb, .ix-l1 .ix-kicker { text-shadow:0 2px 12px rgba(0,0,0,0.6); }
-  /* bump hint from ink-3 (36%) to ink-2 (56%) — worst legibility offender */
-  .ix-followup .ix-qhint { color:var(--ink-2); }
 
   /* ===== VTON intro card "Imagine yourself here" (feat/preference-collection) =====
      Uses the pre-composed visual (assets/vton_intro.png) as-is, contained + centered.
@@ -1601,13 +1587,13 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     // most-distinctive-first: sort by rarity (rare first), keep those we can label
     const ranked=prefs.filter(t=>TAG_LABEL[t]).sort((a,b)=>(TAG_RARITY[a]||50)-(TAG_RARITY[b]||50));
     const seen=new Set(); const opts=[];
-    ranked.forEach(t=>{ if(seen.has(t)||opts.length>=3) return; seen.add(t);
+    ranked.forEach(t=>{ if(seen.has(t)||opts.length>=2) return; seen.add(t);
       opts.push([TAG_LABEL[t], [t], ['cat:'+(cat||'')]]); });   // [label, prefs[], rich[]]
-    // pad with the category itself if needed
-    if(opts.length<3 && cat && TAG_LABEL[cat] && !seen.has(cat)){ opts.push([TAG_LABEL[cat],[cat],['cat:'+cat]]); seen.add(cat); }
+    // pad with the category itself if needed (max 2 derived)
+    if(opts.length<2 && cat && TAG_LABEL[cat] && !seen.has(cat)){ opts.push([TAG_LABEL[cat],[cat],['cat:'+cat]]); seen.add(cat); }
     // always end with diversify — no positive/negative token, session-only "show me else" (taxonomy §5)
     opts.push(["Something different", [], [], 'diversify']);
-    return opts.slice(0,4);
+    return opts.slice(0,3);   // 2 derived + diversify = 3 total
   }
   function ixFacts(card){
     // auto-derive 2-3 facts from CSV columns present on the card dataset
@@ -1703,15 +1689,14 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     else if(key==='Enter'||key===' '){e.preventDefault(); [document.getElementById('ixActBtn'),document.getElementById('ixBackBtn')][ixState.l1focus].click();}
     else if(key==='Backspace'){e.preventDefault(); ixToFollowup();}
   };
+  // 3 stacked options → up/down nav (not 2-col left/right grid)
   prefKeyHandlers['followup']=(key,e)=>{
     if(!ixState) return;
-    const n=ixState.opts.length, COLS=2;
-    if(key==='ArrowRight'){e.preventDefault(); if(ixState.focus%COLS<COLS-1 && ixState.focus+1<n) ixState.focus++; ixPaint();}
-    else if(key==='ArrowLeft'){e.preventDefault(); if(ixState.focus%COLS>0) ixState.focus--; ixPaint();}
-    else if(key==='ArrowDown'){e.preventDefault(); if(ixState.focus+COLS<n) ixState.focus+=COLS; ixPaint();}
-    else if(key==='ArrowUp'){e.preventDefault(); if(ixState.focus-COLS>=0) ixState.focus-=COLS; ixPaint();}
+    const n=ixState.opts.length;   // 3
+    if(key==='ArrowDown'){e.preventDefault(); if(ixState.focus<n-1) ixState.focus++; ixPaint();}
+    else if(key==='ArrowUp'){e.preventDefault(); if(ixState.focus>0) ixState.focus--; ixPaint();}
     else if(key==='Enter'||key===' '){e.preventDefault(); ixPickOpt(ixState.focus); ixPaint();}
-    else if(key==='Backspace'){e.preventDefault(); ixCommit();}   // skip → commit whatever's picked (maybe none)
+    else if(key==='Backspace'){e.preventDefault(); ixCommit();}
   };
 
   /* ===== single keyboard dispatcher (feat/preference-collection · merge doc §5) =====
