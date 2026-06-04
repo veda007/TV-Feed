@@ -850,6 +850,53 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
       const anchor=feedCards[pos];
       if(anchor) stage.insertBefore(o,anchor); else stage.appendChild(o);
     });
+
+    // ===== periodic vibe-question insertion (feat/preference-collection · merge doc §9) =====
+    // Splice ONE gap-targeted vibe card after every Nth feed card. Never first/last, never
+    // two questions back-to-back, no session repeat until the pool is exhausted (pickVibeCard
+    // handles repeat-avoidance + gap-targeting). Shares cooldown with interaction follow-ups (§7).
+    splicePeriodicVibes();
+  }
+  function splicePeriodicVibes(){
+    const stage=document.getElementById('stage');
+    const N=PREF_CONFIG.INTERSTITIAL_EVERY;
+    // feed cards = revealed content cards from the bank (exclude weather/offer/onboarding/vibe)
+    const isFeed=c=>c.classList.contains('reveal-after');
+    const feed=[...stage.querySelectorAll('.card')].filter(isFeed);
+    if(feed.length < N+1) return;   // too short to bother; never place at the very end
+    // insert AFTER card N, 2N, 3N… but stop before the last card (never last)
+    const anchors=[];
+    for(let k=N; k<feed.length; k+=N){ if(k>=feed.length) break; anchors.push(feed[k-1]); }
+    // build + insert from last to first so indices stay valid
+    anchors.reverse().forEach(anchorCard=>{
+      const next=anchorCard.nextSibling;
+      // guard: never two questions back-to-back
+      if(next && next.classList && next.classList.contains('vibe-question')) return;
+      if(anchorCard.classList.contains('vibe-question')) return;
+      const source=pickVibeCard();
+      const vibe=buildVibeCard(source,'periodic');
+      stage.insertBefore(vibe, next);
+    });
+  }
+
+  /* ===== onboarding placement (feat/preference-collection · merge doc §8) =====
+     Insert ONE vibe question after the location step, and REPLACE her overlapping
+     evening + bangalore prefs (they capture the same signal the vibe card does).
+     TODO(team §13.1): replace (here) vs add — to revert, set PREF_REPLACE_ONBOARDING=false. */
+  const PREF_REPLACE_ONBOARDING = true;
+  function placeOnboardingVibe(){
+    const stage=document.getElementById('stage');
+    const locCard=stage.querySelector('.card.preference[data-group="location"]');
+    if(!locCard) return;
+    if(PREF_REPLACE_ONBOARDING){
+      // remove (not hard-delete from source) her two overlapping prefs — reversible via flag
+      ['evening','bangalore'].forEach(g=>{ const el=stage.querySelector(`.card.preference[data-group="${g}"]`); if(el) el.remove(); });
+    }
+    // cold start → broadest opener (vq01). buildVibeCard with onboarding weight.
+    const source = pickVibeCard();
+    const vibe = buildVibeCard(source, 'onboarding');
+    vibe.dataset.timeLabel = 'Setting up';
+    locCard.parentNode.insertBefore(vibe, locCard.nextSibling);
   }
 
   function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
@@ -996,7 +1043,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
   }
 
   // ---- init: load CSV, inject feed, then hydrate ----
-  function init(){ hydrateAll(); showCard(0,true); }
+  function init(){ placeOnboardingVibe(); hydrateAll(); showCard(0,true); }
   function hydrateAll(){
   cards=document.querySelectorAll('.card');
   cards.forEach(card=>{
@@ -1217,6 +1264,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     c.className='card vibe-question';
     c.dataset.id=source.id; c.dataset.vibe='1'; c.dataset.weightKey=weightKey||'periodic';
     c.dataset.dwell='999999';   // never auto-advance via her timer; our 12s-from-first-pick owns it
+    if(!vibeShownIds.includes(source.id)) vibeShownIds.push(source.id);   // mark rendered (drives pool rotation §9)
     const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const tiles=source.opts.map(o=>{
       const [tt,ts,key]=o;
@@ -1278,8 +1326,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     const tags=[]; const labels=[];
     [...selected].forEach(i=>{ const o=source.opts[i]; if(!o) return;
       tags.push(...(o[3]||[])); tags.push(...(o[4]||[])); labels.push(o[0]); });
-    vibeShownIds.push(source.id);
-    vibeState=null;
+    vibeState=null;   // (id already marked shown at build time, §9)
     setPrefMode('feed');
     if(tags.length){ bumpInterestTags(tags, w); reRankUpcoming(); }
     // her voice ack, then resume her loop
