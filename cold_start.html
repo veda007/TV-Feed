@@ -1352,10 +1352,10 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
       ["Lazy lie-in","No alarm, nowhere to be","q03_o6_lazy-liein",["calm"],["vibe:slow","vibe:cosy"]],
       ["Slow brunch","Eggs in the sun, no rush","q03_o2_slow-brunch",["food","calm","social"],["vibe:slow","vibe:social"]],
       ["Lake loop at sunrise","Out before the city wakes","q03_o1_lake-run-sunrise",["fitness","nature"],["vibe:fast","vibe:solo"]] ]},
-    { id:"vq04", axis:"aesthetic", q:"What should your screen become?", opts:[
-      ["White minimal","Clean, airy and calm","q04_o5_white-minimal",["minimal"],["aesthetic:minimal","aesthetic:cool"]],
-      ["Golden hour","Warm light, long shadows","q04_o1_golden-hour",["calm"],["aesthetic:warm","aesthetic:muted","vibe:calm"]],
-      ["Lantern bazaar","Warm and full of colour","q04_o6_lantern-bazaar",["culture","heritage"],["aesthetic:maximal","aesthetic:vivid","aesthetic:warm"]] ]},
+    { id:"vq04", axis:"aesthetic", q:"What does your ideal living room look like?", opts:[
+      ["Clean & minimal","Clean lines, calm and airy","q04_o5_white-minimal",["minimal","home"],["aesthetic:minimal","aesthetic:cool"]],
+      ["Warm & natural","Wood, weave and earthy tones","q09_o4_earthy-textile",["home","sustainability","heritage"],["aesthetic:warm","aesthetic:muted"]],
+      ["Bold & colourful","Rich colour, layered and full","q04_o6_lantern-bazaar",["home","culture"],["aesthetic:maximal","aesthetic:vivid","aesthetic:warm"]] ]},
     { id:"vq05", axis:"aspiration", q:"What's a treat you'd say yes to?", opts:[
       ["Street-food crawl","Hands full, no forks","q05_o2_streetfood-crawl",["food","street","social"],["cat:food","aspiration:everyday","vibe:lively"]],
       ["Spa day","Switched off and restored","q05_o3_spa-day",["wellness","calm","luxury"],["cat:wellness","aspiration:luxe","vibe:calm"]],
@@ -1524,8 +1524,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   let vtonState=null;   // {card, focus} — focus: 0 Continue · 1 Maybe Later · 2 Skip Intro
   function vtonActivate(card){
     vtonState={card, focus:0};
-    const mh=card.querySelector('.vton-orb .agent-mascot');
-    if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined') mh.appendChild(mascotTemplate.content.cloneNode(true));
+    // (mascot orb is baked into the composed vton_intro.png — no separate element to mount)
     const btns=[...card.querySelectorAll('.vton-btn')];
     btns.forEach((b,i)=>{ if(b.dataset.wired) return; b.dataset.wired='1';
       b.addEventListener('click',()=>{ vtonState.focus=i; vtonAdvance(); }); });
