@@ -446,6 +446,37 @@
   .compare-cell-cta::after {
     content: "→"; color: var(--cell-color); font-style: normal;
   }
+  .compare-cell-because {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 9px;
+    background: rgba(0,0,0,0.4);
+    border: 0.5px solid color-mix(in srgb, var(--cell-color) 30%, rgba(255,255,255,0.08));
+    border-radius: 100px;
+    font-family: "New York", Georgia, serif;
+    font-style: italic;
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.3;
+    width: fit-content;
+  }
+  .compare-cell-because::before {
+    content: ""; flex-shrink: 0;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--cell-color);
+    box-shadow: 0 0 4px var(--cell-glow);
+  }
+  .ccb-label {
+    font-family: -apple-system, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cell-color);
+  }
 
   /* Scroll hint */
   .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 5;
@@ -465,6 +496,242 @@
 
   /* Live-swap typing indicator */
   .agent-line.swapping { opacity: 0.4; }
+
+  /* ============= PERSONA INTRO CARD ============= */
+  .card.persona-intro .card-image {
+    background:
+      radial-gradient(ellipse at 30% 35%, color-mix(in srgb, var(--persona) 55%, transparent) 0%, transparent 60%),
+      radial-gradient(ellipse at 75% 75%, color-mix(in srgb, var(--persona) 28%, transparent) 0%, transparent 55%),
+      linear-gradient(170deg, #07050C 0%, #110923 55%, #1a0e35 100%);
+    animation: introDrift 24s ease-in-out infinite;
+  }
+  @keyframes introDrift { 0%,100% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(8deg); } }
+
+  .intro-content {
+    position: relative; z-index: 2; width: 100%; height: 100%;
+    padding: 96px 112px;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    max-width: 1100px;
+  }
+
+  .intro-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--persona);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.9s 0.2s cubic-bezier(0.32,0.72,0,1), transform 0.9s 0.2s, color 0.6s ease;
+  }
+  .intro-eyebrow::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--persona); box-shadow: 0 0 10px var(--persona-glow);
+    transition: background 0.6s ease, box-shadow 0.6s ease;
+  }
+  .card.active .intro-eyebrow { opacity: 1; transform: translateY(0); }
+
+  .intro-name {
+    margin-top: 22px;
+    font-size: 96px; font-weight: 600; line-height: 0.98; letter-spacing: -0.04em;
+    color: var(--ink-0);
+    opacity: 0; transform: translateY(18px);
+    transition: opacity 1.0s 0.4s cubic-bezier(0.32,0.72,0,1), transform 1.0s 0.4s;
+  }
+  .card.active .intro-name { opacity: 1; transform: translateY(0); }
+
+  .intro-tagline {
+    margin-top: 18px;
+    font-family: "New York", Georgia, serif; font-style: italic;
+    font-size: 26px; font-weight: 400; line-height: 1.35; letter-spacing: -0.012em;
+    color: color-mix(in srgb, var(--persona) 70%, white);
+    max-width: 800px;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 1.0s 0.6s cubic-bezier(0.32,0.72,0,1), transform 1.0s 0.6s, color 0.6s ease;
+  }
+  .card.active .intro-tagline { opacity: 1; transform: translateY(0); }
+
+  .intro-sketch {
+    margin-top: 22px;
+    font-size: 18px; line-height: 1.5; letter-spacing: -0.005em;
+    color: var(--ink-1);
+    max-width: 720px;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 1.0s 0.75s cubic-bezier(0.32,0.72,0,1), transform 1.0s 0.75s;
+  }
+  .card.active .intro-sketch { opacity: 1; transform: translateY(0); }
+
+  .intro-signals {
+    margin-top: 36px;
+    display: flex; flex-wrap: wrap; gap: 9px;
+    max-width: 820px;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 1.0s 0.95s cubic-bezier(0.32,0.72,0,1), transform 1.0s 0.95s;
+  }
+  .card.active .intro-signals { opacity: 1; transform: translateY(0); }
+  .intro-signal-chip {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 6px 14px 6px 11px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid color-mix(in srgb, var(--persona) 22%, rgba(255,255,255,0.08));
+    font-family: "New York", Georgia, serif; font-style: italic;
+    font-size: 12.5px; line-height: 1.3;
+    color: rgba(255,255,255,0.78); letter-spacing: -0.005em;
+    transition: border-color 0.6s ease;
+  }
+  .intro-signal-chip::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--persona); box-shadow: 0 0 5px var(--persona-glow);
+    transition: background 0.6s ease;
+  }
+
+  .intro-foot {
+    position: absolute; bottom: 96px; left: 112px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+    opacity: 0;
+    transition: opacity 0.9s 1.2s ease;
+  }
+  .card.active .intro-foot { opacity: 1; }
+  .intro-foot::before { content: "↓"; margin-right: 8px; opacity: 0.7; animation: introBob 2s ease-in-out infinite; display: inline-block; }
+  @keyframes introBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+
+  /* ============= BECAUSE CHIP — FOCUSABLE + EXPANDABLE ============= */
+  .because-wrap {
+    margin-top: 14px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 760px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 600ms cubic-bezier(0.32,0.72,0,1), transform 600ms cubic-bezier(0.32,0.72,0,1);
+  }
+  .because-wrap.shown { opacity: 1; transform: translateY(0); }
+  .card.layout-center .because-wrap { align-items: center; margin-left: auto; margin-right: auto; }
+  .card.layout-br .because-wrap { align-items: flex-end; margin-left: auto; }
+
+  .because-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 13px;
+    border-radius: 100px;
+    background: rgba(15,10,24,0.55);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 0.5px solid color-mix(in srgb, var(--persona) 22%, rgba(255,255,255,0.06));
+    font-family: "New York", Georgia, serif;
+    font-style: italic;
+    font-size: 12.5px;
+    line-height: 1.3;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    user-select: none;
+  }
+  .because-chip::before {
+    content: ""; flex-shrink: 0;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--persona);
+    box-shadow: 0 0 6px var(--persona-glow);
+    transition: background 0.6s ease, box-shadow 0.6s ease, transform 0.3s ease;
+  }
+  .because-chip:hover, .because-chip:focus, .because-chip.expanded {
+    border-color: color-mix(in srgb, var(--persona) 55%, transparent);
+    background: rgba(15,10,24,0.78);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35), 0 0 0 1px color-mix(in srgb, var(--persona) 22%, transparent);
+  }
+  .because-chip.expanded::before { transform: scale(1.4); }
+
+  .because-chevron {
+    flex-shrink: 0;
+    margin-left: 4px;
+    width: 9px; height: 9px;
+    color: var(--persona);
+    opacity: 0.7;
+    transition: transform 0.35s cubic-bezier(0.32,0.72,0,1), opacity 0.3s, color 0.6s ease;
+  }
+  .because-chip.expanded .because-chevron { transform: rotate(180deg); opacity: 1; }
+
+  .because-label {
+    font-style: normal;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--persona);
+    transition: color 0.6s ease;
+  }
+  .because-text { color: rgba(255,255,255,0.78); }
+
+  /* Expanded panel */
+  .because-detail {
+    background: rgba(15,10,24,0.78);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 0.5px solid color-mix(in srgb, var(--persona) 28%, rgba(255,255,255,0.06));
+    border-radius: 14px;
+    padding: 0 18px;
+    width: max-content;
+    max-width: 560px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: max-height 0.45s cubic-bezier(0.32,0.72,0,1), opacity 0.35s ease, padding 0.45s, transform 0.35s, border-color 0.6s ease;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+  }
+  .because-detail.shown {
+    max-height: 320px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 14px 18px 16px;
+  }
+  .because-detail-title {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--persona);
+    margin-bottom: 10px;
+    transition: color 0.6s ease;
+  }
+  .because-detail-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .because-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    font-family: "New York", Georgia, serif;
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: -0.005em;
+  }
+  .because-detail-item::before {
+    content: "";
+    flex-shrink: 0;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--persona);
+    margin-top: 8px;
+    box-shadow: 0 0 5px var(--persona-glow);
+    transition: background 0.6s ease;
+  }
 </style>
 </head>
 <body>
@@ -592,32 +859,22 @@
 // Inline data — avoids fetch / CORS issues with file://
 const DATA = /*__INJECT_DATA__*/{
   "personas": [
-    {"id":"wanderer","name":"The Wanderer","archetype":"Explorer","tagline":"Drawn to what most people walk past","color":"#9B86FF","glowColor":"rgba(155,134,255,0.55)","defaultMood":"curious","sketch":"Curious, slightly restless, poetic in economy. Notices what is rare, off the obvious path, worth pausing for.","attributes":{"Age range":"28–35","Location":"Bangalore, often elsewhere","Profession":"Independent / freelance","Living situation":"Solo, small apartment, lots of books"},"preferences":{"Drawn to":["Rare crafts","Slow travel","Unmapped corners","Quiet music venues"],"Skips":["Trending lists","Premium upgrades","Anything algorithmic"],"Time of day":"Late evenings, weekend mornings"},"inferred":{"Decision style":"Impulse, but only after dwelling","What earns dwell":"Specificity, atmosphere, the sense of being early to something","Sample tone":"There's a place I haven't told anyone about yet."},"recentActivity":[{"when":"3 days ago","what":"Returned to a Bidriware artisan card three times in one week"},{"when":"Last Sunday","what":"Watched the Hampi sunrise card to the end"},{"when":"Last week","what":"Skipped two Goa beach cards in a row"},{"when":"This Sunday morning","what":"Opened a Jaipur side-streets card at 7am"},{"when":"Last month","what":"Saved a vinyl-only night at an Indiranagar lounge"},{"when":"Twice in May","what":"Searched: weekend escapes under 200km"},{"when":"Two weeks ago","what":"Lingered 90 seconds on a monsoon-streets card"}]},
-    {"id":"curator","name":"The Connoisseur","archetype":"Sage + Lover","tagline":"Knows the why behind the what","color":"#E8B95C","glowColor":"rgba(232,185,92,0.55)","defaultMood":"confident","sketch":"Assured, specific, never shows off. Notices provenance, craft, the why behind the what. Reads the maker's name first.","attributes":{"Age range":"38–48","Location":"Bangalore, design-led neighbourhood","Profession":"Senior creative / design entrepreneur","Living situation":"Family home, considered objects, established rituals"},"preferences":{"Drawn to":["Heritage craft","Single-origin food","Art with provenance","Slow design"],"Skips":["Trends","FOMO content","Generic luxury","Anything mass"],"Time of day":"Mornings, quiet weekends"},"inferred":{"Decision style":"Researched, deliberate, often after a return visit","What earns dwell":"Material quality, the maker's name, depth over novelty","Sample tone":"The technique here is what most people miss."},"recentActivity":[{"when":"Three Sundays running","what":"Opened the Mysore weaver's archive"},{"when":"In March","what":"Saved a single-origin Coorg estate card"},{"when":"Last fortnight","what":"Returned twice to a Karavalli chef's-table notice"},{"when":"This week","what":"Skipped the high-volume coffee chain card"},{"when":"Last week","what":"Spent 70 seconds on the Bidriware provenance text"},{"when":"Last month","what":"Searched: block-print sourcing, Bagru weavers"},{"when":"Two weeks ago","what":"Watched the master potter's technique trailer to the end"}]},
-    {"id":"companion","name":"The Nurturer","archetype":"Caregiver + Innocent","tagline":"Notices the feeling after","color":"#F0A87A","glowColor":"rgba(240,168,122,0.55)","defaultMood":"proud","sketch":"Warm, unhurried, communal. Notices shared experience, belonging, the feeling after. Speaks for the group, not the self.","attributes":{"Age range":"32–42","Location":"Bangalore, settled neighbourhood","Profession":"Mid-career, family-stage","Living situation":"Lives with partner / family, kids or extended family in-frame"},"preferences":{"Drawn to":["Shared meals","Homely spaces","Slow Sundays","The familiar warmth"],"Skips":["Solo-only experiences","Late-night anything","Aspirational-cold content"],"Time of day":"Sunday mornings, weekday evenings post-dinner"},"inferred":{"Decision style":"Moves with what feels right for everyone","What earns dwell":"Warmth, togetherness, the memory it might leave","Sample tone":"That kind of afternoon stays with everyone."},"recentActivity":[{"when":"Last weekend","what":"Sunday brunch at home with the family"},{"when":"This week","what":"Returned twice to the farmers market reminder"},{"when":"Three days ago","what":"Saved the Ayurvedic family ritual for the long weekend"},{"when":"Last Sunday","what":"Opened the Cubbon Park card together with everyone"},{"when":"Last week","what":"Skipped a late-night vinyl card on the family screen"},{"when":"Two weeks ago","what":"Forwarded the Coorg homestay link to the family group"},{"when":"Three weeks ago","what":"Searched: weekend trips kids actually enjoy"}]},
-    {"id":"mover","name":"The Achiever","archetype":"Hero","tagline":"Acts on the concrete next step","color":"#FF6B4A","glowColor":"rgba(255,107,74,0.55)","defaultMood":"confident","sketch":"Direct, energised, respects time. Notices the action, the momentum, the concrete next step. Reads forward, not back.","attributes":{"Age range":"30–40","Location":"Bangalore, city-centre","Profession":"Founder / senior operator","Living situation":"Apartment, smart-home, optimised"},"preferences":{"Drawn to":["Clear plans","Live windows","Direct action","Earned downtime"],"Skips":["Vague suggestions","Drifting content","Anything passive"],"Time of day":"Early mornings, late nights"},"inferred":{"Decision style":"Reads the signal, takes the next step, keeps the momentum","What earns dwell":"A clear next step, a live window, the why-now","Sample tone":"The window's open this week — let's use it."},"recentActivity":[{"when":"This morning","what":"Opened the same Hampi card twice in one focused session"},{"when":"Last month","what":"Reached checkout on a Coorg homestay"},{"when":"This week","what":"Returned to the Nandi Hills weather forecast four mornings running"},{"when":"This week","what":"Skipped the slow-reading-hour card twice"},{"when":"Yesterday","what":"Searched: Saturday dinner availability near Indiranagar"},{"when":"Last night","what":"Scanned the jazz lounge calendar at 11pm"},{"when":"This week","what":"Closed three weekend-things-to-do cards inside 5 seconds each"}]}
+    {"id": "wanderer", "name": "The Wanderer", "archetype": "Explorer", "tagline": "Drawn to what most people walk past", "color": "#9B86FF", "glowColor": "rgba(155,134,255,0.55)", "defaultMood": "curious", "sketch": "Curious, slightly restless, poetic in economy. Notices what is rare, off the obvious path, worth pausing for.", "attributes": {"Age range": "28–35", "Location": "Bangalore, often elsewhere", "Profession": "Independent / freelance", "Living situation": "Solo, small apartment, lots of books"}, "preferences": {"Drawn to": ["Rare crafts", "Slow travel", "Unmapped corners", "Quiet music venues"], "Skips": ["Trending lists", "Premium upgrades", "Anything algorithmic"], "Time of day": "Late evenings, weekend mornings"}, "inferred": {"Decision style": "Impulse, but only after dwelling", "What earns dwell": "Specificity, atmosphere, the sense of being early to something", "Sample tone": "There's a place I haven't told anyone about yet."}, "recentActivity": [{"when": "This week", "what": "Opened a Bidriware artisan card on three different evenings"}, {"when": "Last Sunday", "what": "Watched the Hampi sunrise card to the end"}, {"when": "Last week", "what": "Scrolled past two Goa beach cards back-to-back"}, {"when": "Sunday at 7am", "what": "Opened a Jaipur side-streets card"}, {"when": "Last month", "what": "Saved a vinyl-only night at an Indiranagar lounge"}, {"when": "In May", "what": "Picked \"Forest Trail\" on the Sunday-scenario question"}, {"when": "Two weeks ago", "what": "Lingered on a monsoon-streets card to the end"}]},
+    {"id": "curator", "name": "The Connoisseur", "archetype": "Sage + Lover", "tagline": "Knows the why behind the what", "color": "#E8B95C", "glowColor": "rgba(232,185,92,0.55)", "defaultMood": "confident", "sketch": "Assured, specific, never shows off. Notices provenance, craft, the why behind the what. Reads the maker's name first.", "attributes": {"Age range": "38–48", "Location": "Bangalore, design-led neighbourhood", "Profession": "Senior creative / design entrepreneur", "Living situation": "Family home, considered objects, established rituals"}, "preferences": {"Drawn to": ["Heritage craft", "Single-origin food", "Art with provenance", "Slow design"], "Skips": ["Trends", "FOMO content", "Generic luxury", "Anything mass"], "Time of day": "Mornings, quiet weekends"}, "inferred": {"Decision style": "Researched, deliberate, often after a return visit", "What earns dwell": "Material quality, the maker's name, depth over novelty", "Sample tone": "The technique here is what most people miss."}, "recentActivity": [{"when": "Three Sundays running", "what": "Opened the Mysore weaver's archive card"}, {"when": "In March", "what": "Saved a single-origin Coorg estate card"}, {"when": "This fortnight", "what": "Returned twice to the Karavalli chef's-table notice"}, {"when": "This week", "what": "Scrolled past the high-volume coffee chain card"}, {"when": "Last week", "what": "Watched the Bidriware provenance card to the end"}, {"when": "Last month", "what": "Asked the shopping agent: Bagru block-print sourcing"}, {"when": "Two weeks ago", "what": "Watched the master potter's technique trailer to the end"}]},
+    {"id": "companion", "name": "The Nurturer", "archetype": "Caregiver + Innocent", "tagline": "Notices the feeling after", "color": "#F0A87A", "glowColor": "rgba(240,168,122,0.55)", "defaultMood": "proud", "sketch": "Warm, unhurried, communal. Notices shared experience, belonging, the feeling after. Speaks for the group, not the self.", "attributes": {"Age range": "32–42", "Location": "Bangalore, settled neighbourhood", "Profession": "Mid-career, family-stage", "Living situation": "Lives with partner / family, kids or extended family in-frame"}, "preferences": {"Drawn to": ["Shared meals", "Homely spaces", "Slow Sundays", "The familiar warmth"], "Skips": ["Solo-only experiences", "Late-night anything", "Aspirational-cold content"], "Time of day": "Sunday mornings, weekday evenings post-dinner"}, "inferred": {"Decision style": "Moves with what feels right for everyone", "What earns dwell": "Warmth, togetherness, the memory it might leave", "Sample tone": "That kind of afternoon stays with everyone."}, "recentActivity": [{"when": "This week", "what": "Returned twice to the Sunday farmers-market reminder"}, {"when": "Three days ago", "what": "Saved the Ayurvedic family ritual card"}, {"when": "Last Sunday", "what": "Opened the Cubbon Park morning card"}, {"when": "Last week", "what": "Scrolled past a late-night vinyl card without opening"}, {"when": "Two weeks ago", "what": "Saved the Coorg homestay card"}, {"when": "In May", "what": "Picked \"Slow morning\" on the Sunday-scenario question"}, {"when": "This month", "what": "Family-friendly mode is on"}]},
+    {"id": "mover", "name": "The Achiever", "archetype": "Hero", "tagline": "Acts on the concrete next step", "color": "#FF6B4A", "glowColor": "rgba(255,107,74,0.55)", "defaultMood": "confident", "sketch": "Direct, energised, respects time. Notices the action, the momentum, the concrete next step. Reads forward, not back.", "attributes": {"Age range": "30–40", "Location": "Bangalore, city-centre", "Profession": "Founder / senior operator", "Living situation": "Apartment, smart-home, optimised"}, "preferences": {"Drawn to": ["Clear plans", "Live windows", "Direct action", "Earned downtime"], "Skips": ["Vague suggestions", "Drifting content", "Anything passive"], "Time of day": "Early mornings, late nights"}, "inferred": {"Decision style": "Reads the signal, takes the next step, keeps the momentum", "What earns dwell": "A clear next step, a live window, the why-now", "Sample tone": "The window's open this week — let's use it."}, "recentActivity": [{"when": "This morning", "what": "Opened the Hampi card twice in one session"}, {"when": "Last month", "what": "Said yes to the Coorg homestay offer"}, {"when": "This week", "what": "Returned to the Nandi Hills card four mornings in a row"}, {"when": "This week", "what": "Scrolled past the slow-reading-hour card twice"}, {"when": "In May", "what": "Picked \"Take me somewhere new\" on the discovery question"}, {"when": "This week", "what": "Glance is on most evenings between 10 and 11pm"}, {"when": "Last week", "what": "Liked the Karavalli chef's-table card"}]}
   ],
   "cards": [
-    {"id":1,"image":"content/images/coorgi_coffee.jpg","title":"The Coorgi<br>Coffee Ritual.","sub":"A 15-minute drip — your weeknight pause, the way you like it slow.","tag":"Culture · Culinary","timeLabel":"7:45 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"That Bidriware card kept pulling you back. Same instinct lives here — small estate, slow brew, easy to walk past.","curator":"Single-origin Chikmagalur, brass filter, the steep that holds the bean's character. The chain coffee skip last week reads like the right palate.","companion":"Two months into Bangalore's cool-evening stretch — the kind of slow brew the whole house gathers around without saying so.","mover":"7:45pm, post-meeting hour — fifteen minutes, one ritual, the cleanest reset before the next thing on the list."},"ctaQuestion":{"wanderer":"See the smaller estates worth knowing?","curator":"View the estates ranked by steep style?","companion":"See the at-home brewing guide?","mover":"View the 15-minute method?"}},
-    {"id":2,"image":"content/images/cubbon_park_morning.jpg","title":"A morning<br>at Cubbon Park.","sub":"Dappled light, chess under the trees, the city's quietest hour.","tag":"Outdoors · Tomorrow","timeLabel":"8:06 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"That Jaipur side-streets card landed at 7am for a reason. Cubbon's quiet hour is the same instinct, closer to home.","curator":"The rain trees, the chess tables before the joggers arrive — Cubbon at the hour it was originally laid out for.","companion":"Last Sunday everyone gathered around this card. Tomorrow's clear forecast lines up with the kind of morning the household keeps choosing.","mover":"Forecast clear, post-monsoon window is short — tomorrow's 7am is the slot. One walk, set the tone for the week."},"ctaQuestion":{"wanderer":"See the quieter entry from Hudson Circle?","curator":"View the heritage tree walk?","companion":"See the family Sunday route?","mover":"View tomorrow's 7am route?"}},
-    {"id":3,"image":"content/images/nandi_hills.jpg","title":"The Nandi<br>Hills ascent.","sub":"The classic Bangalore weekend ride — tests your legs, rewards your eyes.","tag":"Sports · Escapes","timeLabel":"8:26 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"The May searches kept circling 200km. Nandi's foothills are quieter than the summit photos suggest — the climb has its own kind of solitude.","curator":"Post-monsoon clarity on the eucalyptus stretch is a four-week window. The hairpins read differently once the dust returns.","companion":"The drive-up version of this is the family's morning. Slow ascent, breakfast at the top, back before lunch.","mover":"Four mornings on the Nandi weather card this week — the signal is clear. 60K, 900m, pre-dawn beats both the heat and the traffic."},"ctaQuestion":{"wanderer":"See the lesser-known foothill loop?","curator":"View the post-monsoon viewpoints?","companion":"See the family drive-up plan?","mover":"View the 60K route brief?"}},
-    {"id":4,"image":"content/images/karavalli_thali.jpg","title":"Lunch<br>at Karavalli.","sub":"A coastal Karnataka feast — your weekend, lived right in the city.","tag":"Restaurants · Heritage","timeLabel":"8:18 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"Coastal Karnataka kitchens that hold the line are thinning out. The toddy-shop room inside a city hotel is a strange, good accident.","curator":"Twice through the chef's-table notice this fortnight. Mangalorean kane curry, banana leaf, the appam done correctly — the kitchen still respects the source.","companion":"Sunday brunch at home last weekend was the warmup — the next gathering is the kind of long table Karavalli holds well.","mover":"Yesterday's Saturday-dinner search lands here. Weekend tables move fast — Friday is the cliff, the menu's on the page."},"ctaQuestion":{"wanderer":"See the off-menu coastal items?","curator":"View the chef's tasting menu?","companion":"See the family long-table options?","mover":"View this weekend's availability?"}},
-    {"id":5,"image":"content/images/vinyl_night_event.jpg","title":"A vinyl-only<br>night.","sub":"Three DJs, original pressings — jazz, Bollywood, '70s rock. Filling fast.","tag":"82% sold · Saturday 9 PM","timeLabel":"8:20 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"Same lounge as last month's saved night, different DJs. The Bollywood B-sides set is the one that won't repeat.","curator":"Original 70s pressings, three DJs reading the room across decades — programming, not playlisting. The late evening earns it.","companion":"This one runs late, past the household evening window. A Friday-night family record session might land warmer.","mover":"Late-night calendar scan last night was for this. Saturday's at 82 percent — the window narrows by the hour."},"ctaQuestion":{"wanderer":"See Saturday's setlist?","curator":"View the DJs' pressings?","companion":"See a family-friendly listening alternative?","mover":"View remaining-seats status?"}},
-    {"id":6,"image":"content/images/reading_nook.jpg","title":"A slow<br>reading hour.","sub":"One chapter, one cup of tea, the city muted behind the glass.","tag":"Wellness · Quiet hours","timeLabel":"7:51 PM · Bangalore","layout":"layout-br","agentLine":{"wanderer":"Books and quiet rooms run quieter than music in the pattern, but the dwell on them is longer. Worth one of those evenings now.","curator":"7:51pm, post-rain cool, no city sound through the glass. Reading conditions rarely arrive this aligned.","companion":"After a long week of gatherings, the kind of slow evening the whole house can settle into without anyone organising it.","mover":"Twice skipped, surfacing it again deliberately — the highest-leverage move is the offline hour. Thirty minutes, then back to the rest."},"ctaQuestion":{"wanderer":"See indie titles for the month?","curator":"View this season's literary releases?","companion":"See a quiet-hour family playlist?","mover":"View a 30-minute essay instead?"}},
-    {"id":7,"image":"content/images/travel_hampi.jpg","title":"Hampi,<br>at golden hour.","sub":"Boulder temples and lost-empire ruins — a UNESCO wonder, an overnight away.","tag":"Travel · Heritage","timeLabel":"8:33 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"Sunday's full-watch on the sunrise card was the tell. November mornings at Hampi are clear, cool, almost no crowds — the year's best window.","curator":"Vijayanagara at golden hour is an art history problem and a landscape problem at once. The lesser-photographed Achyutaraya temple is the read worth doing first.","companion":"The trip the family keeps almost-planning. Two days, kid-pace distances, the kind that everyone talks about for years after.","mover":"Two opens this morning in one session. Long weekend in 18 days — overnight from Bangalore, two full days, and the dates align cleanly."},"ctaQuestion":{"wanderer":"See the temples beyond Virupaksha?","curator":"View the morning-light walking route?","companion":"See the family two-day plan?","mover":"View the long-weekend itinerary?"}},
-    {"id":8,"image":"content/images/ayurvedic_wellness.jpg","title":"An Ayurvedic<br>evening ritual.","sub":"Herbal salts, warm oils — an hour that resets the whole week.","tag":"Wellness · Rituals","timeLabel":"8:22 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"After the May searches, an inversion: an hour that resets without leaving the city. The smaller practitioners hold the older protocols.","curator":"Sesame oil, the seven-herb sequence, the Kerala-trained therapist. Spa menus skip the protocol — this one keeps it intact.","companion":"Saved three days ago for the long weekend. The kind of ritual that softens the whole household for the days after.","mover":"Friday 7pm sits cleanly in the calendar. Sixty minutes, full reset, the weekend starts uncluttered for everything else queued up."},"ctaQuestion":{"wanderer":"See the smaller practitioners nearby?","curator":"View the seven-herb protocol?","companion":"See the family weekend ritual?","mover":"View Friday-evening slots?"}},
-    {"id":9,"image":"content/images/monsoon_street.jpg","title":"The rain-washed<br>streets of Indiranagar.","sub":"Glistening roads, warm cafe windows — the city at its most cinematic.","tag":"Tonight · near you","timeLabel":"7:49 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"That 90-second linger on the monsoon card two weeks back — the city is doing it again, right now. These accidents don't repeat for long.","curator":"Petrichor over filter coffee, neon on wet tarmac. The 12th Main side-streets are where Bangalore briefly looks composed.","companion":"A 30-minute chai walk before the post-dinner wind-down. Short enough that the kids can come, slow enough that everyone notices the city.","mover":"Rain just lifted, two hours of walkable wet streets before the puddles dry. The window is now — twenty minutes' notice from the door."},"ctaQuestion":{"wanderer":"See the 12th Main side-streets?","curator":"View the older cafes worth ducking into?","companion":"See nearby family walks under 30 mins?","mover":"View the 2-hour wet-streets loop?"}},
-    {"id":10,"image":"content/images/bookstore.jpg","title":"A bookshop<br>worth the detour.","sub":"Creaking wood, hand-picked shelves, a reading chair in the corner.","tag":"Culture · Indie","timeLabel":"8:10 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"Pattern keeps showing up — small operations, sharp curation, the Bidriware shelf rule applied to books. Run by someone who has read everything stocked.","curator":"Hand-lettered shelf notes, small-press releases that never reach the chains, a staff picks wall that genuinely reflects the buyer.","companion":"A slow Saturday where the household drifts in together — kids' shelf, adult fiction, reading chairs that hold all of it.","mover":"Twenty minutes away, no queue, open until 9. Fits cleanly between two meetings tomorrow with a coffee on either side."},"ctaQuestion":{"wanderer":"See this week's staff picks?","curator":"View the small-press shelf?","companion":"See the kids' and adults' sections?","mover":"View map and hours?"}},
-    {"id":11,"image":"content/images/farmers_market.jpg","title":"The Sunday<br>farmers market.","sub":"Heirloom produce, fresh flowers, the city before it wakes up.","tag":"This weekend · 8 AM","timeLabel":"8:02 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"The conversation with the grower is the part the delivery apps don't carry. Worth one slow morning to find that out.","curator":"This week's heirloom ridge gourd, the Bagepalli baker who sells out by 8:30, the zero-spray tomato grower from Doddaballapur. The serious market is short.","companion":"Two reminder-opens already this week — Sunday morning is settling in. Everyone wanders off, everyone reconvenes with something chosen.","mover":"Sunday 8am, 45 minutes, ingredients that genuinely change the week's cooking. The cleanest weekend-morning return on time."},"ctaQuestion":{"wanderer":"See who's bringing heirloom this week?","curator":"View the farm-and-baker list?","companion":"See the family Sunday plan?","mover":"View the 45-minute market route?"}},
-    {"id":12,"image":"assets/fashion_handloom.jpg","title":"A festive<br>handloom edit.","sub":"Hand-woven silks in jewel tones — limited pieces, made the slow way.","tag":"Fashion · Handloom","timeLabel":"8:21 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"Same instinct as the Bidriware shelf. Three days per weave, limited runs, sourcing on the label — pieces that survive a wardrobe purge.","curator":"Last month's Bagru search lands here. Chanderi with zari borders, block-prints with the maker named — provenance shown, not implied.","companion":"Diwali two weeks out, the family table partly planned. Pieces that get explained at the dinner table, kept across years.","mover":"Festive drop this week, sizes go by Friday. Wishlist now, decide tomorrow — the inventory call writes itself."},"ctaQuestion":{"wanderer":"See the weaver's notes per piece?","curator":"View the Bagru and Chanderi capsules?","companion":"Wishlist for the festive table?","mover":"Wishlist your size now?"}},
-    {"id":13,"image":"content/images/tea_estate.jpg","title":"A tea-estate<br>weekend.","sub":"Mist, silence, and a bungalow porch with nothing to do but breathe.","tag":"Travel · 3 hrs away","timeLabel":"8:28 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"Mist on a Chikmagalur estate is its own dialect of silence. The smaller bungalows tend to be the last ones booked.","curator":"The single-origin Coorg estate saved in March sits in this same neighbourhood. The Chikmagalur side carries heritage bungalows worth a separate trip.","companion":"Three weeks since the kid-friendly trips search. Long weekend in 18 days, family-pace, three hours out — the trip everyone exhales into.","mover":"Long weekend in 18 days, post-monsoon rates still holding, availability tightening. Signal stack here is unusually clean — read once, decide."},"ctaQuestion":{"wanderer":"See the smaller bungalow porches?","curator":"View the heritage Chikmagalur estates?","companion":"See the long-weekend family stays?","mover":"View availability for the long weekend?"}},
-    {"id":14,"image":"content/images/pottery_studio.jpg","title":"The pottery class<br>you bookmarked.","sub":"A beginner wheel-throwing batch just opened — the one you saved in March.","tag":"New batch · weekends","timeLabel":"9:31 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"Hands, clay, an hour without a screen. A discipline that resists optimisation — which is exactly why it sticks.","curator":"That master-class trailer two weeks back was the early signal. Same studio, beginner batch, the shaping technique still done by hand.","companion":"A Saturday format that holds two adults and a child each making something — rare to find, the kind of afternoon kids talk about later.","mover":"Six-week batch, Saturday slots, a real skill on the other end. The March bookmark was correct read — this batch is the one."},"ctaQuestion":{"wanderer":"See the studio's recent work?","curator":"View the master potter's curriculum?","companion":"See the family-friendly batch?","mover":"View weekend batch dates?"}},
-    {"id":15,"image":"content/images/art_gallery.jpg","title":"A new show<br>you'd actually like.","sub":"Based on the three exhibitions you saved, this abstract opening is your room.","tag":"Opening · Friday","timeLabel":"9:27 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"The shows that stay with you tend to be the ones that take a minute to settle. Friday opening, before the wall texts get crowded.","curator":"This gallery rarely shows abstract expressionism at this scale — the preview hour is the calmer one to read the works properly.","companion":"A Friday evening the household can drift through together — quiet enough for the kids, slow enough that everyone actually looks.","mover":"Friday preview, RSVP open, gallery 12 minutes from the office. The early slot is cleaner than the opening-night noise."},"ctaQuestion":{"wanderer":"See the artist's earlier work?","curator":"View the curator's notes?","companion":"See if the show is family-friendly?","mover":"View Friday preview details?"}},
-    {"id":16,"image":"content/images/stargazing.jpg","title":"A stargazing<br>night drive.","sub":"Clear skies and a new moon — the conditions you waited for last time.","tag":"New moon · Saturday","timeLabel":"9:58 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"The conditions stack rarely — new moon, clear forecast, post-monsoon air all on the same Saturday. Next equivalent night is in late July.","curator":"The Milky Way core is visible from 60km out on Saturday. The sites south of Bangalore carry less light pollution than the maps suggest.","companion":"A Saturday night the kids talk about for years — drive out together, blanket, thermos, no phones. The sky finally cooperates.","mover":"New moon confirmed, forecast clear, 65km route. The four-week window is open this Saturday only — read the conditions and move."},"ctaQuestion":{"wanderer":"See dark-sky spots off the highway?","curator":"View the observation-quality map?","companion":"See the family Saturday-night plan?","mover":"View the 65km drive route?"}},
-    {"id":17,"image":"content/images/travel_coorg.jpg","title":"Coorg,<br>after the rains.","sub":"Coffee-estate homestays, misty mornings, the South India you keep meaning to see.","tag":"Travel · 5 hrs away","timeLabel":"8:31 PM · Bangalore","layout":"layout-bl","agentLine":{"wanderer":"The May searches stayed under 200km. Coorg sits a touch beyond — but the road in after the rains is one of the south's best driving stretches.","curator":"The single-origin estate saved in March is here. Kodava cooking, coffee blossoms, the specific green that arrives only this fortnight.","companion":"The link forwarded to the family group two weeks back is suddenly timed right. Five hours out, family-pace homestays, the long weekend in view.","mover":"Last month's almost-booking is now post-monsoon priced. Diwali rates lift in 9 days — the read is clean, the action is now."},"ctaQuestion":{"wanderer":"See homestays off the main road?","curator":"View the single-origin coffee estates?","companion":"See family homestays for the long weekend?","mover":"View Diwali-weekend availability?"}},
-    {"id":18,"image":"content/images/garden_cafe.jpg","title":"A garden café,<br>fairy-lit.","sub":"Tables under the trees, slow afternoons, the kind of place you linger.","tag":"Cafés · Al fresco","timeLabel":"8:12 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"The kind of place that doesn't photograph well — which is the recommendation. Best on a weekday afternoon when the city forgets it's there.","curator":"Single-origin pour-over, tables spaced for actual conversation, no music tuned for the algorithm. A rare format, well-held.","companion":"Last Sunday's home brunch was the warmup — this one's slower, shaded, the kind of long lunch where everyone refuses to leave.","mover":"Sunday seating still open, 12-minute drive, no friction. The easiest good decision in this week's queue."},"ctaQuestion":{"wanderer":"See the quieter garden corners?","curator":"View the seasonal chef menu?","companion":"See the family Sunday menu?","mover":"View Sunday availability?"}},
-    {"id":19,"image":"content/images/jazz_lounge.jpg","title":"A jazz night<br>at your usual.","sub":"The trio you saved last month is back at the lounge you keep returning to.","tag":"Tonight · 9 PM","timeLabel":"9:02 PM · Bangalore","layout":"layout-center","agentLine":{"wanderer":"The room with a listening crowd is rarer than the venue. The trio's last set here was the one with the late ballad — they're back tonight.","curator":"Same trio reading Coltrane standards — the way they negotiate the bridge in 'Naima' is worth the trip alone.","companion":"Past 9pm — past the household evening. A Sunday-afternoon set, if one runs, would land warmer for everyone.","mover":"Last night's late calendar scan was for this. Trio's on tonight at 9pm — the table read shifts by the hour."},"ctaQuestion":{"wanderer":"See tonight's setlist?","curator":"View the trio's repertoire?","companion":"See if a Sunday set exists?","mover":"View tonight's table status?"}},
-    {"id":20,"image":"content/images/mysore_silk.jpg","title":"A weave<br>worth keeping.","sub":"You bought from an artisan I showed once — they have a new festive collection.","tag":"Heritage · curated","timeLabel":"10:10 PM · Bangalore","layout":"layout-br","agentLine":{"wanderer":"Pattern keeps surfacing — small named makers, slow runs, no scale. This weaver's archive is the one to study before the festive drop crowds it.","curator":"Three Sundays running on this weaver's archive. Interlocked zari, the heritage Mysore weight — the new festive capsule lands this week.","companion":"The festive table is half-planned, the saris are the open question. A piece that gets explained at gatherings, kept across years, eventually passed on.","mover":"Drop is this week, sizes move fast at this tier. Wishlist now — Friday's the call point."},"ctaQuestion":{"wanderer":"See the weaver's archive pieces?","curator":"View the new festive capsule?","companion":"Wishlist for the family festive table?","mover":"Wishlist the festive drop?"}}
+    {"id": 1, "image": "content/images/coorgi_coffee.jpg", "title": "The Coorgi<br>Coffee Ritual.", "sub": "A 15-minute drip — your weeknight pause, the way you like it slow.", "tag": "Culture · Culinary", "timeLabel": "7:45 PM · Bangalore", "layout": "layout-bl", "agentLine": {"wanderer": "You opened the Bidriware artisan card three evenings this week. Same shape of attention here — small estate, slow brew, easy to walk past.", "curator": "You scrolled past the chain coffee card on Tuesday. So — single-origin Chikmagalur, brass filter, a steep that holds the bean's character.", "companion": "You picked \"Slow morning\" back in May. Two months into the cool-evening stretch, this is the version that fits a household weeknight.", "mover": "It's 7:45pm — past your peak hour. Fifteen minutes, one ritual, the cleanest reset before the next thing on your evening."}, "becauseChip": {"wanderer": "3 opens of the Bidriware artisan card this week", "curator": "You scrolled past the chain coffee card on Tuesday", "companion": "You picked \"Slow morning\" in May", "mover": "You're on Glance most evenings around 7:45pm"}, "chipDetails": {"wanderer": ["3 opens of the Bidriware artisan card this week", "You watched the Hampi sunrise card to the end Sunday", "You scrolled past two Goa beach cards last week"], "curator": ["You scrolled past the chain coffee card on Tuesday", "You opened the Mysore weaver's archive 3 Sundays running", "Coorg single-origin estate is your saved card"], "companion": ["You picked \"Slow morning\" in setup", "Family-friendly mode is on", "You returned to the farmers-market reminder twice"], "mover": ["You're on Glance most evenings around 7:45pm", "You said yes to the Coorg homestay last month", "You skipped the slow-reading-hour card twice this week"]}, "ctaQuestion": {"wanderer": "See the smaller estates worth knowing?", "curator": "View the estates ranked by steep style?", "companion": "See the at-home brewing guide?", "mover": "View the 15-minute method?"}},
+    {"id": 2, "image": "content/images/karavalli_thali.jpg", "title": "Lunch<br>at Karavalli.", "sub": "A coastal Karnataka feast — your weekend, lived right in the city.", "tag": "Restaurants · Heritage", "timeLabel": "8:18 PM · Bangalore", "layout": "layout-bl", "agentLine": {"wanderer": "You watched the Bidriware provenance card to the end last week. Same shape of attention — kitchens that hold a tradition without dressing it up.", "curator": "You returned to the chef's-table notice twice this fortnight. Banana leaf, kane curry done correctly, the toddy-shop room inside a city hotel.", "companion": "You saved the Coorg homestay card two weeks ago. The same shape of family weekend, but as a long lunch in the city.", "mover": "You liked the Karavalli card last week. The chef's-table window for this weekend opens tomorrow — same restaurant, sharper format."}, "becauseChip": {"wanderer": "You watched the Bidriware provenance card end-to-end", "curator": "2 returns to the chef's-table notice this fortnight", "companion": "You saved the Coorg homestay 2 weeks ago", "mover": "You liked the Karavalli card last week"}, "chipDetails": {"wanderer": ["You watched the Bidriware provenance card end-to-end", "3 opens of the Bidriware artisan card this week", "You opened a Jaipur side-streets card at 7am Sunday"], "curator": ["2 returns to the chef's-table notice this fortnight", "You opened the Mysore weaver's archive 3 Sundays running", "You scrolled past the chain coffee card on Tuesday"], "companion": ["You saved the Coorg homestay 2 weeks ago", "You picked \"Slow morning\" in setup", "Family-friendly mode is on"], "mover": ["You liked the Karavalli card last week", "You said yes to the Coorg homestay last month", "You're on Glance most weekday evenings"]}, "ctaQuestion": {"wanderer": "See the off-menu coastal items?", "curator": "View the chef's tasting menu?", "companion": "See the family long-table options?", "mover": "View this weekend's availability?"}},
+    {"id": 3, "image": "content/images/travel_hampi.jpg", "title": "Hampi,<br>at golden hour.", "sub": "Boulder temples and lost-empire ruins — a UNESCO wonder, an overnight away.", "tag": "Travel · Heritage", "timeLabel": "8:33 PM · Bangalore", "layout": "layout-center", "agentLine": {"wanderer": "You watched the Hampi sunrise card to the end last Sunday. November mornings here are clear, cool, almost no crowds — the year's best window.", "curator": "Vijayanagara at golden hour is an art history problem and a landscape problem at once. The lesser-photographed Achyutaraya temple is the read worth doing first.", "companion": "Sunday's Cubbon Park open, plus the kid-friendly trip cards landing well. Two days, kid-pace distances, the kind everyone talks about after.", "mover": "You opened this card twice this morning. Long weekend in 18 days — overnight from Bangalore, two full days, the dates align cleanly."}, "becauseChip": {"wanderer": "You watched the Hampi sunrise card to the end Sunday", "curator": "UNESCO heritage; preview-quality light this fortnight", "companion": "Family-friendly mode is on", "mover": "You opened this card twice this morning"}, "chipDetails": {"wanderer": ["You watched the Hampi sunrise card to the end Sunday", "You picked \"Forest Trail\" in setup", "3 opens of the Bidriware artisan card this week"], "curator": ["UNESCO heritage site, peak visiting window", "You watched the master potter's trailer end-to-end", "You opened the Mysore weaver's archive 3 Sundays running"], "companion": ["Family-friendly mode is on", "You opened the Cubbon Park card together last Sunday", "You saved the Coorg homestay 2 weeks ago"], "mover": ["You opened this card twice this morning", "Long weekend in 18 days", "You said yes to the Coorg homestay last month"]}, "ctaQuestion": {"wanderer": "See the temples beyond Virupaksha?", "curator": "View the morning-light walking route?", "companion": "See the family two-day plan?", "mover": "View the long-weekend itinerary?"}},
+    {"id": 4, "image": "content/images/monsoon_street.jpg", "title": "The rain-washed<br>streets of Indiranagar.", "sub": "Glistening roads, warm cafe windows — the city at its most cinematic.", "tag": "Tonight · near you", "timeLabel": "7:49 PM · Bangalore", "layout": "layout-bl", "agentLine": {"wanderer": "You watched a monsoon-streets card to the end two weeks ago. The city is doing it again right now — these accidents don't repeat for long.", "curator": "Petrichor over filter coffee, neon on wet tarmac. The 12th Main side-streets are where Bangalore briefly looks composed.", "companion": "A 30-minute chai walk before the post-dinner wind-down — kid-paced, with the city slowing itself down.", "mover": "Rain just lifted in Indiranagar. Two hours of walkable wet streets before the puddles dry — the window is now."}, "becauseChip": {"wanderer": "You watched a monsoon card end-to-end 2 weeks ago", "curator": "Live weather: rain just lifted in Indiranagar", "companion": "Family-friendly mode is on", "mover": "Live weather: rain just lifted, 2-hr window"}, "chipDetails": {"wanderer": ["You watched a monsoon card end-to-end 2 weeks ago", "You opened a Jaipur side-streets card at 7am Sunday", "Live weather: rain just lifted in Indiranagar"], "curator": ["Live weather: rain just lifted in Indiranagar", "Cinematic visual conditions, ~2 hours", "Indiranagar is your nearest ward"], "companion": ["Family-friendly mode is on", "Walk under 30 minutes, kid-pace", "Post-dinner wind-down window"], "mover": ["Live weather: rain just lifted, 2-hr window", "Indiranagar is 12 minutes from you", "You're on Glance most evenings"]}, "ctaQuestion": {"wanderer": "See the 12th Main side-streets?", "curator": "View the older cafes worth ducking into?", "companion": "See nearby family walks under 30 mins?", "mover": "View the 2-hour wet-streets loop?"}},
+    {"id": 5, "image": "content/images/farmers_market.jpg", "title": "The Sunday<br>farmers market.", "sub": "Heirloom produce, fresh flowers, the city before it wakes up.", "tag": "This weekend · 8 AM", "timeLabel": "8:02 PM · Bangalore", "layout": "layout-bl", "agentLine": {"wanderer": "You opened a Jaipur side-streets card at 7am Sunday. The Sunday market here is the same hour — Bangalore before it wakes.", "curator": "This week's heirloom ridge gourd, the Bagepalli baker who sells out by 8:30, the zero-spray tomato grower from Doddaballapur.", "companion": "You returned to this reminder twice this week. Sunday morning is settling in — everyone wanders off, everyone reconvenes with something chosen.", "mover": "You're on Glance most weekday mornings around 7. Sunday 8am, 45 minutes, ingredients that genuinely change the week's cooking."}, "becauseChip": {"wanderer": "You opened a Jaipur side-streets card at 7am Sunday", "curator": "Specific farms tracked: heirloom + zero-spray", "companion": "2 returns to this reminder this week", "mover": "You're on Glance most mornings around 7"}, "chipDetails": {"wanderer": ["You opened a Jaipur side-streets card at 7am Sunday", "You picked \"Forest Trail\" in setup", "Early-morning city cards are your strongest pattern"], "curator": ["Specific farms: heirloom + zero-spray growers", "You scrolled past the chain coffee card on Tuesday", "You watched the Bidriware provenance card end-to-end"], "companion": ["2 returns to this reminder this week", "Family-friendly mode is on", "You picked \"Slow morning\" in setup"], "mover": ["You're on Glance most mornings around 7", "Market closes at 11am — 3-hour window Sunday", "You picked \"Take me somewhere new\" in setup"]}, "ctaQuestion": {"wanderer": "See who's bringing heirloom this week?", "curator": "View the farm-and-baker list?", "companion": "See the family Sunday plan?", "mover": "View the 45-minute market route?"}},
+    {"id": 6, "image": "assets/fashion_handloom.jpg", "title": "A festive<br>handloom edit.", "sub": "Hand-woven silks in jewel tones — limited pieces, made the slow way.", "tag": "Fashion · Handloom", "timeLabel": "8:21 PM · Bangalore", "layout": "layout-center", "agentLine": {"wanderer": "Bidriware was three opens this week — same handcraft instinct here. Three days per weave, limited runs, sourcing on the label.", "curator": "You asked the shopping agent about Bagru block-prints last month. Chanderi with zari borders here, makers named — provenance shown, not implied.", "companion": "Diwali is two weeks out and family-friendly mode is on. Pieces that get explained at the dinner table, kept across years, eventually passed on.", "mover": "Festive drop lands this week. Wishlist now, decide tomorrow — sizes at this tier go by Friday."}, "becauseChip": {"wanderer": "3 opens of the Bidriware artisan card this week", "curator": "You asked the shopping agent about Bagru sourcing", "companion": "Family mode on; Diwali in 14 days", "mover": "Festive drop this week; sizes move by Friday"}, "chipDetails": {"wanderer": ["3 opens of the Bidriware artisan card this week", "Hand-craft + heritage is your strongest pattern", "You watched the Bidriware provenance card end-to-end"], "curator": ["You asked the shopping agent about Bagru sourcing", "You opened the Mysore weaver's archive 3 Sundays running", "Provenance + maker names are your filter"], "companion": ["Family-friendly mode is on", "Diwali in 14 days — festive table planning", "You picked \"Slow morning\" in setup"], "mover": ["Festive drop this week; sizes move by Friday", "You said yes to the Coorg homestay last month", "Wishlist enabled on fashion cards"]}, "ctaQuestion": {"wanderer": "See the weaver's notes per piece?", "curator": "View the Bagru and Chanderi capsules?", "companion": "Wishlist for the festive table?", "mover": "Wishlist your size now?"}},
+    {"id": 7, "image": "content/images/tea_estate.jpg", "title": "A tea-estate<br>weekend.", "sub": "Mist, silence, and a bungalow porch with nothing to do but breathe.", "tag": "Travel · 3 hrs away", "timeLabel": "8:28 PM · Bangalore", "layout": "layout-center", "agentLine": {"wanderer": "You picked \"Forest Trail\" in May. Mist on a Chikmagalur estate is its own dialect of silence — the smaller bungalows tend to go unbooked the longest.", "curator": "You saved the single-origin Coorg estate in March. The Chikmagalur side carries heritage bungalows worth a separate trip.", "companion": "The Coorg homestay save lines up with the long weekend in 18 days. Family-pace, three hours out, the trip everyone exhales into.", "mover": "You said yes to the Coorg homestay last month. Long weekend in 18 days, post-monsoon rates still holding, availability tightening."}, "becauseChip": {"wanderer": "You picked \"Forest Trail\" in setup", "curator": "You saved a single-origin Coorg estate in March", "companion": "You saved the Coorg homestay 2 weeks ago", "mover": "You said yes to the Coorg homestay last month"}, "chipDetails": {"wanderer": ["You picked \"Forest Trail\" in setup", "You watched the Hampi sunrise card to the end", "You scrolled past two Goa beach cards last week"], "curator": ["You saved a single-origin Coorg estate in March", "You asked the shopping agent about Bagru sourcing", "Estate-stay heritage is your saved-card pattern"], "companion": ["You saved the Coorg homestay 2 weeks ago", "Family-friendly mode is on", "Long weekend in 18 days"], "mover": ["You said yes to the Coorg homestay last month", "Long weekend in 18 days", "Post-monsoon rates still holding"]}, "ctaQuestion": {"wanderer": "See the smaller bungalow porches?", "curator": "View the heritage Chikmagalur estates?", "companion": "See the long-weekend family stays?", "mover": "View availability for the long weekend?"}},
+    {"id": 8, "image": "content/images/pottery_studio.jpg", "title": "The pottery class<br>you bookmarked.", "sub": "A beginner wheel-throwing batch just opened — the one you saved in March.", "tag": "New batch · weekends", "timeLabel": "9:31 PM · Bangalore", "layout": "layout-center", "agentLine": {"wanderer": "You saved this card back in March. Hands, clay, an hour without a screen — a discipline that resists optimisation, which is why it sticks.", "curator": "You watched the master potter's trailer to the end two weeks ago. Same studio, beginner batch, the shaping technique still done by hand.", "companion": "A Saturday format that holds two adults and a child each making something — kids talk about it later, and the seats are open.", "mover": "You saved this card in March. New batch lands this week — six-week Saturday commitment, real skill on the other end."}, "becauseChip": {"wanderer": "You saved this card in March", "curator": "You watched the master potter's trailer end-to-end", "companion": "Family-friendly mode is on", "mover": "You saved this card in March"}, "chipDetails": {"wanderer": ["You saved this card in March", "Hand-craft is your dominant pattern", "You opened the Bidriware artisan card 3 evenings this week"], "curator": ["You watched the master potter's trailer end-to-end", "Same studio you returned to twice", "Beginner batch with hand-shaping technique"], "companion": ["Family-friendly mode is on", "Saturday format with kids' seats available", "You picked \"Slow morning\" in setup"], "mover": ["You saved this card in March", "Batch starts in 11 days", "Six-week Saturday commitment, fixed schedule"]}, "ctaQuestion": {"wanderer": "See the studio's recent work?", "curator": "View the master potter's curriculum?", "companion": "See the family-friendly batch?", "mover": "View weekend batch dates?"}},
+    {"id": 9, "image": "content/images/stargazing.jpg", "title": "A stargazing<br>night drive.", "sub": "Clear skies and a new moon — the conditions you waited for last time.", "tag": "New moon · Saturday", "timeLabel": "9:58 PM · Bangalore", "layout": "layout-bl", "agentLine": {"wanderer": "Night-sky cards have been your slowest skips. The conditions stack rarely — new moon, clear forecast, post-monsoon air, all this Saturday.", "curator": "The Milky Way core is visible from 60km out on Saturday. The sites south of Bangalore carry less light pollution than the maps suggest.", "companion": "A Saturday night the kids talk about for years — drive out together, blanket, thermos, no phones. The sky finally cooperates.", "mover": "New moon confirmed, forecast clear, 65km route. The four-week window opens this Saturday — and you're on Glance late enough to catch it."}, "becauseChip": {"wanderer": "You picked \"Forest Trail\"; night-sky cards run slow", "curator": "Live conditions: new moon + clear forecast Saturday", "companion": "Family-friendly mode is on", "mover": "You're on Glance most nights 10–11pm"}, "chipDetails": {"wanderer": ["You picked \"Forest Trail\" in setup", "Night-sky cards are your slowest skips", "Conditions stack rarely (next: late July)"], "curator": ["New moon + clear forecast on Saturday", "60km dark-sky sites south of Bangalore", "Post-monsoon clarity, 4-week window"], "companion": ["Family-friendly mode is on", "Saturday night, family-pace plan", "Outdoor & quiet evenings rank high in setup"], "mover": ["You're on Glance most nights 10–11pm", "New moon confirmed, forecast clear", "65km route, weather-dependent — Saturday only"]}, "ctaQuestion": {"wanderer": "See dark-sky spots off the highway?", "curator": "View the observation-quality map?", "companion": "See the family Saturday-night plan?", "mover": "View the 65km drive route?"}},
+    {"id": 10, "image": "content/images/mysore_silk.jpg", "title": "A weave<br>worth keeping.", "sub": "A new festive collection from a heritage Mysore weaver.", "tag": "Heritage · curated", "timeLabel": "10:10 PM · Bangalore", "layout": "layout-br", "agentLine": {"wanderer": "You opened this weaver's archive three Sundays running. The festive capsule lands this week — the archive pieces are the ones to study before the new drop crowds them.", "curator": "Three Sundays running on this weaver's archive. Interlocked zari, the heritage Mysore weight — same provenance discipline you've been tracking.", "companion": "The festive table is half-planned and the saris are the open question. A piece that gets explained at gatherings, kept across years, eventually passed on.", "mover": "Drop is this week, sizes move fast at this tier. You're a fast decider — wishlist now, Friday is the call."}, "becauseChip": {"wanderer": "3 Sunday returns to this weaver's archive", "curator": "You asked the shopping agent about Bagru sourcing", "companion": "Family mode on; Diwali in 14 days", "mover": "Festive drop this week; sizes move by Friday"}, "chipDetails": {"wanderer": ["3 Sunday returns to this weaver's archive", "You watched the Bidriware provenance card end-to-end", "Hand-craft + heritage is your strongest pattern"], "curator": ["You asked the shopping agent about Bagru sourcing", "You watched the master potter's trailer end-to-end", "Heritage textile, interlocked-zari technique"], "companion": ["Family-friendly mode is on", "Diwali in 14 days — festive planning", "Multi-generational gifting context"], "mover": ["Festive drop this week; sizes move by Friday", "You said yes to the Coorg homestay last month", "Wishlist enabled on fashion cards"]}, "ctaQuestion": {"wanderer": "See the weaver's archive pieces?", "curator": "View the new festive capsule?", "companion": "Wishlist for the family festive table?", "mover": "Wishlist the festive drop?"}}
   ]
 };
 
@@ -670,6 +927,25 @@ function typeSlow(el, text, onDone) {
 // ============= RENDER IMMERSIVE FEED =============
 function renderFeed() {
   stage.innerHTML = '';
+
+  // Persona intro card — always Card 0, regenerated on persona switch
+  const intro = document.createElement('div');
+  intro.className = 'card persona-intro';
+  intro.dataset.idx = '-1';  // sentinel — refreshed by renderIntroCard
+  intro.id = 'persona-intro-card';
+  intro.innerHTML = `
+    <div class="card-image"></div>
+    <div class="intro-content">
+      <div class="intro-eyebrow"><span id="introEyebrowText">Now showing as</span></div>
+      <div class="intro-name" id="introName">—</div>
+      <div class="intro-tagline" id="introTagline">—</div>
+      <div class="intro-sketch" id="introSketch">—</div>
+      <div class="intro-signals" id="introSignals"></div>
+      <div class="intro-foot">Scroll to begin the feed</div>
+    </div>
+  `;
+  stage.appendChild(intro);
+
   DATA.cards.forEach((card, idx) => {
     const div = document.createElement('div');
     div.className = `card ${card.layout}`;
@@ -684,6 +960,17 @@ function renderFeed() {
           <span class="agent-mascot"></span>
           <span class="typed-text"></span>
         </div>
+        <div class="because-wrap">
+          <button type="button" class="because-chip" tabindex="0" aria-expanded="false" aria-label="Show supporting signals">
+            <span class="because-label">Because</span>
+            <span class="because-text"></span>
+            <svg class="because-chevron" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 4 5 7 8 4"/></svg>
+          </button>
+          <div class="because-detail" role="region">
+            <div class="because-detail-title">Signals informing this card</div>
+            <ul class="because-detail-list"></ul>
+          </div>
+        </div>
         <div class="card-actions">
           <div class="cta-button">
             <span class="cta-dock"></span>
@@ -695,6 +982,7 @@ function renderFeed() {
     `;
     div.querySelector('.agent-mascot').appendChild(mascotTpl.content.cloneNode(true));
     stage.appendChild(div);
+    bindChipHandlers(div);
   });
 }
 
@@ -703,7 +991,15 @@ function activateCard(idx, animateTyping = true) {
   activeCardIndex = idx;
   const cards = stage.querySelectorAll('.card');
   cards.forEach((c, i) => c.classList.toggle('active', i === idx));
-  const card = DATA.cards[idx];
+
+  // Index 0 = persona intro card (handled separately)
+  if (idx === 0) {
+    document.getElementById('timeMark').textContent = '';
+    renderIntroCard();
+    return;
+  }
+
+  const card = DATA.cards[idx - 1];  // shift: DOM index 1 = card 0
   document.getElementById('timeMark').textContent = card.timeLabel;
 
   const cardEl = cards[idx];
@@ -711,11 +1007,26 @@ function activateCard(idx, animateTyping = true) {
   const typedEl = cardEl.querySelector('.typed-text');
   const ctaBtn = cardEl.querySelector('.cta-button');
   const ctaQuestion = cardEl.querySelector('.cta-question');
+  const becauseWrap = cardEl.querySelector('.because-wrap');
+  const becauseChip = cardEl.querySelector('.because-chip');
+  const becauseText = cardEl.querySelector('.because-text');
+  const becauseDetail = cardEl.querySelector('.because-detail');
+  const becauseDetailList = cardEl.querySelector('.because-detail-list');
   const text = card.agentLine[activePersonaId];
+  const becauseStr = (card.becauseChip && card.becauseChip[activePersonaId]) || '';
+  const detailItems = (card.chipDetails && card.chipDetails[activePersonaId]) || [];
 
   // Reset
   ctaBtn.classList.remove('landed');
+  becauseWrap && becauseWrap.classList.remove('shown');
+  becauseChip && becauseChip.classList.remove('expanded');
+  becauseDetail && becauseDetail.classList.remove('shown');
+  if (becauseChip) becauseChip.setAttribute('aria-expanded', 'false');
   typedEl.textContent = '';
+  if (becauseText) becauseText.textContent = becauseStr;
+  if (becauseDetailList) {
+    becauseDetailList.innerHTML = detailItems.map(s => `<li class="because-detail-item">${escHtml(s)}</li>`).join('');
+  }
 
   // Mood per persona
   lineEl.classList.remove('mood-curious','mood-confident','mood-proud','mood-thinking','mood-hesitant');
@@ -729,34 +1040,84 @@ function activateCard(idx, animateTyping = true) {
       lineEl.classList.add('is-typing');
       typeSlow(typedEl, text, () => {
         lineEl.classList.remove('is-typing');
-        setTimeout(() => ctaBtn.classList.add('landed'), 300);
+        // Chip animates in 350ms after typing completes
+        if (becauseStr && becauseWrap) setTimeout(() => becauseWrap.classList.add('shown'), 350);
+        setTimeout(() => ctaBtn.classList.add('landed'), 700);
       });
     }, 800);
   } else {
     typedEl.textContent = text;
+    if (becauseStr && becauseWrap) becauseWrap.classList.add('shown');
     ctaBtn.classList.add('landed');
   }
+}
+
+// Toggle a chip open/closed
+function toggleBecauseChip(chipEl) {
+  const expanded = chipEl.classList.toggle('expanded');
+  chipEl.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  const detail = chipEl.parentElement.querySelector('.because-detail');
+  if (detail) detail.classList.toggle('shown', expanded);
+}
+
+// Bind chip click + keyboard (Enter/Space) on a card element
+function bindChipHandlers(cardEl) {
+  const chip = cardEl.querySelector('.because-chip');
+  if (!chip || chip.dataset.bound) return;
+  chip.dataset.bound = '1';
+  chip.addEventListener('click', (e) => { e.stopPropagation(); toggleBecauseChip(chip); });
+  chip.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleBecauseChip(chip);
+    } else if (e.key === 'Escape' && chip.classList.contains('expanded')) {
+      e.preventDefault();
+      toggleBecauseChip(chip);
+    }
+  });
 }
 
 // Live-swap reasoning on persona change for current card
 function reswapCurrentCard() {
   if (mode !== 'immersive') return;
+
+  // Intro card just re-renders
+  if (activeCardIndex === 0) {
+    renderIntroCard();
+    return;
+  }
+
   const cards = stage.querySelectorAll('.card');
   const cardEl = cards[activeCardIndex];
   if (!cardEl) return;
-  const card = DATA.cards[activeCardIndex];
+  const card = DATA.cards[activeCardIndex - 1];
   const lineEl = cardEl.querySelector('.agent-line');
   const typedEl = cardEl.querySelector('.typed-text');
   const ctaBtn = cardEl.querySelector('.cta-button');
   const ctaQuestion = cardEl.querySelector('.cta-question');
+  const becauseWrap = cardEl.querySelector('.because-wrap');
+  const becauseChip = cardEl.querySelector('.because-chip');
+  const becauseText = cardEl.querySelector('.because-text');
+  const becauseDetail = cardEl.querySelector('.because-detail');
+  const becauseDetailList = cardEl.querySelector('.because-detail-list');
+  const becauseStr = (card.becauseChip && card.becauseChip[activePersonaId]) || '';
+  const detailItems = (card.chipDetails && card.chipDetails[activePersonaId]) || [];
 
   // Update mood + CTA + tag colour will follow theme update automatically
   clearTyping();
   ctaBtn.classList.remove('landed');
+  if (becauseWrap) becauseWrap.classList.remove('shown');
+  if (becauseChip) { becauseChip.classList.remove('expanded'); becauseChip.setAttribute('aria-expanded','false'); }
+  if (becauseDetail) becauseDetail.classList.remove('shown');
   lineEl.classList.add('swapping');
 
   setTimeout(() => {
     typedEl.textContent = '';
+    if (becauseText) becauseText.textContent = becauseStr;
+    if (becauseDetailList) {
+      becauseDetailList.innerHTML = detailItems.map(s => `<li class="because-detail-item">${escHtml(s)}</li>`).join('');
+    }
     lineEl.classList.remove('swapping');
     lineEl.classList.remove('mood-curious','mood-confident','mood-proud','mood-thinking','mood-hesitant');
     lineEl.classList.add(`mood-${getActivePersona().defaultMood}`);
@@ -765,7 +1126,8 @@ function reswapCurrentCard() {
     lineEl.classList.add('is-typing');
     typeSlow(typedEl, card.agentLine[activePersonaId], () => {
       lineEl.classList.remove('is-typing');
-      setTimeout(() => ctaBtn.classList.add('landed'), 200);
+      if (becauseStr && becauseWrap) setTimeout(() => becauseWrap.classList.add('shown'), 250);
+      setTimeout(() => ctaBtn.classList.add('landed'), 600);
     });
   }, 300);
 }
@@ -775,7 +1137,8 @@ function refreshAllCardsForPersona() {
   const cards = stage.querySelectorAll('.card');
   cards.forEach((cardEl, i) => {
     if (i === activeCardIndex) return; // current card handled separately
-    const card = DATA.cards[i];
+    if (i === 0) return; // intro card handled by renderIntroCard
+    const card = DATA.cards[i - 1];
     const lineEl = cardEl.querySelector('.agent-line');
     const typedEl = cardEl.querySelector('.typed-text');
     const ctaQuestion = cardEl.querySelector('.cta-question');
@@ -788,10 +1151,37 @@ function refreshAllCardsForPersona() {
   });
 }
 
+// Render the persona intro card (Card 0)
+function renderIntroCard() {
+  const p = getActivePersona();
+  const eyebrow = document.getElementById('introEyebrowText');
+  const nameEl = document.getElementById('introName');
+  const taglineEl = document.getElementById('introTagline');
+  const sketchEl = document.getElementById('introSketch');
+  const signalsEl = document.getElementById('introSignals');
+  if (!nameEl) return;
+
+  if (eyebrow) eyebrow.textContent = `Now showing the feed as`;
+  nameEl.textContent = p.name;
+  taglineEl.textContent = `"${p.tagline}"`;
+  sketchEl.textContent = p.sketch;
+
+  // Signature signals: pick 3 of the strongest from recentActivity
+  signalsEl.innerHTML = '';
+  const signature = (p.recentActivity || []).slice(0, 3);
+  signature.forEach(ev => {
+    const chip = document.createElement('span');
+    chip.className = 'intro-signal-chip';
+    chip.textContent = ev.what;
+    signalsEl.appendChild(chip);
+  });
+}
+
 // ============= NAVIGATION =============
 function nav(dir) {
   if (mode === 'compare') { navCompare(dir); return; }
-  const newIdx = Math.max(0, Math.min(DATA.cards.length - 1, activeCardIndex + dir));
+  // Stage has DATA.cards.length + 1 (the intro card at index 0)
+  const newIdx = Math.max(0, Math.min(DATA.cards.length, activeCardIndex + dir));
   if (newIdx === activeCardIndex) return;
   activateCard(newIdx, true);
 }
@@ -931,7 +1321,8 @@ function setMode(newMode) {
     stage.style.display = 'none';
     compareStage.classList.add('active');
     document.getElementById('scrollHint').textContent = '◀ ▶ to browse cards · click persona to switch';
-    compareCardIndex = activeCardIndex;
+    // Offset: stage has intro at 0, real cards 1..10. Compare uses 0..9.
+    compareCardIndex = Math.max(0, activeCardIndex - 1);
     renderCompare();
   }
 }
@@ -951,10 +1342,12 @@ function renderCompare() {
     cell.style.backgroundImage = `url('${card.image}')`;
     cell.style.setProperty('--cell-color', p.color);
     cell.style.setProperty('--cell-glow', p.glowColor);
+    const because = (card.becauseChip && card.becauseChip[p.id]) || '';
     cell.innerHTML = `
       <div class="compare-cell-tag">${p.name}</div>
       <div class="compare-cell-content">
         <div class="compare-cell-line">${card.agentLine[p.id]}</div>
+        ${because ? `<div class="compare-cell-because"><span class="ccb-label">Because</span> ${because}</div>` : ''}
         <div class="compare-cell-cta">${card.ctaQuestion[p.id]}</div>
       </div>
     `;
