@@ -909,6 +909,15 @@ function hexToRgba(hex, a) {
 
 function clearTyping() { typingTimers.forEach(clearTimeout); typingTimers = []; }
 
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Typewriter
 function typeSlow(el, text, onDone) {
   el.textContent = ''; let i = 0;
@@ -1361,7 +1370,11 @@ function init() {
   updatePersonaPill();
   buildDrawerTabs();
   renderFeed();
-  setTimeout(() => activateCard(0, true), 200);
+  // Allow ?card=N (1-10) URL param to jump straight to a card (skips intro)
+  const params = new URLSearchParams(window.location.search);
+  const cardParam = parseInt(params.get('card') || '0', 10);
+  const startIdx = (Number.isFinite(cardParam) && cardParam >= 0 && cardParam <= DATA.cards.length) ? cardParam : 0;
+  setTimeout(() => activateCard(startIdx, true), 200);
 }
 init();
 </script>
