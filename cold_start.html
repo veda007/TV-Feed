@@ -562,7 +562,13 @@
   #ixLayer { position:fixed; inset:0; z-index:60; display:none; }
   #ixLayer.show { display:block; }
   #ixScrim { position:absolute; inset:0; background:rgba(7,5,12,0.82); backdrop-filter:blur(28px) saturate(120%); -webkit-backdrop-filter:blur(28px) saturate(120%); }
-  #ixLayer.asking #ixScrim { background:rgba(7,5,12,0.9); }
+  #ixLayer.asking #ixScrim { background:rgba(7,5,12,0.74); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  /* asking state: image recedes, question is the moment — centered and prominent */
+  #ixLayer.asking .ix-followup { top:0; bottom:0; padding:0 6vw; align-items:center; justify-content:center; text-align:center; }
+  .ix-followup .ix-qctx { align-items:center; }
+  .ix-followup .ix-q { justify-content:center; font-size:clamp(30px,3.4vw,52px); }
+  .ix-followup .ix-qhint { text-align:center; color:var(--ink-2); }
+  .ix-payoff { justify-content:center; }
   .ix-l1 { position:absolute; left:0; right:0; bottom:0; z-index:2; padding:0 6vw 7vh;
     opacity:0; transform:translateY(22px); transition:opacity .45s, transform .45s; pointer-events:none; }
   #ixLayer.l1 .ix-l1 { opacity:1; transform:translateY(0); pointer-events:auto; }
@@ -1570,16 +1576,16 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
      Fires when a data-deep feed card's CTA is accepted: L0 (her card) → L1 (deep panel over
      her blurred image) → ONE auto-derived follow-up question on exit. Non-deep cards keep her
      quick onCardInterest ack. Options are derived from the card's OWN prefs (most-distinctive). */
-  const TAG_LABEL = {  // prefs token → human-readable "more X" follow-up label
-    travel:"more getaways", hills:"more hill escapes", beaches:"more beach trips",
-    roadtrip:"more road trips", nature:"more nature spots", parks:"more green escapes",
-    food:"more food spots", cafes:"more cafés", street:"more street food",
-    nightlife:"more nights out", social:"more social plans", culture:"more culture",
-    heritage:"more heritage", music:"more live music", entertainment:"more to watch",
-    wellness:"more wellness", fitness:"more fitness", calm:"more calm moments",
-    home:"more home ideas", minimal:"more minimal looks", tech:"more tech",
-    fashion:"more fashion", luxury:"more premium picks", productivity:"more focus tips",
-    family:"more family time", sustainability:"more sustainable picks",
+  const TAG_LABEL = {  // prefs token → voiced noun phrase (Title Case; "more" implied by the question)
+    travel:"Getaways", hills:"Hill escapes", beaches:"Beach trips",
+    roadtrip:"Road trips", nature:"Nature & green", parks:"Green escapes",
+    food:"Food spots", cafes:"Cafés", street:"Street food",
+    nightlife:"Nights out", social:"Social plans", culture:"Culture & arts",
+    heritage:"Heritage", music:"Live music", entertainment:"Things to watch",
+    wellness:"Wellness", fitness:"Fitness", calm:"Calm moments",
+    home:"Home & interiors", minimal:"Minimal style", tech:"Tech",
+    fashion:"Fashion", luxury:"Premium picks", productivity:"Focus & flow",
+    family:"Family time", sustainability:"Sustainable picks",
   };
   // rarity from Phase-0 counts — lower count = more distinctive, surfaced first
   const TAG_RARITY = { hills:2,beaches:2,luxury:2,roadtrip:6,street:5,parks:7,cafes:7,nature:7,
@@ -1595,7 +1601,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     // pad with the category itself if needed (max 2 derived)
     if(opts.length<2 && cat && TAG_LABEL[cat] && !seen.has(cat)){ opts.push([TAG_LABEL[cat],[cat],['cat:'+cat]]); seen.add(cat); }
     // always end with diversify — no positive/negative token, session-only "show me else" (taxonomy §5)
-    opts.push(["Something different", [], [], 'diversify']);
+    opts.push(["Surprise me", [], [], 'diversify']);
     return opts.slice(0,3);   // 2 derived + diversify = 3 total
   }
   function ixFacts(card){
@@ -1636,7 +1642,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     // follow-up content (revealed on exit)
     const opts=deriveFollowupOpts(card);
     document.getElementById('ixQctx').innerHTML=`<span class="ck">${(card.dataset.cat||'')}</span><span class="ct">${title}</span>`;
-    document.getElementById('ixQ').textContent='Would you like more of this?';
+    document.getElementById('ixQ').textContent='Want more like this in your feed?';
     const optsEl=document.getElementById('ixOpts'); optsEl.innerHTML='';
     opts.forEach((o,i)=>{ const b=document.createElement('button'); b.className='ix-opt'; b.textContent=o[0];
       b.onclick=()=>{ ixState.focus=i; ixPickOpt(i); }; optsEl.appendChild(b); });
