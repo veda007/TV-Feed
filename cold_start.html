@@ -522,10 +522,10 @@
   .vibe-tile .vibe-bg { position:absolute; inset:0; background-size:cover; background-position:center; z-index:0; }
   .vibe-tile::before { content:""; position:absolute; inset:0; z-index:1;
     background:linear-gradient(180deg,rgba(7,5,12,.05) 38%,rgba(7,5,12,.86)); }
-  .vibe-tile .vibe-label { position:relative; z-index:2; padding:14px 16px; }
-  .vibe-tile .vibe-tt { font-weight:600; font-size:clamp(15px,1.4vw,20px); line-height:1.15; color:#fff;
+  .vibe-tile .vibe-label { position:relative; z-index:2; padding:14px 16px; display:flex; flex-direction:column; align-items:flex-start; }
+  .vibe-tile .vibe-tt { display:block; font-weight:600; font-size:clamp(15px,1.4vw,20px); line-height:1.15; color:#fff;
     text-shadow:0 2px 12px rgba(0,0,0,.5); }
-  .vibe-tile .vibe-ts { font-size:clamp(10px,.95vw,12.5px); color:var(--ink-2); margin-top:3px; line-height:1.3; }
+  .vibe-tile .vibe-ts { display:block; font-size:clamp(10px,.95vw,12.5px); color:var(--ink-2); margin-top:3px; line-height:1.3; }
   /* focus (D-pad position) = outline + shimmer — separate from selected */
   .vibe-tile.foc { border-color:var(--vibe-foc-ring); transform:translateY(0) scale(1.05);
     box-shadow:0 0 0 3px rgba(181,163,255,.28), 0 26px 70px rgba(0,0,0,.55); }
@@ -544,6 +544,16 @@
   .card.vibe-question .vibe-hint { margin-top:2.4vh; font-size:13px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--ink-3); opacity:0; transition:opacity .3s; }
   .card.vibe-question .vibe-grid.revealed ~ .vibe-hint { opacity:1; }
+  /* footer CTAs — Continue appears once a tile is selected; Skip always available */
+  .card.vibe-question .vibe-cta-row { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:3vh; }
+  .vibe-continue { font-family:var(--ui,inherit); font-weight:800; font-size:18px; padding:15px 44px; border-radius:999px;
+    border:1px solid transparent; background:#fff; color:#1a0f33; cursor:pointer; transition:.18s;
+    opacity:0; transform:translateY(8px); pointer-events:none; }
+  .card.vibe-question .vibe-continue.show { opacity:1; transform:translateY(0); pointer-events:auto; }
+  .vibe-continue.foc, .vibe-continue:hover { box-shadow:0 0 0 4px rgba(255,255,255,.28),0 0 30px rgba(155,134,255,.4); }
+  .vibe-skip { font-family:var(--ui,inherit); font-weight:600; font-size:16px; padding:14px 28px; border-radius:999px;
+    background:rgba(255,255,255,.07); color:var(--ink-1); border:1px solid rgba(255,255,255,.18); cursor:pointer; transition:.18s; }
+  .vibe-skip.foc, .vibe-skip:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
 
   /* ===== interaction follow-up layer (feat/preference-collection · merge doc §7) =====
      L1 deep panel + bottom follow-up, rendered OVER the active feed card's image (blurred).
@@ -1368,18 +1378,21 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
         `<div class="vibe-q"><span class="agent-mascot"></span><span>${esc(source.q)}</span></div>`+
         `<div class="vibe-grid">${tiles}</div>`+
         '<div class="vibe-hint">Pick any that feel like you</div>'+
+        '<div class="vibe-cta-row">'+
+          '<button class="vibe-continue">Continue</button>'+
+          '<button class="vibe-skip">Skip</button>'+
+        '</div>'+
       '</div>';
     return c;
   }
 
   // Per-card vibe interaction state (multi-select + single 12s-from-first-pick timer, lifted
   // from infeed pickOpt §4a). Keyed nav handled by the dispatcher's 'vibe-question' mode.
-  let vibeState = null;   // {card, source, focus, selected:Set, timer}
+  let vibeState = null;   // {card, source, focus, footerFocus, selected:Set, timer}
   function vibeActivate(card){
     const source = VIBE_POOL.find(v=>v.id===card.dataset.id); if(!source) return;
-    vibeState = { card, source, focus:0, selected:new Set(), timer:null };
+    vibeState = { card, source, focus:0, footerFocus:-1, selected:new Set(), timer:null };
     const grid=card.querySelector('.vibe-grid');
-    // reveal tiles, wire clicks
     // clone her mascot into the question line (on-brand, per §3) — once
     const mh=card.querySelector('.vibe-q .agent-mascot');
     if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined'){ mh.appendChild(mascotTemplate.content.cloneNode(true)); }
@@ -1387,16 +1400,26 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     setTimeout(()=>grid.classList.add('revealed'), 350);
     [...grid.querySelectorAll('.vibe-tile')].forEach((t,i)=>{
       if(t.dataset.wired) return; t.dataset.wired='1';
-      t.addEventListener('click',()=>{ vibeState.focus=i; vibeToggle(i); vibePaint(); });
+      t.addEventListener('click',()=>{ vibeState.focus=i; vibeState.footerFocus=-1; vibeToggle(i); vibePaint(); });
     });
-    vibeState.focus=0; vibePaint();
+    // wire footer CTAs: Continue commits with picks, Skip commits with none (both end the card)
+    const cont=card.querySelector('.vibe-continue'), skip=card.querySelector('.vibe-skip');
+    if(cont && !cont.dataset.wired){ cont.dataset.wired='1'; cont.addEventListener('click',()=>{ if(vibeState && vibeState.selected.size) vibeCommit(); }); }
+    if(skip && !skip.dataset.wired){ skip.dataset.wired='1'; skip.addEventListener('click',()=>vibeCommit()); }
+    vibeState.focus=0; vibeState.footerFocus=-1; vibePaint();
     setPrefMode('vibe-question');
   }
   function vibePaint(){
     if(!vibeState) return;
-    const tiles=[...vibeState.card.querySelectorAll('.vibe-tile')];
-    tiles.forEach((t,i)=>{ t.classList.toggle('foc', i===vibeState.focus);
+    const card=vibeState.card;
+    const tiles=[...card.querySelectorAll('.vibe-tile')];
+    tiles.forEach((t,i)=>{ t.classList.toggle('foc', i===vibeState.focus && vibeState.footerFocus===-1);
                            t.classList.toggle('sel', vibeState.selected.has(i)); });
+    // Continue is visible only once something is selected
+    const cont=card.querySelector('.vibe-continue'), skip=card.querySelector('.vibe-skip');
+    if(cont){ cont.classList.toggle('show', vibeState.selected.size>0);
+              cont.classList.toggle('foc', vibeState.footerFocus===0 && vibeState.selected.size>0); }
+    if(skip){ skip.classList.toggle('foc', vibeState.footerFocus===1); }
   }
   function vibeToggle(i){
     const s=vibeState.selected;
@@ -1417,17 +1440,35 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     vibeState=null;   // (id already marked shown at build time, §9)
     setPrefMode('feed');
     if(tags.length){ bumpInterestTags(tags, w); reRankUpcoming(); }
-    // her voice ack, then resume her loop
+    // her voice ack, then resume her loop (Skip with no picks → her "bit of everything" line)
     if(typeof showAckMulti==='function'){ showAckMulti(labels, ()=>{ autoMode=true; goNext(true); }); }
     else { autoMode=true; goNext(true); }
   }
-  // vibe-question key handler (registered with the single dispatcher)
+  // vibe-question key handler (registered with the single dispatcher).
+  // Grid focus + a footer row (Continue / Skip); ArrowDown from bottom row enters the footer.
   prefKeyHandlers['vibe-question'] = (key,e)=>{
     if(!vibeState) return;
     const n=vibeState.source.opts.length, COLS=3;
+    const hasSel=vibeState.selected.size>0;
+    if(vibeState.footerFocus>=0){
+      // in the footer row
+      if(key==='ArrowRight'){ e.preventDefault(); vibeState.footerFocus = hasSel ? Math.min(1,vibeState.footerFocus+1) : 1; vibePaint(); }
+      else if(key==='ArrowLeft'){ e.preventDefault(); vibeState.footerFocus = hasSel ? Math.max(0,vibeState.footerFocus-1) : 1; vibePaint(); }
+      else if(key==='ArrowUp'){ e.preventDefault(); vibeState.footerFocus=-1; vibePaint(); }   // back into grid
+      else if(key==='Enter'||key===' '){ e.preventDefault();
+        if(vibeState.footerFocus===0 && hasSel) vibeCommit();   // Continue
+        else if(vibeState.footerFocus===1) vibeCommit();        // Skip
+      }
+      else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }
+      return;
+    }
+    // in the grid
     if(key==='ArrowRight'){ e.preventDefault(); if(vibeState.focus%COLS<COLS-1 && vibeState.focus+1<n) vibeState.focus++; vibePaint(); }
     else if(key==='ArrowLeft'){ e.preventDefault(); if(vibeState.focus%COLS>0) vibeState.focus--; vibePaint(); }
-    else if(key==='ArrowDown'){ e.preventDefault(); if(vibeState.focus+COLS<n) vibeState.focus+=COLS; vibePaint(); }
+    else if(key==='ArrowDown'){ e.preventDefault();
+      if(vibeState.focus+COLS<n){ vibeState.focus+=COLS; }
+      else { vibeState.footerFocus = hasSel ? 0 : 1; }          // bottom row → footer (Continue if available, else Skip)
+      vibePaint(); }
     else if(key==='ArrowUp'){ e.preventDefault(); if(vibeState.focus-COLS>=0) vibeState.focus-=COLS; vibePaint(); }
     else if(key==='Enter'||key===' '){ e.preventDefault(); vibeToggle(vibeState.focus); vibePaint(); }
     else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }   // skip → commit whatever's picked (may be none)
