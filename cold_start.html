@@ -929,6 +929,10 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     splicePeriodicVibes();
   }
   function splicePeriodicVibes(){
+    // TODO(team): reRankUpcoming reorders only .reveal-after cards and reinserts them
+    // contiguously; a periodic vibe card interleaved in that tail can drift in cadence
+    // after a re-rank (never crashes, never double-advances). Acceptable for prototype;
+    // a future fix would re-splice interstitials after each reRankUpcoming.
     const stage=document.getElementById('stage');
     const N=PREF_CONFIG.INTERSTITIAL_EVERY;
     // feed cards = revealed content cards from the bank (exclude weather/offer/onboarding/vibe)
