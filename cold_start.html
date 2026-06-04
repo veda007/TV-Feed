@@ -929,10 +929,9 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
     splicePeriodicVibes();
   }
   function splicePeriodicVibes(){
-    // TODO(team): reRankUpcoming reorders only .reveal-after cards and reinserts them
-    // contiguously; a periodic vibe card interleaved in that tail can drift in cadence
-    // after a re-rank (never crashes, never double-advances). Acceptable for prototype;
-    // a future fix would re-splice interstitials after each reRankUpcoming.
+    // Note: reRankUpcoming PINS interstitials — it refills only the .reveal-after DOM slots
+    // in sorted order, so periodic vibe cards never move across a re-rank. §9 spacing
+    // (never first/last/back-to-back, fixed position) holds exactly. See reRankUpcoming.
     const stage=document.getElementById('stage');
     const N=PREF_CONFIG.INTERSTITIAL_EVERY;
     // feed cards = revealed content cards from the bank (exclude weather/offer/onboarding/vibe)
@@ -1043,8 +1042,14 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
       sorted.push(pool.splice(idx,1)[0]);
     }
     if(sorted.every((c,i)=>c===tail[i])) return false;      // no change
-    const ref=tail[tail.length-1].nextSibling;
-    sorted.forEach(c=>stage.insertBefore(c,ref));
+    // Pin interstitials (feat/preference-collection §9): refill the SAME DOM slots the
+    // reveal-after cards occupy, in sorted order, so vibe-question cards between them never
+    // move. Keeps §9 spacing exact across re-ranks — no cadence drift, no back-to-back, no
+    // starvation. (Replaces the old single-anchor collapse that displaced interstitials.)
+    const marks=tail.map(c=>{ const m=document.createComment('rerank-slot'); stage.insertBefore(m,c); return m; });
+    tail.forEach(c=>c.remove());
+    sorted.forEach((c,i)=>stage.insertBefore(c,marks[i]));
+    marks.forEach(m=>m.remove());
     cards=document.querySelectorAll('.card');
     return true;
   }

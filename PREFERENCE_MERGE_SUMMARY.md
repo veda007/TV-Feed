@@ -35,7 +35,14 @@ Implements `MERGE_INTO_FEED_ENGINE.md` using `SIGNAL_TAXONOMY.md` as the option�
 - §13.2 interaction on DEEP_INTENTS only (assumed) vs every CTA
 - §13.5 cadence N=10 (alts 8/12) — `PREF_CONFIG.INTERSTITIAL_EVERY`
 - `sport` alias → `entertainment` per taxonomy §4 (live CSV also has a thin `sports` token; kept `entertainment` for re-rank surface)
-- Known limitation: a periodic vibe card interleaved in the re-rank tail can drift in cadence after a re-rank (never crashes). Future fix: re-splice interstitials after each `reRankUpcoming`.
+
+## Periodic-cadence-drift — RESOLVED (pinned)
+
+`reRankUpcoming` now **pins interstitials**: it records the DOM slots the `.reveal-after` cards
+occupy and refills only those slots in sorted order, so vibe-question cards never move across a
+re-rank. The re-rank cannot starve a vibe card, place two back-to-back, or move one to first/last —
+the §9 spacing rules hold exactly. Verified by simulation (feed cards reorder within their slots
+while the interstitial holds its index). See `VERIFICATION.md` Part E note (3) and `reRankUpcoming`.
 
 ## Not done / out of scope
 
