@@ -2,3 +2,6 @@
 *.log
 .vscode/
 .idea/
+
+# Vertex access token (never commit)
+scripts/.gtv_token

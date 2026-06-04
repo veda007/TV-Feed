@@ -600,7 +600,7 @@
 window.GLANCE_STATE="cold";
 window.GLANCE_CTX={city:"Bangalore", weather:"rainy", day:"Friday", timeOfDay:"evening"};
 window.GLANCE_PROFILE=null;
-window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", "c035", "c053", "c011", "c031", "c074", "c046", "c062", "c127", "c003", "c057"];
+window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", "c121", "t304", "c050", "c035", "t305", "c053", "c011", "t303", "c031", "c074", "c046", "t306", "c062", "c127", "c003", "c057"];
   // ===== Shared engine (data-driven, profile-personalized) =====
   let cards = document.querySelectorAll('.card');   // mutable — re-rank rebuilds it
   const mascotTemplate = document.getElementById('mascotTemplate');
@@ -670,7 +670,6 @@ window.GLANCE_FEED_IDS=["c090", "c001", "c051", "c005", "c041", "c121", "c050", 
       `<div class="card-tag">${esc(tag)}</div>`+
       '<div class="card-content">'+
         `<div class="card-title">${esc(row.title)}</div>`+
-        (row.subtitle?`<div class="card-sub">${esc(row.subtitle)}</div>`:'')+
         '<div class="agent-line"><span class="typed-text"></span><span class="agent-mascot"></span></div>'+
         '<div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button>'+products+'</div>'+
       '</div>';
