@@ -606,6 +606,40 @@
   .ix-payoff { display:flex; align-items:center; gap:12px; margin-top:18px; font-family:var(--serif); font-style:italic;
     font-size:17px; color:var(--violet-100); opacity:0; transition:opacity .3s; }
   .ix-payoff.show { opacity:1; }
+
+  /* ===== VTON intro card "Imagine yourself here" (feat/preference-collection) ===== */
+  .card.vton-intro .vton-wrap { position:absolute; inset:0; z-index:2; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:4vh 6vw 0; }
+  .card.vton-intro .vton-title { font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(30px,3.6vw,52px); color:var(--ink-0); letter-spacing:-.012em; margin-bottom:3.4vh; text-align:center; }
+  .vton-body { display:flex; align-items:center; justify-content:center; gap:5vw; width:100%; max-width:1400px; }
+  .vton-stage { position:relative; flex:0 0 auto; width:min(48vw,640px); }
+  .vton-hero { position:relative; width:100%; aspect-ratio:16/10; border-radius:18px; overflow:hidden;
+    background-size:cover; background-position:center top; box-shadow:0 30px 80px rgba(0,0,0,.55); }
+  .vton-face { position:absolute; top:-18px; left:-26px; width:84px; height:104px; border-radius:6px; z-index:3;
+    background-size:cover; background-position:center; background-color:#1a1430; transform:rotate(-7deg);
+    border:5px solid #fff; box-shadow:0 12px 30px rgba(0,0,0,.5); }
+  .vton-orb { position:absolute; top:26px; right:-26px; width:64px; height:64px; z-index:3; }
+  .vton-orb .agent-mascot { width:100%; height:100%; }
+  .vton-prompt { position:absolute; left:34%; bottom:14px; z-index:3; display:flex; align-items:center; gap:10px;
+    max-width:62%; padding:12px 18px; border-radius:14px; background:rgba(20,16,40,.62);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:.5px solid rgba(216,204,255,.3);
+    font-size:14px; color:var(--ink-1); line-height:1.3; }
+  .vton-prompt .mic { color:var(--violet-300); flex:0 0 auto; }
+  .vton-qr-col { display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .vton-qr-label { font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2); }
+  .vton-qr { width:170px; height:170px; border-radius:18px; background:#fff; padding:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.45); }
+  .vton-qr svg { width:100%; height:100%; display:block; }
+  .card.vton-intro .vton-ctarow { position:absolute; left:0; right:0; bottom:5vh; z-index:3;
+    display:flex; align-items:center; justify-content:center; gap:16px; padding:0 6vw; }
+  .vton-btn { font-family:var(--ui,inherit); font-weight:800; font-size:18px; padding:15px 40px; border-radius:999px;
+    border:1px solid transparent; background:#fff; color:#1a0f33; cursor:pointer; transition:.18s; }
+  .vton-btn.foc, .vton-btn:hover { box-shadow:0 0 0 4px rgba(255,255,255,.28),0 0 30px rgba(155,134,255,.4); }
+  .vton-btn.ghost { background:rgba(255,255,255,.08); color:var(--ink-1); border-color:rgba(255,255,255,.18); }
+  .vton-btn.ghost.foc, .vton-btn.ghost:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
+  .vton-btn.skip { position:absolute; right:6vw; background:rgba(255,255,255,.06); color:var(--ink-1); border-color:rgba(255,255,255,.16); }
+  .vton-btn.skip.foc, .vton-btn.skip:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
 </style></head><body>
 <div class="stage" id="stage">
   <div class="glance-mark">Glance</div>
@@ -989,6 +1023,56 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     const vibe = buildVibeCard(source, 'onboarding');
     vibe.dataset.timeLabel = 'Setting up';
     locCard.parentNode.insertBefore(vibe, locCard.nextSibling);
+    // "Imagine yourself here" VTON feature-intro, right after the vibe question
+    const vton = buildVtonIntro();
+    vibe.parentNode.insertBefore(vton, vibe.nextSibling);
+  }
+
+  // Decorative placeholder QR (not scannable — static showcase only).
+  function vtonQRSvg(){
+    // deterministic pseudo-random grid (no Math.random — keeps it stable), with finder squares
+    const N=21, cell=100/N; let r=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/>`;
+    const finder=(x,y)=>{ r+=`<rect x="${x*cell}" y="${y*cell}" width="${cell*7}" height="${cell*7}" fill="#000"/>`+
+      `<rect x="${(x+1)*cell}" y="${(y+1)*cell}" width="${cell*5}" height="${cell*5}" fill="#fff"/>`+
+      `<rect x="${(x+2)*cell}" y="${(y+2)*cell}" width="${cell*3}" height="${cell*3}" fill="#000"/>`; };
+    let seed=7;
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const inFinder=(x<7&&y<7)||(x>=N-7&&y<7)||(x<7&&y>=N-7);
+      if(inFinder) continue;
+      seed=(seed*1103515245+12345)&0x7fffffff;   // LCG, deterministic
+      if((seed>>8)%100<46) r+=`<rect x="${x*cell}" y="${y*cell}" width="${cell}" height="${cell}" fill="#000"/>`;
+    }
+    finder(0,0); finder(N-7,0); finder(0,N-7);
+    return r+`</svg>`;
+  }
+  function buildVtonIntro(){
+    const c=document.createElement('div');
+    c.className='card vton-intro';
+    c.dataset.id='vton-intro'; c.dataset.timeLabel='Try it on'; c.dataset.dwell='999999';
+    c.innerHTML =
+      '<div class="card-image"></div>'+
+      '<div class="vton-wrap">'+
+        '<div class="vton-title">Imagine yourself here</div>'+
+        '<div class="vton-body">'+
+          '<div class="vton-stage">'+
+            '<div class="vton-hero" style="background-image:url(\'assets/look_street_hero.jpg\')">'+
+              '<div class="vton-face" style="background-image:url(\'assets/vton_placeholder.jpg\')"></div>'+
+              '<div class="vton-orb"><span class="agent-mascot"></span></div>'+
+              '<div class="vton-prompt"><span class="mic">🎙</span><span>Reimagine me surfing the waves in Hawaii</span></div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="vton-qr-col">'+
+            '<div class="vton-qr-label">Scan to try it on your phone</div>'+
+            `<div class="vton-qr">${vtonQRSvg()}</div>`+
+          '</div>'+
+        '</div>'+
+        '<div class="vton-ctarow">'+
+          '<button class="vton-btn" data-act="continue">Continue</button>'+
+          '<button class="vton-btn ghost" data-act="later">Maybe Later</button>'+
+          '<button class="vton-btn skip" data-act="skip">Skip Intro</button>'+
+        '</div>'+
+      '</div>';
+    return c;
   }
 
   function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
@@ -1202,6 +1286,11 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     if(card.classList.contains('vibe-question')){
       if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}   // our 12s-from-first-pick owns advance
       vibeActivate(card);
+      return;
+    }
+    if(card.classList.contains('vton-intro')){
+      if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}   // feature intro: user advances explicitly
+      vtonActivate(card);
       return;
     }
     // Inject personalized reasoning + CTA for feed cards
@@ -1445,6 +1534,34 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     else if(key==='ArrowUp'){ e.preventDefault(); /* single row — no-op in grid */ }
     else if(key==='Enter'||key===' '){ e.preventDefault(); vibeToggle(vibeState.focus); vibePaint(); }
     else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }   // skip → commit whatever's picked (may be none)
+  };
+
+  /* ===== VTON intro "Imagine yourself here" — feature showcase, no signal emitted ===== */
+  let vtonState=null;   // {card, focus} — focus: 0 Continue · 1 Maybe Later · 2 Skip Intro
+  function vtonActivate(card){
+    vtonState={card, focus:0};
+    const mh=card.querySelector('.vton-orb .agent-mascot');
+    if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined') mh.appendChild(mascotTemplate.content.cloneNode(true));
+    const btns=[...card.querySelectorAll('.vton-btn')];
+    btns.forEach((b,i)=>{ if(b.dataset.wired) return; b.dataset.wired='1';
+      b.addEventListener('click',()=>{ vtonState.focus=i; vtonAdvance(); }); });
+    vtonPaint(); setPrefMode('vton-intro');
+  }
+  function vtonPaint(){
+    if(!vtonState) return;
+    [...vtonState.card.querySelectorAll('.vton-btn')].forEach((b,i)=>b.classList.toggle('foc', i===vtonState.focus));
+  }
+  function vtonAdvance(){   // all three buttons just advance — it's a feature intro, not a preference
+    if(!vtonState) return;
+    vtonState=null; setPrefMode('feed'); autoMode=true; goNext(true);
+  }
+  prefKeyHandlers['vton-intro']=(key,e)=>{
+    if(!vtonState) return;
+    const n=3;
+    if(key==='ArrowRight'){ e.preventDefault(); vtonState.focus=Math.min(n-1,vtonState.focus+1); vtonPaint(); }
+    else if(key==='ArrowLeft'){ e.preventDefault(); vtonState.focus=Math.max(0,vtonState.focus-1); vtonPaint(); }
+    else if(key==='Enter'||key===' '){ e.preventDefault(); vtonAdvance(); }
+    else if(key==='Backspace'){ e.preventDefault(); vtonAdvance(); }
   };
 
   /* ===== interaction follow-up layer (feat/preference-collection · merge doc §7 · taxonomy §5) =====
