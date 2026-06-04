@@ -617,6 +617,7 @@
   .card.vton-intro .vton-body { display:flex; align-items:center; justify-content:center; gap:4vw; width:100%; max-width:1400px; }
   .card.vton-intro .vton-visual { display:block; max-width:min(56vw,820px); max-height:52vh; width:auto; height:auto;
     object-fit:contain; border-radius:14px; flex:0 1 auto; }
+  .card.vton-intro .vton-sub { font-size:clamp(16px,1.5vw,20px); color:var(--ink-1); line-height:1.45; max-width:620px; text-align:center; margin:-1vh auto 2.6vh; }
   .card.vton-intro .vton-qr-col { display:flex; flex-direction:column; align-items:center; gap:18px; flex:0 0 auto; }
   .card.vton-intro .vton-qr-label { font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2); text-align:center; max-width:200px; }
   .card.vton-intro .vton-qr { width:180px; height:180px; border-radius:18px; background:#fff; padding:16px;
@@ -1045,18 +1046,20 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     c.innerHTML =
       '<div class="card-image"></div>'+
       '<div class="vton-wrap">'+
-        '<div class="vton-title">Imagine yourself here</div>'+
+        '<div class="vton-title">See yourself in the scenes you love</div>'+
+        '<div class="vton-sub">Add a photo and Glance can place you in the trips, looks and spaces it dreams up.</div>'+
+        // TODO(team): add a truthful privacy + removal line here once selfie storage and a
+        // delete control actually exist — it will lift upload conversion, but only ship when real.
         '<div class="vton-body">'+
           '<img class="vton-visual" src="assets/vton_intro.png" alt="">'+
           '<div class="vton-qr-col">'+
-            '<div class="vton-qr-label">Scan to try it on your phone</div>'+
+            '<div class="vton-qr-label">Scan to add your photo</div>'+
             `<div class="vton-qr">${vtonQRSvg()}</div>`+
           '</div>'+
         '</div>'+
         '<div class="vton-ctarow">'+
           '<button class="vton-btn" data-act="continue">Continue</button>'+
-          '<button class="vton-btn ghost" data-act="later">Maybe Later</button>'+
-          '<button class="vton-btn skip" data-act="skip">Skip Intro</button>'+
+          '<button class="vton-btn ghost" data-act="later">Maybe later</button>'+
         '</div>'+
       '</div>';
     return c;
@@ -1537,7 +1540,7 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   };
 
   /* ===== VTON intro "Imagine yourself here" — feature showcase, no signal emitted ===== */
-  let vtonState=null;   // {card, focus} — focus: 0 Continue · 1 Maybe Later · 2 Skip Intro
+  let vtonState=null;   // {card, focus} — focus: 0 Continue · 1 Maybe later
   function vtonActivate(card){
     vtonState={card, focus:0};
     // (mascot orb is baked into the composed vton_intro.png — no separate element to mount)
