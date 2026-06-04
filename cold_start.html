@@ -513,6 +513,8 @@
     opacity:0; transform:translateY(14px) scale(.97);
     transition:opacity .5s, transform .5s, border-color .25s, box-shadow .28s; }
   .vibe-grid.revealed .vibe-tile { opacity:1; transform:translateY(0) scale(1); }
+  /* when one tile is focused, recede the others so the focused one clearly stands out */
+  .vibe-grid.revealed.has-foc .vibe-tile:not(.foc):not(.sel) { opacity:.6; transform:translateY(0) scale(.95); }
   .vibe-grid.revealed .vibe-tile:nth-child(1){transition-delay:.05s}
   .vibe-grid.revealed .vibe-tile:nth-child(2){transition-delay:.12s}
   .vibe-grid.revealed .vibe-tile:nth-child(3){transition-delay:.19s}
@@ -522,12 +524,12 @@
   .vibe-tile .vibe-bg { position:absolute; inset:0; background-size:cover; background-position:center; z-index:0; }
   .vibe-tile::before { content:""; position:absolute; inset:0; z-index:1;
     background:linear-gradient(180deg,rgba(7,5,12,.05) 38%,rgba(7,5,12,.86)); }
-  .vibe-tile .vibe-label { position:relative; z-index:2; padding:14px 16px; }
-  .vibe-tile .vibe-tt { font-weight:600; font-size:clamp(15px,1.4vw,20px); line-height:1.15; color:#fff;
+  .vibe-tile .vibe-label { position:relative; z-index:2; padding:14px 16px; display:flex; flex-direction:column; align-items:flex-start; }
+  .vibe-tile .vibe-tt { display:block; font-weight:600; font-size:clamp(15px,1.4vw,20px); line-height:1.15; color:#fff;
     text-shadow:0 2px 12px rgba(0,0,0,.5); }
-  .vibe-tile .vibe-ts { font-size:clamp(10px,.95vw,12.5px); color:var(--ink-2); margin-top:3px; line-height:1.3; }
+  .vibe-tile .vibe-ts { display:block; font-size:clamp(10px,.95vw,12.5px); color:var(--ink-2); margin-top:3px; line-height:1.3; }
   /* focus (D-pad position) = outline + shimmer — separate from selected */
-  .vibe-tile.foc { border-color:var(--vibe-foc-ring); transform:translateY(0) scale(1.05);
+  .vibe-tile.foc { border-color:var(--vibe-foc-ring); transform:translateY(0) scale(1.13); z-index:6;
     box-shadow:0 0 0 3px rgba(181,163,255,.28), 0 26px 70px rgba(0,0,0,.55); }
   .vibe-tile.foc::after { content:""; position:absolute; top:0; left:-60%; width:50%; height:100%; z-index:3;
     background:linear-gradient(120deg,transparent,rgba(255,255,255,.22),transparent);
@@ -544,6 +546,17 @@
   .card.vibe-question .vibe-hint { margin-top:2.4vh; font-size:13px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--ink-3); opacity:0; transition:opacity .3s; }
   .card.vibe-question .vibe-grid.revealed ~ .vibe-hint { opacity:1; }
+  /* footer CTAs — Continue appears once a tile is selected; Skip always available */
+  .card.vibe-question .vibe-cta-row { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:3vh; }
+  .vibe-continue { font-family:var(--ui,inherit); font-weight:800; font-size:18px; padding:15px 44px; border-radius:999px;
+    border:1px solid transparent; background:#fff; color:#1a0f33; cursor:pointer; transition:opacity .25s, transform .25s;
+    display:none; opacity:0; transform:translateY(8px); }
+  /* shown only after a selection — removed from layout flow until then, so Skip stays centered alone */
+  .card.vibe-question .vibe-continue.show { display:inline-block; opacity:1; transform:translateY(0); }
+  .vibe-continue.foc, .vibe-continue:hover { box-shadow:0 0 0 4px rgba(255,255,255,.28),0 0 30px rgba(155,134,255,.4); }
+  .vibe-skip { font-family:var(--ui,inherit); font-weight:600; font-size:16px; padding:14px 28px; border-radius:999px;
+    background:rgba(255,255,255,.07); color:var(--ink-1); border:1px solid rgba(255,255,255,.18); cursor:pointer; transition:.18s; }
+  .vibe-skip.foc, .vibe-skip:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
 
   /* ===== interaction follow-up layer (feat/preference-collection · merge doc §7) =====
      L1 deep panel + bottom follow-up, rendered OVER the active feed card's image (blurred).
@@ -593,6 +606,31 @@
   .ix-payoff { display:flex; align-items:center; gap:12px; margin-top:18px; font-family:var(--serif); font-style:italic;
     font-size:17px; color:var(--violet-100); opacity:0; transition:opacity .3s; }
   .ix-payoff.show { opacity:1; }
+
+  /* ===== VTON intro card "Imagine yourself here" (feat/preference-collection) =====
+     Uses the pre-composed visual (assets/vton_intro.png) as-is, contained + centered.
+     Its dark-navy surround blends into the card background. Title above, CTAs below. */
+  .card.vton-intro .vton-wrap { position:absolute; inset:0; z-index:2; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:4vh 6vw 0; }
+  .card.vton-intro .vton-title { font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(30px,3.6vw,52px); color:var(--ink-0); letter-spacing:-.012em; margin-bottom:2.6vh; text-align:center; }
+  .card.vton-intro .vton-body { display:flex; align-items:center; justify-content:center; gap:4vw; width:100%; max-width:1400px; }
+  .card.vton-intro .vton-visual { display:block; max-width:min(56vw,820px); max-height:52vh; width:auto; height:auto;
+    object-fit:contain; border-radius:14px; flex:0 1 auto; }
+  .card.vton-intro .vton-qr-col { display:flex; flex-direction:column; align-items:center; gap:18px; flex:0 0 auto; }
+  .card.vton-intro .vton-qr-label { font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2); text-align:center; max-width:200px; }
+  .card.vton-intro .vton-qr { width:180px; height:180px; border-radius:18px; background:#fff; padding:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.45); }
+  .card.vton-intro .vton-qr svg { width:100%; height:100%; display:block; }
+  .card.vton-intro .vton-ctarow { position:absolute; left:0; right:0; bottom:5vh; z-index:3;
+    display:flex; align-items:center; justify-content:center; gap:16px; padding:0 6vw; }
+  .vton-btn { font-family:var(--ui,inherit); font-weight:800; font-size:18px; padding:15px 40px; border-radius:999px;
+    border:1px solid transparent; background:#fff; color:#1a0f33; cursor:pointer; transition:.18s; }
+  .vton-btn.foc, .vton-btn:hover { box-shadow:0 0 0 4px rgba(255,255,255,.28),0 0 30px rgba(155,134,255,.4); }
+  .vton-btn.ghost { background:rgba(255,255,255,.08); color:var(--ink-1); border-color:rgba(255,255,255,.18); }
+  .vton-btn.ghost.foc, .vton-btn.ghost:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
+  .vton-btn.skip { position:absolute; right:6vw; background:rgba(255,255,255,.06); color:var(--ink-1); border-color:rgba(255,255,255,.16); }
+  .vton-btn.skip.foc, .vton-btn.skip:hover { box-shadow:0 0 0 4px rgba(155,134,255,.35); color:#fff; }
 </style></head><body>
 <div class="stage" id="stage">
   <div class="glance-mark">Glance</div>
@@ -976,6 +1014,49 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     const vibe = buildVibeCard(source, 'onboarding');
     vibe.dataset.timeLabel = 'Setting up';
     locCard.parentNode.insertBefore(vibe, locCard.nextSibling);
+    // "Imagine yourself here" VTON feature-intro, right after the vibe question
+    const vton = buildVtonIntro();
+    vibe.parentNode.insertBefore(vton, vibe.nextSibling);
+  }
+
+  // Decorative placeholder QR (not scannable — static showcase only).
+  function vtonQRSvg(){
+    const N=21, cell=100/N; let r=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/>`;
+    const finder=(x,y)=>{ r+=`<rect x="${x*cell}" y="${y*cell}" width="${cell*7}" height="${cell*7}" fill="#000"/>`+
+      `<rect x="${(x+1)*cell}" y="${(y+1)*cell}" width="${cell*5}" height="${cell*5}" fill="#fff"/>`+
+      `<rect x="${(x+2)*cell}" y="${(y+2)*cell}" width="${cell*3}" height="${cell*3}" fill="#000"/>`; };
+    let seed=7;
+    for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+      const inFinder=(x<7&&y<7)||(x>=N-7&&y<7)||(x<7&&y>=N-7);
+      if(inFinder) continue;
+      seed=(seed*1103515245+12345)&0x7fffffff;   // LCG, deterministic (no Math.random)
+      if((seed>>8)%100<46) r+=`<rect x="${x*cell}" y="${y*cell}" width="${cell}" height="${cell}" fill="#000"/>`;
+    }
+    finder(0,0); finder(N-7,0); finder(0,N-7);
+    return r+`</svg>`;
+  }
+  function buildVtonIntro(){
+    const c=document.createElement('div');
+    c.className='card vton-intro';
+    c.dataset.id='vton-intro'; c.dataset.timeLabel='Try it on'; c.dataset.dwell='999999';
+    c.innerHTML =
+      '<div class="card-image"></div>'+
+      '<div class="vton-wrap">'+
+        '<div class="vton-title">Imagine yourself here</div>'+
+        '<div class="vton-body">'+
+          '<img class="vton-visual" src="assets/vton_intro.png" alt="">'+
+          '<div class="vton-qr-col">'+
+            '<div class="vton-qr-label">Scan to try it on your phone</div>'+
+            `<div class="vton-qr">${vtonQRSvg()}</div>`+
+          '</div>'+
+        '</div>'+
+        '<div class="vton-ctarow">'+
+          '<button class="vton-btn" data-act="continue">Continue</button>'+
+          '<button class="vton-btn ghost" data-act="later">Maybe Later</button>'+
+          '<button class="vton-btn skip" data-act="skip">Skip Intro</button>'+
+        '</div>'+
+      '</div>';
+    return c;
   }
 
   function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
@@ -1191,6 +1272,11 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
       vibeActivate(card);
       return;
     }
+    if(card.classList.contains('vton-intro')){
+      if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}   // feature intro: user advances explicitly
+      vtonActivate(card);
+      return;
+    }
     // Inject personalized reasoning + CTA for feed cards
     if(card.classList.contains('reveal-after')){ const {reasoning,cta}=personalize(card); card.dataset.typed=reasoning; const q=card.querySelector('.cta-question'); if(q)q.textContent=cta; addVton(card); }
     if(card.querySelector('.build-list')) animateBuildList(card);
@@ -1256,74 +1342,44 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
   const VIBE_POOL = [
     { id:"vq01", axis:"region", q:"What's your kind of escape?", opts:[
       ["Misty Coorg homestay","Coffee estates in the fog","q01_o1_coorg-homestay",["travel","hills","calm"],["cat:travel","region:hills","vibe:calm"]],
-      ["Kerala backwaters","Drifting on still water","q01_o2_kerala-backwaters",["travel","calm","nature"],["cat:travel","region:backwaters","vibe:slow"]],
       ["Goa beach shack","Sand, sun, nowhere to be","q01_o3_goa-beach-shack",["travel","beaches","social"],["cat:travel","region:beach","vibe:social"]],
-      ["New-city street food","Lanes lit up with stalls","q01_o4_streetfood-newcity",["travel","street","food"],["cat:travel","region:city","vibe:lively"]],
-      ["Luxury resort","Poolside, waited on all day","q01_o5_luxury-resort",["travel","luxury","calm"],["cat:travel","aspiration:luxe","vibe:calm"]],
-      ["Hampi heritage","Ancient stone at sunset","q01_o6_hampi-heritage",["travel","heritage","culture"],["cat:travel","region:heritage","vibe:slow"]] ]},
+      ["New-city street food","Lanes lit up with stalls","q01_o4_streetfood-newcity",["travel","street","food"],["cat:travel","region:city","vibe:lively"]] ]},
     { id:"vq02", axis:"vibe-energy", q:"How does a perfect evening wind down?", opts:[
       ["Rainy coffee & a book","Coffee and rain on the glass","q02_o1_rainy-coffee-book",["calm","cafes"],["vibe:calm","vibe:solo","aesthetic:warm"]],
       ["Friends cooking","Music on, something cooking","q02_o2_friends-cooking",["social","food","home"],["vibe:social","vibe:cosy"]],
-      ["Buzzy restaurant","Somewhere new to try","q02_o3_buzzy-restaurant",["food","nightlife","social"],["cat:food","vibe:lively","vibe:social"]],
-      ["Rooftop drinks","A slow drink as it lights up","q02_o4_rooftop-drinks",["nightlife","social"],["vibe:lively","aspiration:luxe"]],
-      ["Walk + early night","Fresh air, then early night","q02_o5_evening-walk",["calm","nature","wellness"],["vibe:calm","vibe:slow"]],
-      ["Theatre night","A proper night out","q02_o6_theatre-night",["culture","nightlife"],["cat:culture","vibe:social"]] ]},
+      ["Buzzy restaurant","Somewhere new to try","q02_o3_buzzy-restaurant",["food","nightlife","social"],["cat:food","vibe:lively","vibe:social"]] ]},
     { id:"vq03", axis:"vibe-pace", q:"Pick a morning that feels like you", opts:[
-      ["Lake loop at sunrise","Out before the city wakes","q03_o1_lake-run-sunrise",["fitness","nature"],["vibe:fast","vibe:solo"]],
+      ["Lazy lie-in","No alarm, nowhere to be","q03_o6_lazy-liein",["calm"],["vibe:slow","vibe:cosy"]],
       ["Slow brunch","Eggs in the sun, no rush","q03_o2_slow-brunch",["food","calm","social"],["vibe:slow","vibe:social"]],
-      ["Balcony yoga","Stretch as the sun comes up","q03_o3_balcony-yoga",["wellness","calm"],["cat:wellness","vibe:calm","vibe:solo"]],
-      ["Sunday market","Fresh flowers and morning chai","q03_o4_sunday-market",["culture","social","parks"],["vibe:lively","vibe:social"]],
-      ["Coffee + head start","Ahead of the whole day","q03_o5_coffee-worktop",["productivity","cafes"],["vibe:fast","aesthetic:minimal"]],
-      ["Lazy lie-in","No alarm, nowhere to be","q03_o6_lazy-liein",["calm"],["vibe:slow","vibe:cosy"]] ]},
+      ["Lake loop at sunrise","Out before the city wakes","q03_o1_lake-run-sunrise",["fitness","nature"],["vibe:fast","vibe:solo"]] ]},
     { id:"vq04", axis:"aesthetic", q:"What should your screen become?", opts:[
-      ["Golden hour","Warm light, long shadows","q04_o1_golden-hour",["calm"],["aesthetic:warm","aesthetic:muted","vibe:calm"]],
-      ["Neon city night","Alive and electric","q04_o2_neon-city",["nightlife"],["aesthetic:vivid","aesthetic:cool","vibe:lively"]],
-      ["Misty mountains","Cool, endless and quiet","q04_o3_misty-mountains",["nature","hills","calm"],["aesthetic:cool","aesthetic:muted","vibe:calm"]],
-      ["Candlelit & refined","Dark, rich and intimate","q04_o4_candlelit",["luxury"],["aesthetic:warm","aspiration:luxe","vibe:cosy"]],
       ["White minimal","Clean, airy and calm","q04_o5_white-minimal",["minimal"],["aesthetic:minimal","aesthetic:cool"]],
+      ["Golden hour","Warm light, long shadows","q04_o1_golden-hour",["calm"],["aesthetic:warm","aesthetic:muted","vibe:calm"]],
       ["Lantern bazaar","Warm and full of colour","q04_o6_lantern-bazaar",["culture","heritage"],["aesthetic:maximal","aesthetic:vivid","aesthetic:warm"]] ]},
     { id:"vq05", axis:"aspiration", q:"What's a treat you'd say yes to?", opts:[
-      ["Tasting menu","Course after course, all night","q05_o1_tasting-menu",["food","luxury"],["cat:food","aspiration:luxe"]],
       ["Street-food crawl","Hands full, no forks","q05_o2_streetfood-crawl",["food","street","social"],["cat:food","aspiration:everyday","vibe:lively"]],
       ["Spa day","Switched off and restored","q05_o3_spa-day",["wellness","calm","luxury"],["cat:wellness","aspiration:luxe","vibe:calm"]],
-      ["A new gadget","The upgrade you keep eyeing","q05_o4_new-gadget",["tech"],["cat:tech","aspiration:everyday"]],
-      ["Designer piece","The one worth saving for","q05_o5_designer-fashion",["fashion","luxury"],["cat:fashion","aspiration:luxe"]],
-      ["Live match","Floodlights and the roar","q05_o6_live-match",["entertainment","social"],["cat:sport","vibe:social","vibe:lively"]] ]},
+      ["Designer piece","The one worth saving for","q05_o5_designer-fashion",["fashion","luxury"],["cat:fashion","aspiration:luxe"]] ]},
     { id:"vq06", axis:"vibe-mix", q:"Your kind of weekend looks like…", opts:[
       ["Nandi Hills trek","Dawn above the clouds","q06_o1_nandi-trek",["travel","hills","fitness"],["cat:travel","region:hills","vibe:fast"]],
-      ["Café-hop & shop","Drifting from café to café","q06_o2_cafehop-shop",["cafes","fashion","social"],["vibe:social","aspiration:everyday"]],
       ["Slow home day","Cooking and a long series","q06_o3_slow-home-day",["home","calm","entertainment"],["vibe:slow","vibe:cosy"]],
-      ["Mysore heritage trip","Palace lit up at dusk","q06_o4_mysore-heritage",["travel","heritage","culture"],["cat:travel","region:heritage"]],
-      ["Spa-and-brunch reset","Steam, then a long brunch","q05_o3_spa-day",["wellness","food","luxury"],["cat:wellness","aspiration:luxe","vibe:calm"]],
       ["Match with friends","Cheering at the screen","q06_o6_match-friends",["entertainment","social"],["vibe:social","vibe:lively"]] ]},
     { id:"vq07", axis:"food", q:"Pick a table you'd want to sit at", opts:[
       ["Darshini breakfast","Idli, hot off the steamer","q07_o1_darshini-breakfast",["food","street"],["cat:food","aspiration:everyday","region:city"]],
       ["Fine-dining tasting","A candlelit tasting menu","q07_o2_finedining",["food","luxury"],["cat:food","aspiration:luxe","vibe:cosy"]],
-      ["Street-food stall","Sizzling and colourful","q07_o3_streetfood-stall",["food","street","social"],["cat:food","aspiration:everyday","vibe:lively"]],
-      ["Sunny brunch","Shared plates in the sun","q07_o4_sunny-brunch",["food","social","calm"],["cat:food","vibe:social","vibe:slow"]],
-      ["Home-cooked dinner","Made and eaten at home","q07_o5_home-dinner",["food","home","family"],["cat:food","vibe:cosy"]],
       ["Family feast","A big celebration spread","q07_o6_family-feast",["food","family","social"],["cat:food","vibe:social","aesthetic:maximal"]] ]},
     { id:"vq08", axis:"wellness", q:"How do you like to recharge?", opts:[
+      ["Book + quiet evening","A book and a warm lamp","q08_o6_book-evening",["calm"],["vibe:calm","vibe:solo","aesthetic:warm"]],
       ["A walk in Cubbon Park","Green, shady and quiet","q08_o1_cubbon-walk",["parks","nature","calm"],["vibe:calm","vibe:slow"]],
-      ["A spa day","Fully switched off","q08_o2_spa-day-recharge",["wellness","luxury","calm"],["cat:wellness","aspiration:luxe","vibe:calm"]],
-      ["Slow cooking","Something slow on the stove","q08_o3_slow-cooking",["food","home","calm"],["vibe:slow","vibe:cosy"]],
-      ["A weekend escape","Out of the city for a bit","q08_o4_weekend-escape",["travel","roadtrip"],["cat:travel","region:countryside"]],
-      ["A good workout","The kind that gets you buzzing","q08_o5_workout",["fitness"],["cat:wellness","vibe:fast"]],
-      ["Book + quiet evening","A book and a warm lamp","q08_o6_book-evening",["calm"],["vibe:calm","vibe:solo","aesthetic:warm"]] ]},
+      ["A good workout","The kind that gets you buzzing","q08_o5_workout",["fitness"],["cat:wellness","vibe:fast"]] ]},
     { id:"vq09", axis:"aesthetic", q:"What catches your eye first?", opts:[
       ["Minimal plant room","One plant, clean lines","q09_o1_minimal-plant",["minimal","home"],["aesthetic:minimal","aesthetic:muted"]],
       ["Colourful interior","Bold, layered and warm","q09_o2_colourful-interior",["home"],["aesthetic:maximal","aesthetic:vivid","aesthetic:warm"]],
-      ["Matte-black gadget","Sleek, sharp and modern","q09_o3_matteblack-gadget",["tech","minimal"],["aesthetic:sleek","aesthetic:cool"]],
-      ["Earthy textile","Handwoven and warm","q09_o4_earthy-textile",["home","sustainability","heritage"],["aesthetic:warm","aesthetic:muted"]],
-      ["Neon mural","Loud, bright and urban","q09_o5_neon-mural",["culture"],["aesthetic:vivid","aesthetic:cool","vibe:lively"]],
-      ["Candlelit still life","Moody, dark and rich","q09_o6_candlelit-stilllife",["calm"],["aesthetic:warm","aesthetic:muted","vibe:cosy"]] ]},
+      ["Matte-black gadget","Sleek, sharp and modern","q09_o3_matteblack-gadget",["tech","minimal"],["aesthetic:sleek","aesthetic:cool"]] ]},
     { id:"vq10", axis:"aspiration", q:"What would you splurge a Sunday on?", opts:[
-      ["Degustation lunch","The full tasting experience","q10_o1_degustation",["food","luxury"],["cat:food","aspiration:luxe"]],
       ["Vineyard day trip","Vines and a glass of wine","q10_o2_vineyard",["travel","luxury","roadtrip"],["cat:travel","aspiration:luxe","region:countryside"]],
       ["Shopping spree","Bags filling up as you go","q10_o3_shopping-spree",["fashion","luxury"],["cat:fashion","aspiration:luxe"]],
-      ["Art workshop","Hands shaping clay","q10_o4_art-workshop",["culture"],["cat:culture","aspiration:everyday"]],
-      ["Sport all day","Back-to-back live games","q10_o5_sport-allday",["entertainment","social"],["cat:sport","vibe:lively"]],
-      ["Wellness retreat","Greenery, calm and quiet","q10_o6_wellness-retreat",["wellness","luxury","calm"],["cat:wellness","aspiration:luxe","vibe:calm"]] ]},
+      ["Art workshop","Hands shaping clay","q10_o4_art-workshop",["culture"],["cat:culture","aspiration:everyday"]] ]},
   ];
   const VIBE_AXES = ["region","vibe-energy","vibe-pace","aesthetic","aspiration","vibe-mix","food","wellness"];
   let vibeShownIds = [];   // ids shown this session (no repeat until pool exhausted)
@@ -1368,18 +1424,21 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
         `<div class="vibe-q"><span class="agent-mascot"></span><span>${esc(source.q)}</span></div>`+
         `<div class="vibe-grid">${tiles}</div>`+
         '<div class="vibe-hint">Pick any that feel like you</div>'+
+        '<div class="vibe-cta-row">'+
+          '<button class="vibe-continue">Continue</button>'+
+          '<button class="vibe-skip">Skip</button>'+
+        '</div>'+
       '</div>';
     return c;
   }
 
   // Per-card vibe interaction state (multi-select + single 12s-from-first-pick timer, lifted
   // from infeed pickOpt §4a). Keyed nav handled by the dispatcher's 'vibe-question' mode.
-  let vibeState = null;   // {card, source, focus, selected:Set, timer}
+  let vibeState = null;   // {card, source, focus, footerFocus, selected:Set, timer}
   function vibeActivate(card){
     const source = VIBE_POOL.find(v=>v.id===card.dataset.id); if(!source) return;
-    vibeState = { card, source, focus:0, selected:new Set(), timer:null };
+    vibeState = { card, source, focus:0, footerFocus:-1, selected:new Set(), timer:null };
     const grid=card.querySelector('.vibe-grid');
-    // reveal tiles, wire clicks
     // clone her mascot into the question line (on-brand, per §3) — once
     const mh=card.querySelector('.vibe-q .agent-mascot');
     if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined'){ mh.appendChild(mascotTemplate.content.cloneNode(true)); }
@@ -1387,16 +1446,29 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     setTimeout(()=>grid.classList.add('revealed'), 350);
     [...grid.querySelectorAll('.vibe-tile')].forEach((t,i)=>{
       if(t.dataset.wired) return; t.dataset.wired='1';
-      t.addEventListener('click',()=>{ vibeState.focus=i; vibeToggle(i); vibePaint(); });
+      t.addEventListener('click',()=>{ vibeState.focus=i; vibeState.footerFocus=-1; vibeToggle(i); vibePaint(); });
     });
-    vibeState.focus=0; vibePaint();
+    // wire footer CTAs: Continue commits with picks, Skip commits with none (both end the card)
+    const cont=card.querySelector('.vibe-continue'), skip=card.querySelector('.vibe-skip');
+    if(cont && !cont.dataset.wired){ cont.dataset.wired='1'; cont.addEventListener('click',()=>{ if(vibeState && vibeState.selected.size) vibeCommit(); }); }
+    if(skip && !skip.dataset.wired){ skip.dataset.wired='1'; skip.addEventListener('click',()=>vibeCommit()); }
+    vibeState.focus=0; vibeState.footerFocus=-1; vibePaint();
     setPrefMode('vibe-question');
   }
   function vibePaint(){
     if(!vibeState) return;
-    const tiles=[...vibeState.card.querySelectorAll('.vibe-tile')];
-    tiles.forEach((t,i)=>{ t.classList.toggle('foc', i===vibeState.focus);
+    const card=vibeState.card;
+    const grid=card.querySelector('.vibe-grid');
+    const gridFocused = vibeState.footerFocus===-1;   // a tile (not the footer) holds focus
+    if(grid) grid.classList.toggle('has-foc', gridFocused);   // recede non-focused tiles
+    const tiles=[...card.querySelectorAll('.vibe-tile')];
+    tiles.forEach((t,i)=>{ t.classList.toggle('foc', i===vibeState.focus && gridFocused);
                            t.classList.toggle('sel', vibeState.selected.has(i)); });
+    // Continue is visible only once something is selected
+    const cont=card.querySelector('.vibe-continue'), skip=card.querySelector('.vibe-skip');
+    if(cont){ cont.classList.toggle('show', vibeState.selected.size>0);
+              cont.classList.toggle('foc', vibeState.footerFocus===0 && vibeState.selected.size>0); }
+    if(skip){ skip.classList.toggle('foc', vibeState.footerFocus===1); }
   }
   function vibeToggle(i){
     const s=vibeState.selected;
@@ -1417,20 +1489,63 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
     vibeState=null;   // (id already marked shown at build time, §9)
     setPrefMode('feed');
     if(tags.length){ bumpInterestTags(tags, w); reRankUpcoming(); }
-    // her voice ack, then resume her loop
+    // her voice ack, then resume her loop (Skip with no picks → her "bit of everything" line)
     if(typeof showAckMulti==='function'){ showAckMulti(labels, ()=>{ autoMode=true; goNext(true); }); }
     else { autoMode=true; goNext(true); }
   }
-  // vibe-question key handler (registered with the single dispatcher)
+  // vibe-question key handler (registered with the single dispatcher).
+  // Grid focus + a footer row (Continue / Skip); ArrowDown from bottom row enters the footer.
   prefKeyHandlers['vibe-question'] = (key,e)=>{
     if(!vibeState) return;
     const n=vibeState.source.opts.length, COLS=3;
-    if(key==='ArrowRight'){ e.preventDefault(); if(vibeState.focus%COLS<COLS-1 && vibeState.focus+1<n) vibeState.focus++; vibePaint(); }
-    else if(key==='ArrowLeft'){ e.preventDefault(); if(vibeState.focus%COLS>0) vibeState.focus--; vibePaint(); }
-    else if(key==='ArrowDown'){ e.preventDefault(); if(vibeState.focus+COLS<n) vibeState.focus+=COLS; vibePaint(); }
-    else if(key==='ArrowUp'){ e.preventDefault(); if(vibeState.focus-COLS>=0) vibeState.focus-=COLS; vibePaint(); }
+    const hasSel=vibeState.selected.size>0;
+    if(vibeState.footerFocus>=0){
+      // in the footer row
+      if(key==='ArrowRight'){ e.preventDefault(); vibeState.footerFocus = hasSel ? Math.min(1,vibeState.footerFocus+1) : 1; vibePaint(); }
+      else if(key==='ArrowLeft'){ e.preventDefault(); vibeState.footerFocus = hasSel ? Math.max(0,vibeState.footerFocus-1) : 1; vibePaint(); }
+      else if(key==='ArrowUp'){ e.preventDefault(); vibeState.footerFocus=-1; vibePaint(); }   // back into grid
+      else if(key==='Enter'||key===' '){ e.preventDefault();
+        if(vibeState.footerFocus===0 && hasSel) vibeCommit();   // Continue
+        else if(vibeState.footerFocus===1) vibeCommit();        // Skip
+      }
+      else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }
+      return;
+    }
+    // in the grid — single row of 3: left/right only; ArrowDown drops to the footer
+    if(key==='ArrowRight'){ e.preventDefault(); if(vibeState.focus<n-1) vibeState.focus++; vibePaint(); }
+    else if(key==='ArrowLeft'){ e.preventDefault(); if(vibeState.focus>0) vibeState.focus--; vibePaint(); }
+    else if(key==='ArrowDown'){ e.preventDefault(); vibeState.footerFocus = hasSel ? 0 : 1; vibePaint(); }   // → footer (Continue if available, else Skip)
+    else if(key==='ArrowUp'){ e.preventDefault(); /* single row — no-op in grid */ }
     else if(key==='Enter'||key===' '){ e.preventDefault(); vibeToggle(vibeState.focus); vibePaint(); }
     else if(key==='Backspace'){ e.preventDefault(); vibeCommit(); }   // skip → commit whatever's picked (may be none)
+  };
+
+  /* ===== VTON intro "Imagine yourself here" — feature showcase, no signal emitted ===== */
+  let vtonState=null;   // {card, focus} — focus: 0 Continue · 1 Maybe Later · 2 Skip Intro
+  function vtonActivate(card){
+    vtonState={card, focus:0};
+    const mh=card.querySelector('.vton-orb .agent-mascot');
+    if(mh && !mh.childElementCount && typeof mascotTemplate!=='undefined') mh.appendChild(mascotTemplate.content.cloneNode(true));
+    const btns=[...card.querySelectorAll('.vton-btn')];
+    btns.forEach((b,i)=>{ if(b.dataset.wired) return; b.dataset.wired='1';
+      b.addEventListener('click',()=>{ vtonState.focus=i; vtonAdvance(); }); });
+    vtonPaint(); setPrefMode('vton-intro');
+  }
+  function vtonPaint(){
+    if(!vtonState) return;
+    [...vtonState.card.querySelectorAll('.vton-btn')].forEach((b,i)=>b.classList.toggle('foc', i===vtonState.focus));
+  }
+  function vtonAdvance(){   // all three buttons just advance — it's a feature intro, not a preference
+    if(!vtonState) return;
+    vtonState=null; setPrefMode('feed'); autoMode=true; goNext(true);
+  }
+  prefKeyHandlers['vton-intro']=(key,e)=>{
+    if(!vtonState) return;
+    const n=3;
+    if(key==='ArrowRight'){ e.preventDefault(); vtonState.focus=Math.min(n-1,vtonState.focus+1); vtonPaint(); }
+    else if(key==='ArrowLeft'){ e.preventDefault(); vtonState.focus=Math.max(0,vtonState.focus-1); vtonPaint(); }
+    else if(key==='Enter'||key===' '){ e.preventDefault(); vtonAdvance(); }
+    else if(key==='Backspace'){ e.preventDefault(); vtonAdvance(); }
   };
 
   /* ===== interaction follow-up layer (feat/preference-collection · merge doc §7 · taxonomy §5) =====
