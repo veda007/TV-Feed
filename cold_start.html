@@ -406,6 +406,10 @@
   .pref-tile.explore-tile .pref-tile-title { color: var(--violet-100); }
   .pref-tile.explore-tile .pref-tile-meta { color: var(--violet-300); }
   .pref-tile.explore-tile:hover { border-color: var(--violet-300); background: linear-gradient(160deg, rgba(126,104,242,0.26) 0%, rgba(95,75,217,0.16) 100%); }
+  /* location "elsewhere" — matched footprint, no image, lower weight than the picked tile */
+  .pref-tile.tile-flat { background-image:none !important; background:linear-gradient(160deg,rgba(126,104,242,0.16) 0%,rgba(95,75,217,0.10) 100%); border:1px solid rgba(216,204,255,0.22); }
+  .pref-tile.tile-flat::before { display:none; }
+  .pref-tile.tile-flat:hover { border-color:var(--violet-300); background:linear-gradient(160deg,rgba(126,104,242,0.24) 0%,rgba(95,75,217,0.15) 100%); }
 
   /* BUILD LIST */
   .build-list { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; max-width: 600px;
@@ -677,12 +681,28 @@
       <div class="card-actions"><button class="cta-button"><span class="cta-dock"></span><span class="cta-question"></span><span class="cta-yes">Yes</span></button></div>
     </div>
   </div>
-  <div class="card preference" data-time-label="Setting up" data-pref-question="I see you&#x27;re in Bangalore — that right? It helps me get your feed spot on." data-group="location">
+  <div class="card preference" data-time-label="Setting up" data-pref-question="I see you&#x27;re in Bangalore. It helps me get your feed spot on." data-group="location">
     <div class="card-image"></div>
     <div class="pref-content">
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
-      <div class="pref-hint">Pick one</div>
-      <div class="pref-tiles" data-choice-group="location" data-advance-on-pick="true" data-no-explore="true"><button class="pref-tile selected" data-value="bangalore" data-label="Bangalore" style="background-image:url('assets/feed_built_room.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">📍</span><div class="pref-tile-title">Yes, Bangalore</div><div class="pref-tile-meta">Spot on — that&#x27;s home</div></div></button><button class="pref-tile" data-value="elsewhere" data-label="another city" style="background-image:url('content/images/c063.jpg');"><div class="pref-tile-label"><span class="pref-tile-icon">✈️</span><div class="pref-tile-title">I&#x27;m elsewhere</div><div class="pref-tile-meta">Set a different city</div></div></button></div>
+      <!-- no "Pick one" hint on this card — it's a confirmation, not a pick -->
+      <div class="pref-tiles" data-choice-group="location" data-advance-on-pick="true" data-no-explore="true">
+        <button class="pref-tile selected" data-value="bangalore" data-label="Bangalore"
+                style="background-image:url('assets/feed_built_room.jpg');">
+          <div class="pref-tile-label">
+            <span class="pref-tile-icon">📍</span>
+            <div class="pref-tile-title">Yes, continue</div>
+            <div class="pref-tile-meta">Bangalore's home</div>
+          </div>
+        </button>
+        <button class="pref-tile tile-flat" data-value="elsewhere" data-label="another city">
+          <div class="pref-tile-label">
+            <span class="pref-tile-icon">✈️</span>
+            <div class="pref-tile-title">No, I'm elsewhere</div>
+            <div class="pref-tile-meta">Select a different city</div>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
   <div class="card preference" data-time-label="Setting up · 1 of 2" data-pref-question="What does your ideal evening feel like?" data-group="evening">
@@ -1267,7 +1287,17 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
       group.querySelectorAll('.pref-tile').forEach(tile=>{ tile.addEventListener('click',()=>{ const isE=tile.classList.contains('explore-tile');
         if(isMulti&&!isE){ tile.classList.toggle('selected'); const c=card.querySelector('.pref-multi-cta'); if(c) c.classList.toggle('show',group.querySelectorAll('.pref-tile.selected:not(.explore-tile)').length>0); }
         else if(isE){ showAckExplore(()=>goNext(true)); }
-        else { group.querySelectorAll('.pref-tile').forEach(t=>t.classList.remove('selected')); tile.classList.add('selected'); showAck(tile.dataset.label||tile.dataset.value,()=>{ if(adv) goNext(true); }); } }); });
+        else {
+          group.querySelectorAll('.pref-tile').forEach(t=>t.classList.remove('selected')); tile.classList.add('selected');
+          if(group.dataset.choiceGroup==='location'){
+            // confirmation, not a taste signal — skip the "X is your thing" ack
+            if(tile.dataset.value==='elsewhere'){
+              if(prefAck){ prefAckText.textContent="Got it — I'll start with Bangalore for now."; prefAck.classList.add('show');
+                launchTimers.push(setTimeout(()=>prefAck.classList.remove('show'),1400)); }
+              launchTimers.push(setTimeout(()=>{ if(adv) goNext(true); },700));
+            } else { if(adv) goNext(true); }
+          } else { showAck(tile.dataset.label||tile.dataset.value,()=>{ if(adv) goNext(true); }); }
+        } }); });
     });
   });
   } // end hydrateAll
