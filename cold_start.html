@@ -410,6 +410,31 @@
   .pref-tile.tile-flat { background-image:none !important; background:linear-gradient(160deg,rgba(126,104,242,0.16) 0%,rgba(95,75,217,0.10) 100%); border:1px solid rgba(216,204,255,0.22); }
   .pref-tile.tile-flat::before { display:none; }
   .pref-tile.tile-flat:hover { border-color:var(--violet-300); background:linear-gradient(160deg,rgba(126,104,242,0.24) 0%,rgba(95,75,217,0.15) 100%); }
+  /* ===== location confirm card v2: hero image + two CTA buttons below ===== */
+  .card.preference .loc-hero { width:min(46vw,720px); height:50vh; margin:0 auto 40px;
+    border-radius:24px; background-size:cover; background-position:center;
+    box-shadow:0 22px 70px rgba(0,0,0,0.5); border:0.5px solid rgba(255,255,255,0.10);
+    pointer-events:none;
+    opacity:0; transform:translateY(18px) scale(.98);
+    transition:opacity .8s cubic-bezier(.32,.72,0,1), transform .8s cubic-bezier(.32,.72,0,1); }
+  .card.preference.active .loc-hero { opacity:1; transform:translateY(0) scale(1); }
+  .loc-ctas { display:flex; gap:22px; justify-content:center; align-items:stretch; }
+  .loc-cta { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+    width:340px; min-height:96px; padding:18px 30px; border-radius:18px; cursor:pointer;
+    background:linear-gradient(135deg,var(--violet-400),var(--violet-500));
+    border:1px solid transparent; color:#fff; transition:.18s; text-align:center; }
+  .loc-cta .loc-cta-t { font-size:24px; font-weight:700; letter-spacing:-.01em; line-height:1.1; }
+  .loc-cta .loc-cta-s { font-size:14px; font-weight:500; opacity:.85; }
+  .loc-cta.ghost { background:linear-gradient(160deg,rgba(126,104,242,0.16),rgba(95,75,217,0.10));
+    border-color:rgba(216,204,255,0.24); color:var(--ink-1); }
+  .loc-cta.ghost .loc-cta-s { color:var(--ink-2); }
+  .loc-cta:hover { transform:translateY(-2px); }
+  .loc-cta.selected { box-shadow:0 0 0 3px var(--violet-300),0 16px 44px rgba(155,134,255,0.5); }
+  .loc-cta.selected::after { content:"✓"; position:absolute; top:12px; right:14px; width:26px; height:26px;
+    border-radius:50%; background:rgba(255,255,255,0.9); color:#5F4BD9; font-size:13px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; }
+  .loc-cta.foc { box-shadow:0 0 0 3px var(--violet-300),0 16px 44px rgba(155,134,255,0.5); }
+  .loc-cta.ghost.foc { color:#fff; }
 
   /* BUILD LIST */
   .build-list { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; max-width: 600px;
@@ -685,22 +710,15 @@
     <div class="card-image"></div>
     <div class="pref-content">
       <div class="pref-question"><span class="pref-typed"></span><span class="agent-mascot"></span></div>
-      <!-- no "Pick one" hint on this card — it's a confirmation, not a pick -->
-      <div class="pref-tiles" data-choice-group="location" data-advance-on-pick="true" data-no-explore="true">
-        <button class="pref-tile selected" data-value="bangalore" data-label="Bangalore"
-                style="background-image:url('assets/feed_built_room.jpg');">
-          <div class="pref-tile-label">
-            <span class="pref-tile-icon">📍</span>
-            <div class="pref-tile-title">Yes, continue</div>
-            <div class="pref-tile-meta">Bangalore's home</div>
-          </div>
+      <div class="loc-hero" style="background-image:url('assets/feed_built_room.jpg');"></div>
+      <div class="loc-ctas" data-choice-group="location">
+        <button class="loc-cta selected" data-value="bangalore">
+          <span class="loc-cta-t">Yes, continue</span>
+          <span class="loc-cta-s">Bangalore&#x27;s home</span>
         </button>
-        <button class="pref-tile tile-flat" data-value="elsewhere" data-label="another city">
-          <div class="pref-tile-label">
-            <span class="pref-tile-icon">✈️</span>
-            <div class="pref-tile-title">No, I'm elsewhere</div>
-            <div class="pref-tile-meta">Select a different city</div>
-          </div>
+        <button class="loc-cta ghost" data-value="elsewhere">
+          <span class="loc-cta-t">No, I&#x27;m elsewhere</span>
+          <span class="loc-cta-s">Select a different city</span>
         </button>
       </div>
     </div>
@@ -1298,6 +1316,17 @@ window.GLANCE_FEED_IDS=["c090", "c001", "t301", "c051", "c005", "t302", "c041", 
             } else { if(adv) goNext(true); }
           } else { showAck(tile.dataset.label||tile.dataset.value,()=>{ if(adv) goNext(true); }); }
         } }); });
+    });
+  });
+  // location confirm card v2 — wire .loc-cta buttons (not .pref-tiles)
+  document.querySelectorAll('.loc-ctas .loc-cta').forEach(btn=>{
+    if(btn.dataset.wired) return; btn.dataset.wired='1';
+    btn.addEventListener('click',()=>{
+      if(btn.dataset.value==='elsewhere'){
+        if(prefAck){ prefAckText.textContent="Got it — I'll start with Bangalore for now.";
+          prefAck.classList.add('show'); launchTimers.push(setTimeout(()=>prefAck.classList.remove('show'),1400)); }
+        launchTimers.push(setTimeout(()=>goNext(true),700));
+      } else { goNext(true); }
     });
   });
   } // end hydrateAll
