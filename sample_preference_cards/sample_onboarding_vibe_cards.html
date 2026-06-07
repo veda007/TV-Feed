@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Glance TV — Vibe Card: What's your kind of escape?</title>
-<meta name="viewport" content="width=1920">
 <style>
-/* ─────────────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════
    DESIGN TOKENS
-   ───────────────────────────────────────────────────────────────────────── */
+═══════════════════════════════════════════════════════════════════════ */
 :root {
   --bg:#0B0B1E; --bg-grad-top:#0D0D2B; --bg-grad-bot:#07070F;
   --surface:#141428; --panel-bg:#0E0E22; --panel-border:rgba(255,255,255,0.08);
@@ -16,7 +15,7 @@
   --white:#FFFFFF; --white-80:rgba(255,255,255,0.80); --white-60:rgba(255,255,255,0.60);
   --white-30:rgba(255,255,255,0.30); --white-12:rgba(255,255,255,0.12); --white-06:rgba(255,255,255,0.06);
   --focus-col:#FFFFFF; --selected-col:#9B86FF;
-  --tile-scrim:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.05) 100%);
+  --tile-scrim:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.35) 50%,rgba(0,0,0,0.05) 100%);
   --font-serif:'Georgia','New York',serif;
   --font-sans:-apple-system,'Helvetica Neue','Segoe UI',sans-serif;
   --font-mono:'SF Mono','Fira Code',monospace;
@@ -24,34 +23,47 @@
   --grid-cols:2; --tile-w:572px; --tile-h:284px; --tile-gap:22px; --tile-radius:14px;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   RESET & SCALING SHELL
-   ───────────────────────────────────────────────────────────────────────── */
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html,body { width:100%; height:100%; background:#000; overflow:hidden; font-family:var(--font-sans); color:var(--white); }
+/* ═══════════════════════════════════════════════════════════════════════
+   CENTERING SHELL — body is a flex container; stage-wrapper is sized by JS
+   so the browser centers the scaled stage automatically with even letterbox.
+   Do NOT pin the stage to a corner; do NOT resize body to the scaled size.
+═══════════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
 
-/* Fixed 1920×1080 stage — scales to fit any window (letterbox) */
-.stage-wrap {
-  position:fixed; top:0; left:0;
+html, body {
   width:100%; height:100%;
-  display:flex; align-items:center; justify-content:center;
-}
-.stage {
-  position:relative;
-  width:1920px; height:1080px;
-  background:linear-gradient(160deg, var(--bg-grad-top) 0%, var(--bg) 50%, var(--bg-grad-bot) 100%);
+  background:#000;
   overflow:hidden;
-  transform-origin:top left;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--font-sans);
+  color:var(--white);
 }
-/* violet bloom behind tiles for depth */
+
+/* JS sets this to 1920*scale × 1080*scale so flex centers it */
+.stage-wrapper {
+  position:relative;
+  flex-shrink:0;
+}
+
+/* Fixed 1920×1080 stage — absolutely positioned within the wrapper */
+.stage {
+  position:absolute; top:0; left:0;
+  width:1920px; height:1080px;
+  transform-origin:top left;
+  background:linear-gradient(160deg,var(--bg-grad-top) 0%,var(--bg) 50%,var(--bg-grad-bot) 100%);
+  overflow:hidden;
+}
+/* violet radial bloom behind the tile area for depth */
 .stage::before {
   content:''; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(ellipse 900px 500px at 50% 60%, rgba(126,104,242,0.18) 0%, transparent 70%);
+  background:radial-gradient(ellipse 900px 500px at 50% 62%,rgba(126,104,242,0.18) 0%,transparent 70%);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════
    HEADER
-   ───────────────────────────────────────────────────────────────────────── */
+═══════════════════════════════════════════════════════════════════════ */
 .header {
   position:absolute; top:0; left:0; right:0; height:80px;
   display:flex; align-items:center; justify-content:space-between;
@@ -59,12 +71,10 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   z-index:10;
 }
 .wordmark {
-  font-family:var(--font-sans); font-size:26px; font-weight:700; letter-spacing:-.02em;
-  color:var(--white);
+  font-size:26px; font-weight:700; letter-spacing:-.02em; color:var(--white);
 }
 .wordmark .star { color:var(--violet-400); }
 
-/* "Show Your Work" trigger pill */
 .show-work-btn {
   display:flex; align-items:center; gap:8px;
   background:var(--white-06); border:1px solid var(--white-12);
@@ -73,20 +83,20 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   cursor:pointer; transition:background .18s, color .18s;
   user-select:none;
 }
-.show-work-btn:hover, .show-work-btn:focus-visible {
+.show-work-btn:hover, .show-work-btn.focused {
   background:var(--white-12); color:var(--white);
-  outline:2px solid var(--white-30); outline-offset:2px;
+  outline:2px solid var(--white-30); outline-offset:3px;
 }
-.show-work-btn .dot { color:#88BBFF; font-size:11px; }
-.show-work-btn .arrow { color:var(--white-30); font-size:14px; }
+.show-work-btn .dot  { color:#88BBFF; font-size:11px; }
+.show-work-btn .arrow{ color:var(--white-30); font-size:14px; }
 
-/* ─────────────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════
    HEADLINE AREA
-   ── DUPLICATION LEVER 3: change the <h1> and <p> text only ──
-   ───────────────────────────────────────────────────────────────────────── */
+   ── DUPLICATION LEVER 3: change <h1> + <p> text only ──
+═══════════════════════════════════════════════════════════════════════ */
 .headline-area {
   position:absolute; top:96px; left:0; right:0;
-  text-align:center; padding:0 340px; /* room for header button at edges */
+  text-align:center; padding:0 340px;
 }
 .headline-area h1 {
   font-family:var(--font-serif); font-size:50px; font-weight:400;
@@ -97,18 +107,18 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   font-size:22px; color:var(--white-60); line-height:1.45;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════
    TILE GRID
-   ───────────────────────────────────────────────────────────────────────── */
+   ── DUPLICATION LEVER 1 (cont.): tile dimensions from CSS vars ──
+═══════════════════════════════════════════════════════════════════════ */
 .tile-grid {
   position:absolute;
-  top:240px; left:50%; transform:translateX(-50%);
+  top:244px; left:50%; transform:translateX(-50%);
   display:grid;
   grid-template-columns:repeat(var(--grid-cols), var(--tile-w));
   gap:var(--tile-gap);
 }
 
-/* ── DUPLICATION LEVER 1 (cont.): tile dimensions come from CSS vars above ── */
 .tile {
   position:relative;
   width:var(--tile-w); height:var(--tile-h);
@@ -117,12 +127,11 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   cursor:pointer;
   border:2.5px solid transparent;
   transition:transform .22s cubic-bezier(.34,1.2,.64,1),
-             border-color .18s,
-             box-shadow .22s;
+             border-color .18s, box-shadow .22s;
   z-index:1;
 }
 
-/* per-tile fallback colours when image files are absent */
+/* per-tile fallback colours when GCS images are absent */
 .tile[data-index="0"] { background-color:#1A2B1F; }
 .tile[data-index="1"] { background-color:#131E2E; }
 .tile[data-index="2"] { background-color:#2B1A10; }
@@ -133,13 +142,9 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   background-size:cover; background-position:center;
   transition:transform .28s ease;
 }
-.tile-scrim {
-  position:absolute; inset:0;
-  background:var(--tile-scrim);
-}
+.tile-scrim  { position:absolute; inset:0; background:var(--tile-scrim); }
 .tile-labels {
-  position:absolute; bottom:20px; left:22px; right:54px;
-  z-index:2;
+  position:absolute; bottom:20px; left:22px; right:54px; z-index:2;
 }
 .tile-title {
   font-size:24px; font-weight:600; line-height:1.2;
@@ -161,25 +166,20 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   transition:opacity .22s, transform .28s cubic-bezier(.34,1.56,.64,1);
 }
 
-/* ── STATE: FOCUSED ── */
+/* ── STATE: FOCUSED ── white border + enlarge + image zoom */
 .tile.focused {
   border-color:var(--focus-col);
   transform:scale(1.055);
   z-index:3;
-  box-shadow:0 0 0 2px rgba(255,255,255,0.22),
-             0 24px 64px rgba(0,0,0,0.65);
+  box-shadow:0 0 0 2px rgba(255,255,255,0.22), 0 24px 64px rgba(0,0,0,0.65);
 }
 .tile.focused .tile-img { transform:scale(1.06); }
 
-/* ── STATE: SELECTED ── */
-.tile.selected {
-  border-color:var(--selected-col);
-}
-.tile.selected .tile-check {
-  opacity:1; transform:scale(1);
-}
+/* ── STATE: SELECTED ── violet border + tick */
+.tile.selected { border-color:var(--selected-col); }
+.tile.selected .tile-check { opacity:1; transform:scale(1); }
 
-/* ── STATE: FOCUSED + SELECTED ── */
+/* ── STATE: FOCUSED + SELECTED ── violet wins + glow + size kept */
 .tile.focused.selected {
   border-color:var(--selected-col);
   box-shadow:0 0 0 3px var(--violet-glow),
@@ -187,28 +187,24 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
              0 24px 64px rgba(0,0,0,0.65);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   SKIP LINK
-   ───────────────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   SKIP
+═══════════════════════════════════════════════════════════════════════ */
 .skip-btn {
-  position:absolute;
-  top:870px; left:50%; transform:translateX(-50%);
+  position:absolute; top:868px; left:50%; transform:translateX(-50%);
   font-size:20px; color:var(--white-30);
   background:none; border:none; cursor:pointer;
-  letter-spacing:.04em;
+  letter-spacing:.04em; padding:10px 24px; border-radius:999px;
   transition:color .18s;
-  padding:10px 24px; border-radius:999px;
 }
 .skip-btn:hover, .skip-btn.focused {
   color:var(--white-60);
-}
-.skip-btn.focused {
   outline:2px solid var(--white-30); outline-offset:3px;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   SIDE PANEL — "Show Your Work"
-   ───────────────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   SIDE PANEL
+═══════════════════════════════════════════════════════════════════════ */
 .panel-backdrop {
   position:fixed; inset:0; z-index:50;
   background:rgba(0,0,0,0.5);
@@ -226,11 +222,9 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   transition:transform .38s cubic-bezier(.32,.72,0,1);
   overflow-y:auto;
   padding:40px 36px 60px;
-  display:flex; flex-direction:column; gap:0;
 }
 .panel.open { transform:translateX(0); }
 
-/* stagger children fade-up on open */
 .panel.open .panel-section {
   animation:panelFadeUp .32s ease both;
 }
@@ -252,22 +246,16 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
   padding:7px 14px; border-radius:999px;
 }
-.state-badge.cold {
-  background:rgba(136,187,255,0.14); color:#88BBFF; border:1px solid rgba(136,187,255,0.28);
-}
-.state-badge.warm {
-  background:rgba(255,187,88,0.14); color:#FFBB58; border:1px solid rgba(255,187,88,0.28);
-}
-.state-badge.enriched {
-  background:rgba(155,134,255,0.14); color:#9B86FF; border:1px solid rgba(155,134,255,0.28);
-}
+.state-badge.cold     { background:rgba(136,187,255,0.14); color:#88BBFF; border:1px solid rgba(136,187,255,0.28); }
+.state-badge.warm     { background:rgba(255,187,88,0.14);  color:#FFBB58; border:1px solid rgba(255,187,88,0.28); }
+.state-badge.enriched { background:rgba(155,134,255,0.14); color:#9B86FF; border:1px solid rgba(155,134,255,0.28); }
+
 .panel-close {
   width:36px; height:36px; border-radius:50%;
   background:var(--white-06); border:1px solid var(--white-12);
   color:var(--white-60); font-size:18px; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
-  transition:background .15s, color .15s;
-  flex-shrink:0;
+  transition:background .15s, color .15s; flex-shrink:0;
 }
 .panel-close:hover { background:var(--white-12); color:var(--white); }
 
@@ -286,17 +274,18 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
   background:rgba(155,134,255,0.12); padding:2px 6px; border-radius:5px;
 }
 .panel-section-body p + p { margin-top:10px; }
-.panel-section-body .loc-line {
-  font-size:18px; font-weight:700; color:var(--white); margin-bottom:8px;
-}
+.loc-line { font-size:18px; font-weight:700; color:var(--white); margin-bottom:8px; }
 </style>
 </head>
 <body>
 
-<div class="stage-wrap">
+<!-- ═══ CENTERED STAGE ═══
+     stage-wrapper is sized to 1920*scale × 1080*scale by JS → flex centers it.
+     stage is 1920×1080, scaled from top-left. ════════════════════════════ -->
+<div class="stage-wrapper">
   <div class="stage" id="stage">
 
-    <!-- ── HEADER ── -->
+    <!-- HEADER ─────────────────────────────────────────────────────── -->
     <header class="header">
       <div class="wordmark">glance <span class="star">✦</span></div>
       <button class="show-work-btn" id="showWorkBtn" tabindex="-1">
@@ -306,22 +295,23 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
       </button>
     </header>
 
-    <!-- ── HEADLINE
-         DUPLICATION LEVER 3: change h1 + p for a different question ── -->
+    <!-- HEADLINE AREA
+         ── DUPLICATION LEVER 3: change h1 + p for a different question ── -->
     <div class="headline-area">
       <h1>What's your kind of escape?</h1>
       <p>Pick up to 3 — I'll bring more of what you choose.</p>
     </div>
 
-    <!-- ── TILE GRID
-         DUPLICATION LEVER 1: add/remove .tile blocks; update --grid-cols + GRID_COLS
-         DUPLICATION LEVER 4: tile data-prefs, data-rich, title, sub, image URL ── -->
+    <!-- TILE GRID
+         ── DUPLICATION LEVER 1: add/remove .tile blocks; update --grid-cols + GRID_COLS ──
+         ── DUPLICATION LEVER 4: each tile's data-img, data-prefs, data-rich, title, sub ── -->
     <div class="tile-grid" id="tileGrid">
 
       <div class="tile" data-index="0"
+           data-img="cold_q01_o1.jpg"
            data-prefs="travel|nature|calm"
            data-rich="region:hills vibe:calm cat:travel">
-        <div class="tile-img" style="background-image:url('../assets/vq01_coorg.jpg')"></div>
+        <div class="tile-img"></div><!-- JS sets background-image = IMAGE_BASE_URL + data-img -->
         <div class="tile-scrim"></div>
         <div class="tile-check">✓</div>
         <div class="tile-labels">
@@ -331,9 +321,10 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
       </div>
 
       <div class="tile" data-index="1"
+           data-img="cold_q01_o2.jpg"
            data-prefs="travel|beach|social"
            data-rich="region:coast vibe:social cat:travel">
-        <div class="tile-img" style="background-image:url('../assets/vq01_goa.jpg')"></div>
+        <div class="tile-img"></div>
         <div class="tile-scrim"></div>
         <div class="tile-check">✓</div>
         <div class="tile-labels">
@@ -343,9 +334,10 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
       </div>
 
       <div class="tile" data-index="2"
+           data-img="cold_q01_o3.jpg"
            data-prefs="travel|city|lively"
            data-rich="region:city vibe:lively cat:travel">
-        <div class="tile-img" style="background-image:url('../assets/vq01_city.jpg')"></div>
+        <div class="tile-img"></div>
         <div class="tile-scrim"></div>
         <div class="tile-check">✓</div>
         <div class="tile-labels">
@@ -355,9 +347,10 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
       </div>
 
       <div class="tile" data-index="3"
+           data-img="cold_q01_o4.jpg"
            data-prefs="travel|culture|heritage"
            data-rich="region:heritage vibe:curious cat:travel">
-        <div class="tile-img" style="background-image:url('../assets/vq01_heritage.jpg')"></div>
+        <div class="tile-img"></div>
         <div class="tile-scrim"></div>
         <div class="tile-check">✓</div>
         <div class="tile-labels">
@@ -368,21 +361,21 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 
     </div><!-- /tile-grid -->
 
-    <!-- ── SKIP ── -->
+    <!-- SKIP -->
     <button class="skip-btn" id="skipBtn" tabindex="-1">Skip</button>
 
   </div><!-- /stage -->
-</div><!-- /stage-wrap -->
+</div><!-- /stage-wrapper -->
 
-<!-- ── PANEL BACKDROP ── -->
+<!-- PANEL BACKDROP -->
 <div class="panel-backdrop" id="backdrop"></div>
 
-<!-- ── "SHOW YOUR WORK" SIDE PANEL
-     DUPLICATION LEVER 2: swap badge class + rewrite the three sections ── -->
+<!-- "SHOW YOUR WORK" SIDE PANEL
+     ── DUPLICATION LEVER 2: swap badge class + rewrite three sections ── -->
 <aside class="panel" id="panel" role="dialog" aria-label="Show Your Work" aria-hidden="true">
 
   <div class="panel-header panel-section">
-    <!-- Badge: swap class to .warm or .enriched for other user states -->
+    <!-- Badge: .cold / .warm / .enriched -->
     <div class="state-badge cold">❄ Cold Start</div>
     <button class="panel-close" id="closeBtn" aria-label="Close panel">✕</button>
   </div>
@@ -418,44 +411,62 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden; font-fami
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    DUPLICATION LEVERS — change ONLY these four things to make a new card:
-   1. CSS --grid-cols + GRID_COLS below        → tile layout
-   2. Panel badge class + 3 panel sections     → user state & intelligence
-   3. <h1> and <p> in .headline-area           → question copy
-   4. Each .tile's data-prefs, data-rich,      → tile content & signals
-      tile-title, tile-sub, tile-img URL
-   ═══════════════════════════════════════════════════════════════════════ */
-
+   1. CSS --grid-cols  +  GRID_COLS below          → tile layout
+   2. Panel badge class + 3 panel sections          → user state & intelligence
+   3. <h1> and <p> in .headline-area               → question copy
+   4. Each .tile's data-img, data-prefs, data-rich, → tile content & signals
+      tile-title, tile-sub
+═══════════════════════════════════════════════════════════════════════ */
 "use strict";
 
-/* ── LEVER 1 ── must match CSS --grid-cols */
+/* ── IMAGE HOSTING ──
+   Set IMAGE_BASE_URL to your GCS bucket before generating images.
+   One-line change; all tiles pick it up automatically.
+   Swap to a local path (e.g. "../assets/") for offline testing.   */
+const IMAGE_BASE_URL = "https://storage.googleapis.com/glance-vibe-cards/";
+
+/* ── LEVER 1: must match CSS --grid-cols ── */
 const GRID_COLS = 2;
 
 /* ── DOM refs ── */
-const stage      = document.getElementById('stage');
-const tileGrid   = document.getElementById('tileGrid');
-const skipBtn    = document.getElementById('skipBtn');
-const showWorkBtn= document.getElementById('showWorkBtn');
-const panel      = document.getElementById('panel');
-const backdrop   = document.getElementById('backdrop');
-const closeBtn   = document.getElementById('closeBtn');
+const stage       = document.getElementById('stage');
+const tileGrid    = document.getElementById('tileGrid');
+const skipBtn     = document.getElementById('skipBtn');
+const showWorkBtn = document.getElementById('showWorkBtn');
+const panel       = document.getElementById('panel');
+const backdrop    = document.getElementById('backdrop');
+const closeBtn    = document.getElementById('closeBtn');
 
-const tiles      = [...tileGrid.querySelectorAll('.tile')];
-const TILE_COUNT = tiles.length;
-const focusable  = [...tiles, skipBtn];   // focus order: tiles then Skip
+const tiles       = [...tileGrid.querySelectorAll('.tile')];
+const TILE_COUNT  = tiles.length;
+const focusable   = [...tiles, skipBtn];  /* focus order: tiles then Skip */
 
-let focusIndex   = 0;
-let panelOpen    = false;
+let focusIndex = 0;
+let panelOpen  = false;
 
-/* ── SCALING ── letterbox the 1920×1080 stage to fit any window */
+/* ── INJECT IMAGES FROM GCS ──
+   Each .tile carries data-img = bare filename (e.g. cold_q01_o1.jpg).
+   JS prepends IMAGE_BASE_URL; fallback colour from CSS shows until the image loads. */
+tiles.forEach(tile => {
+  const img = tile.dataset.img;
+  if (img) {
+    tile.querySelector('.tile-img').style.backgroundImage =
+      `url('${IMAGE_BASE_URL}${img}')`;
+  }
+});
+
+/* ── STAGE SCALING (letterbox, centered) ──
+   body is flex-centered; we set the wrapper to 1920*scale × 1080*scale
+   so the browser auto-centers the stage with even letterbox bars. */
 function scaleStage() {
-  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-  stage.style.transform = `scale(${s})`;
-  /* shrink the wrapper so there are no scrollbars */
-  document.querySelector('.stage-wrap').style.width  = `${1920 * s}px`;
-  document.querySelector('.stage-wrap').style.height = `${1080 * s}px`;
+  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  const wrap  = document.querySelector('.stage-wrapper');
+  stage.style.transform  = `scale(${scale})`;
+  wrap.style.width  = `${1920 * scale}px`;
+  wrap.style.height = `${1080 * scale}px`;
 }
-scaleStage();
 window.addEventListener('resize', scaleStage);
+scaleStage();
 
 /* ── FOCUS ── */
 function setFocus(i) {
@@ -463,9 +474,9 @@ function setFocus(i) {
   focusIndex = i;
 }
 
-/* ── TILE TOGGLE ── */
+/* ── TILE SELECTION ── */
 function toggleTile(i) {
-  if (i >= TILE_COUNT) return;  // Skip button — handled separately
+  if (i >= TILE_COUNT) return;
   tiles[i].classList.toggle('selected');
 }
 
@@ -484,29 +495,24 @@ function closePanel() {
   panel.setAttribute('aria-hidden', 'true');
 }
 
-/* ── KEYBOARD ── */
+/* ── KEYBOARD ── one handler; panel swallows all keys when open */
 document.addEventListener('keydown', e => {
-  /* panel is open: swallow everything except Escape/Backspace to close */
   if (panelOpen) {
     if (e.key === 'Escape' || e.key === 'Backspace') {
-      e.preventDefault();
-      closePanel();
+      e.preventDefault(); closePanel();
     }
-    /* swallow all other keys — never let arrows reach the card behind */
-    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' '].includes(e.key)) {
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' '].includes(e.key))
       e.preventDefault();
-    }
     return;
   }
 
-  const isSkip = focusIndex === focusable.length - 1;
+  const isSkip = (focusIndex === focusable.length - 1);
 
   if (e.key === 'ArrowRight') {
     e.preventDefault();
     if (!isSkip) {
       const col = focusIndex % GRID_COLS;
-      if (col < GRID_COLS - 1 && focusIndex + 1 < TILE_COUNT)
-        setFocus(focusIndex + 1);
+      if (col < GRID_COLS - 1 && focusIndex + 1 < TILE_COUNT) setFocus(focusIndex + 1);
     }
   } else if (e.key === 'ArrowLeft') {
     e.preventDefault();
@@ -517,39 +523,21 @@ document.addEventListener('keydown', e => {
   } else if (e.key === 'ArrowDown') {
     e.preventDefault();
     if (isSkip) return;
-    const nextRow = focusIndex + GRID_COLS;
-    if (nextRow < TILE_COUNT) {
-      setFocus(nextRow);
-    } else {
-      /* bottom tile row → Skip */
-      setFocus(focusable.length - 1);
-    }
+    const next = focusIndex + GRID_COLS;
+    setFocus(next < TILE_COUNT ? next : focusable.length - 1);
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
-    if (isSkip) {
-      /* Skip → back to the bottom tile row */
-      setFocus(TILE_COUNT - GRID_COLS);
-    } else if (focusIndex - GRID_COLS >= 0) {
-      setFocus(focusIndex - GRID_COLS);
-    }
+    if (isSkip) { setFocus(TILE_COUNT - GRID_COLS); }
+    else if (focusIndex - GRID_COLS >= 0) { setFocus(focusIndex - GRID_COLS); }
   } else if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
-    if (isSkip) {
-      console.log('[Glance] Skipped vq01');
-    } else {
-      toggleTile(focusIndex);
-    }
+    if (isSkip) { console.log('[Glance] Skipped vq01'); }
+    else { toggleTile(focusIndex); }
   }
 });
 
-/* ── MOUSE / TOUCH ── */
-tiles.forEach((tile, i) => {
-  tile.addEventListener('click', () => {
-    setFocus(i);
-    toggleTile(i);
-  });
-});
-
+/* ── MOUSE ── */
+tiles.forEach((tile, i) => tile.addEventListener('click', () => { setFocus(i); toggleTile(i); }));
 showWorkBtn.addEventListener('click', openPanel);
 backdrop.addEventListener('click', closePanel);
 closeBtn.addEventListener('click', closePanel);
