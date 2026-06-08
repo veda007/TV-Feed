@@ -423,7 +423,8 @@ html, body {
    Set IMAGE_BASE_URL to your GCS bucket before generating images.
    One-line change; all tiles pick it up automatically.
    Swap to a local path (e.g. "../assets/") for offline testing.   */
-const IMAGE_BASE_URL = "https://storage.googleapis.com/glance-vibe-cards/";
+const IMAGE_BASE_URL = "assets/";   // images committed to repo under sample_preference_cards/assets/
+// To switch to GCS: const IMAGE_BASE_URL = "https://storage.googleapis.com/glance-vibe-cards/";
 
 /* ── LEVER 1: must match CSS --grid-cols ── */
 const GRID_COLS = 2;
