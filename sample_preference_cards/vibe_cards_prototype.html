@@ -61,11 +61,6 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
   font-size:16px; font-weight:600; color:var(--white-60);
   cursor:pointer; transition:background .18s, color .18s; user-select:none; }
 .show-work-btn:hover { background:var(--white-12); color:var(--white); }
-/* user selector */
-.user-select { background:var(--white-06); border:1px solid var(--white-12);
-  border-radius:999px; padding:10px 16px; font-size:15px; color:var(--white-60);
-  cursor:pointer; outline:none; font-family:var(--font-sans); }
-.user-select option { background:#1a1a2e; color:#fff; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    HEADLINE
@@ -268,11 +263,8 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
     <header class="header">
       <div class="wordmark">glance <span class="star">✦</span></div>
       <div class="header-right">
-        <!-- card-state chip: describes the CARD, never the user (§2.5) -->
+        <!-- card-state chip: counter + the card's state (cold/warm/enriched) -->
         <div class="card-chip" id="cardChip"><span class="dot" id="stateDot">●</span><span id="cardChipLabel">— / — · — card</span></div>
-        <span class="chip-divider"></span>
-        <!-- profile selector: the ONLY place a user's state appears -->
-        <select class="user-select" id="userSelect"><option value="">Loading users…</option></select>
         <button class="show-work-btn" id="showWorkBtn">Why this? ↗</button>
       </div>
     </header>
@@ -350,8 +342,6 @@ const IDLE_RESET_ON_CHANGE  = true;    // any select/deselect restarts the count
 /* ── STATE ─────────────────────────────────────────────────────────── */
 let CARDS      = [];
 let CARDS_JSON = {};
-let USERS_IDX  = [];
-let CURRENT_USER = null;
 
 let cardIndex    = 0;
 let focusIndex   = 0;
@@ -412,15 +402,12 @@ function groupCards(rows) {
 /* ── LOAD DATA ─────────────────────────────────────────────────────── */
 async function loadAll() {
   try {
-    const [csvText, cardsJson, usersIdx] = await Promise.all([
+    const [csvText, cardsJson] = await Promise.all([
       fetch('content_bank_vibe_cards.csv').then(r => { if(!r.ok) throw new Error('CSV'); return r.text(); }),
       fetch('cards.json').then(r => r.ok ? r.json() : []),
-      fetch('users/index.json').then(r => r.ok ? r.json().then(j => Array.isArray(j) ? j : (j.users || [])) : []),
     ]);
     CARDS = groupCards(parseCSV(csvText));
     cardsJson.forEach(c => CARDS_JSON[c.id] = c);
-    USERS_IDX = usersIdx;
-    populateUserSelector();
     showCard(0);
   } catch(e) {
     document.getElementById('errorScreen').classList.add('show');
@@ -428,35 +415,10 @@ async function loadAll() {
   }
 }
 
-/* ── USER SELECTOR ────────────────────────────────────────────────── */
-function populateUserSelector() {
-  const sel = document.getElementById('userSelect');
-  sel.innerHTML = '<option value="">No profile (base reasoning)</option>';
-  USERS_IDX.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u.id; opt.textContent = u.displayName || u.name || u.id;
-    sel.appendChild(opt);
-  });
-  sel.addEventListener('change', async () => {
-    if (!sel.value) { CURRENT_USER = null; refreshReasoning(); return; }
-    try {
-      CURRENT_USER = await fetch(`users/${sel.value}.json`).then(r => r.json());
-    } catch { CURRENT_USER = null; }
-    refreshReasoning();
-  });
-}
-
+/* reasoning comes from cards.json baseReasoning (already written per card state) */
 function getReasoning(cardId) {
-  if (CURRENT_USER && CURRENT_USER.reasoning && CURRENT_USER.reasoning[cardId])
-    return CURRENT_USER.reasoning[cardId];
   return (CARDS_JSON[cardId] && CARDS_JSON[cardId].baseReasoning)
-    || 'This question fills a key signal gap for this user state.';
-}
-
-function refreshReasoning() {
-  if (!CARDS.length) return;
-  const card = CARDS[cardIndex];
-  document.getElementById('panelReasoning').innerHTML = `<p>${getReasoning(card.id)}</p>`;
+    || 'This question fills a key signal gap for this card state.';
 }
 
 /* ── RENDER A CARD ────────────────────────────────────────────────── */
