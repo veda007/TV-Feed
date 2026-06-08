@@ -1,17 +1,52 @@
-[
-  {
-    "id": "user_cold_01",
-    "state": "cold",
-    "name": "Priya (New user)"
-  },
-  {
-    "id": "user_warm_01",
-    "state": "warm",
-    "name": "Rohan (Returning user)"
-  },
-  {
-    "id": "user_enr_01",
-    "state": "enriched",
-    "name": "Anika (Power user)"
-  }
-]
+{
+  "users": [
+    {
+      "id": "cold_in_01",
+      "displayName": "Aarav — Cold (IN)",
+      "state": "cold",
+      "market": "IN",
+      "file": "cold_in_01.json",
+      "profileSummary": "Brand-new viewer in India. No taste signals yet — this is a true cold start."
+    },
+    {
+      "id": "cold_us_01",
+      "displayName": "Emma — Cold (US)",
+      "state": "cold",
+      "market": "US",
+      "file": "cold_us_01.json",
+      "profileSummary": "Brand-new viewer in the US. No taste signals yet — this is a true cold start."
+    },
+    {
+      "id": "warm_in_01",
+      "displayName": "Kabir — Warm (IN)",
+      "state": "warm",
+      "market": "IN",
+      "file": "warm_in_01.json",
+      "profileSummary": "Returning viewer in India. Glance already sees a lean toward home and living, going out and social plans, travel and escapes, wellness and recharge."
+    },
+    {
+      "id": "warm_us_01",
+      "displayName": "Olivia — Warm (US)",
+      "state": "warm",
+      "market": "US",
+      "file": "warm_us_01.json",
+      "profileSummary": "Returning viewer in the US. Glance already sees a lean toward festivals and culture, sports, travel and escapes."
+    },
+    {
+      "id": "enriched_in_01",
+      "displayName": "Rohan — Enriched (IN)",
+      "state": "enriched",
+      "market": "IN",
+      "file": "enriched_in_01.json",
+      "profileSummary": "Engaged viewer in India. Strong signals for food and dining; also into the outdoors, travel and escapes, wellness and recharge."
+    },
+    {
+      "id": "enriched_us_01",
+      "displayName": "Ava — Enriched (US)",
+      "state": "enriched",
+      "market": "US",
+      "file": "enriched_us_01.json",
+      "profileSummary": "Engaged viewer in the US. Strong signals for wellness and recharge; also into festivals and culture, food and dining, sports, travel and escapes."
+    }
+  ]
+}

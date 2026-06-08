@@ -365,7 +365,7 @@ async function loadAll() {
     const [csvText, cardsJson, usersIdx] = await Promise.all([
       fetch('content_bank_vibe_cards.csv').then(r => { if(!r.ok) throw new Error('CSV'); return r.text(); }),
       fetch('cards.json').then(r => r.ok ? r.json() : []),
-      fetch('users/index.json').then(r => r.ok ? r.json() : []),
+      fetch('users/index.json').then(r => r.ok ? r.json().then(j => Array.isArray(j) ? j : (j.users || [])) : []),
     ]);
     CARDS = groupCards(parseCSV(csvText));
     cardsJson.forEach(c => CARDS_JSON[c.id] = c);
@@ -384,7 +384,7 @@ function populateUserSelector() {
   sel.innerHTML = '<option value="">No profile (base reasoning)</option>';
   USERS_IDX.forEach(u => {
     const opt = document.createElement('option');
-    opt.value = u.id; opt.textContent = u.name;
+    opt.value = u.id; opt.textContent = u.displayName || u.name || u.id;
     sel.appendChild(opt);
   });
   sel.addEventListener('change', async () => {
