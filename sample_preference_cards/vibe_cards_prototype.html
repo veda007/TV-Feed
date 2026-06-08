@@ -46,11 +46,12 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
 .wordmark { font-size:26px; font-weight:700; letter-spacing:-.02em; }
 .wordmark .star { color:var(--violet-400); }
 .header-right { display:flex; align-items:center; gap:18px; }
-.state-pill { display:flex; align-items:center; gap:8px;
+.card-chip { display:flex; align-items:center; gap:8px;
   background:var(--white-06); border:1px solid var(--white-12);
   border-radius:999px; padding:10px 20px;
   font-size:16px; font-weight:600; color:var(--white-60); }
-.state-pill .dot { font-size:11px; }
+.card-chip .dot { font-size:11px; }
+.chip-divider { width:1px; height:26px; background:var(--white-12); margin:0 4px; }
 .progress-pill { font-size:15px; color:var(--white-30);
   background:var(--white-06); border:1px solid var(--white-12);
   border-radius:999px; padding:10px 20px; }
@@ -267,9 +268,11 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
     <header class="header">
       <div class="wordmark">glance <span class="star">✦</span></div>
       <div class="header-right">
+        <!-- card-state chip: describes the CARD, never the user (§2.5) -->
+        <div class="card-chip" id="cardChip"><span class="dot" id="stateDot">●</span><span id="cardChipLabel">— / — · — card</span></div>
+        <span class="chip-divider"></span>
+        <!-- profile selector: the ONLY place a user's state appears -->
         <select class="user-select" id="userSelect"><option value="">Loading users…</option></select>
-        <div class="state-pill" id="statePill"><span class="dot" id="stateDot">●</span><span id="stateLabel">—</span></div>
-        <div class="progress-pill" id="progressPill">— / —</div>
         <button class="show-work-btn" id="showWorkBtn">Why this? ↗</button>
       </div>
     </header>
@@ -475,21 +478,17 @@ function showCard(idx) {
   // headline
   document.getElementById('questionText').textContent = card.question;
 
-  // state pill
-  const stateLabel = document.getElementById('stateLabel');
-  const stateDot = document.getElementById('stateDot');
+  // card-state chip — describes the CARD ("N / 50 · Cold card"), never the user (§2.5)
   const stateColors = { cold:'#88BBFF', warm:'#FFBB58', enriched:'#9B86FF' };
-  stateLabel.textContent = card.state.charAt(0).toUpperCase()+card.state.slice(1)+' User';
-  stateDot.style.color = stateColors[card.state] || '#88BBFF';
+  const stateName = card.state.charAt(0).toUpperCase()+card.state.slice(1);
+  document.getElementById('stateDot').style.color = stateColors[card.state] || '#88BBFF';
+  document.getElementById('cardChipLabel').textContent = `${idx+1} / ${CARDS.length} · ${stateName} card`;
 
-  // progress
-  document.getElementById('progressPill').textContent = `${idx+1} / ${CARDS.length}`;
-
-  // panel badge
+  // panel badge (also describes the card's state)
   const badge = document.getElementById('panelBadge');
   badge.className = `state-badge ${card.state}`;
   const icons = { cold:'❄', warm:'☀', enriched:'✦' };
-  badge.textContent = `${icons[card.state]||'●'} ${stateLabel.textContent}`;
+  badge.textContent = `${icons[card.state]||'●'} ${stateName} card`;
 
   // reasoning
   document.getElementById('panelReasoning').innerHTML = `<p>${getReasoning(card.id)}</p>`;
