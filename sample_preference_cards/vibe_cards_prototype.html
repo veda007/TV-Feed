@@ -282,11 +282,12 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
     <div class="tile-grid cols-2" id="tileGrid"></div>
 
     <div class="bottom-action">
-      <button class="skip-btn" id="skipBtn">Skip
+      <div class="skip-btn" id="skipBtn" role="button" tabindex="0">
+        <span class="skip-label" id="skipLabel">Skip</span>
         <div class="continue-bar-inner-wrap" id="continueBarWrap">
           <div class="continue-bar" id="continueBar"></div>
         </div>
-      </button>
+      </div>
     </div>
 
     <!-- transition screen -->
@@ -463,7 +464,7 @@ function showCard(idx) {
   panelOpen = false;
   // reset bottom action to State A (no selection yet)
   const btn = document.getElementById('skipBtn');
-  if (btn) { btn.textContent = 'Skip'; btn.classList.remove('continue-mode'); }
+  if (btn) { setBtnLabel('Skip'); btn.classList.remove('continue-mode'); }
   const wrap = document.getElementById('continueBarWrap');
   if (wrap) wrap.classList.remove('show');
 
@@ -543,6 +544,12 @@ const GRID_COLS = () => {
 const tiles = () => [...document.querySelectorAll('.tile')];
 const allFocusable = () => [...tiles(), document.getElementById('skipBtn')];
 
+/* set the button label WITHOUT wiping the inner progress-bar divs */
+function setBtnLabel(text) {
+  const lbl = document.getElementById('skipLabel');
+  if (lbl) lbl.textContent = text;
+}
+
 function setFocus(i) {
   focusIndex = i;
   const grid = document.getElementById('tileGrid');
@@ -588,11 +595,11 @@ function armContinue() {
   let remaining = Math.round(CONTINUE_COUNTDOWN_MS / 1000);
   const btn = document.getElementById('skipBtn');
   btn.classList.add('continue-mode');   // Fix 5: filled violet pill + shimmer
-  btn.textContent = `Continue · ${remaining}`;
+  setBtnLabel(`Continue · ${remaining}`);
   const tick = () => {
     remaining--;
     if (remaining <= 0) { advanceCard(); return; }
-    btn.textContent = `Continue · ${remaining}`;
+    setBtnLabel(`Continue · ${remaining}`);
     continueTimer = setTimeout(tick, 1000);
   };
   continueTimer = setTimeout(tick, 1000);
@@ -608,13 +615,13 @@ function updateBottomAction() {
   if (selCount === 0) {
     // State A — calm Skip, no timer
     clearContinueTimer();
-    btn.textContent = 'Skip'; btn.classList.remove('continue-mode');
+    setBtnLabel('Skip'); btn.classList.remove('continue-mode');
     wrap.classList.remove('show');
   } else if (selCount === total) {
     // State C — all selected, advance after brief beat
     clearContinueTimer();
     wrap.classList.remove('show');
-    btn.textContent = 'Continue ✓'; btn.classList.add('continue-mode');
+    setBtnLabel('Continue ✓'); btn.classList.add('continue-mode');
     setTimeout(() => advanceCard(), ALL_SELECTED_BEAT_MS);
   } else {
     // State B — arm/reset the countdown
@@ -736,6 +743,12 @@ document.addEventListener('keydown', e => {
   } else if (e.key==='Backspace') {
     e.preventDefault(); advanceCard();
   }
+});
+
+/* ── SKIP / CONTINUE click (div role=button — needs explicit handler) ── */
+document.getElementById('skipBtn').addEventListener('click', () => {
+  if (panelOpen || inTransition) return;
+  advanceCard();   // Skip (0 selected) or Continue (1+) → advance now
 });
 
 /* ── BOOT ───────────────────────────────────────────────────────── */
