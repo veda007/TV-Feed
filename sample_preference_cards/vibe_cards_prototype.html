@@ -124,23 +124,62 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
 /* ═══════════════════════════════════════════════════════════════════════
    SKIP
 ═══════════════════════════════════════════════════════════════════════ */
-/* bottom action area — Skip / Continue */
-.bottom-action { position:absolute; top:860px; left:50%; transform:translateX(-50%);
+/* bottom action area — Skip / Continue (Fix 5) */
+.bottom-action { position:absolute; top:848px; left:50%; transform:translateX(-50%);
   display:flex; flex-direction:column; align-items:center; gap:0; }
-.skip-btn { font-size:20px; color:var(--white-30); background:none; border:none;
-  cursor:pointer; letter-spacing:.04em; padding:10px 24px; border-radius:999px;
-  transition:color .18s, opacity .22s; white-space:nowrap; }
-.skip-btn:hover,.skip-btn.focused { color:var(--white-60);
-  outline:2px solid var(--white-30); outline-offset:3px; }
-/* progress bar — appears below the button label when counting down */
-.continue-bar-wrap { width:160px; height:6px; border-radius:3px;
-  background:rgba(155,134,255,0.22); overflow:hidden;
-  opacity:0; transition:opacity .25s; margin-top:6px; }
-.continue-bar-wrap.show { opacity:1; }
-.continue-bar { height:100%; border-radius:3px;
+
+/* Skip — State A: visible outlined pill, clearly a button (Fix 5d) */
+.skip-btn {
+  position:relative; overflow:hidden;
+  font-size:22px; font-weight:600; color:var(--white-60);
+  background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.26);
+  cursor:pointer; letter-spacing:.02em;
+  padding:18px 44px; border-radius:999px;
+  transition:color .18s, background .18s, border-color .18s, opacity .22s;
+  white-space:nowrap;
+}
+.skip-btn:hover,.skip-btn.focused {
+  color:#fff; background:rgba(255,255,255,.12);
+  border-color:rgba(255,255,255,.48);
+}
+
+/* Continue — State B+: filled violet pill, bar inside (Fix 5a/5b/5c) */
+.skip-btn.continue-mode {
+  background:linear-gradient(135deg,rgba(155,134,255,.28),rgba(126,104,242,.22));
+  border:2px solid var(--violet-400);
+  color:#fff;
+  box-shadow:0 0 0 0 rgba(155,134,255,.0);
+}
+/* bar inside button, pinned to bottom inner edge (Fix 5a) */
+.skip-btn.continue-mode::after {
+  content:''; position:absolute; left:0; bottom:0; right:0;
+  height:6px; border-radius:0 0 999px 999px; overflow:hidden;
+  background:rgba(155,134,255,.22);
+}
+/* shimmer sweep (Fix 5c) — slow ~2.5s loop, tasteful, respects prefers-reduced-motion */
+.skip-btn.continue-mode::before {
+  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+  background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.14) 50%,transparent 80%);
+  animation:btnShimmer 2.5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes btnShimmer { 0%{left:-80%} 60%,100%{left:140%} }
+@media(prefers-reduced-motion:reduce){ .skip-btn.continue-mode::before{display:none} }
+
+/* inner countdown bar track — rendered over ::after via JS-controlled child */
+.continue-bar-inner-wrap {
+  position:absolute; left:12px; right:12px; bottom:5px;
+  height:6px; border-radius:3px;
+  background:rgba(155,134,255,.22); overflow:hidden;
+  opacity:0; transition:opacity .25s;
+}
+.continue-bar-inner-wrap.show { opacity:1; }
+.continue-bar {
+  height:100%; border-radius:3px;
   background:linear-gradient(90deg,var(--violet-400),var(--violet-500));
-  width:100%; transform-origin:left;
-  transition:width 1s linear; }
+  width:100%; transition:width 1s linear;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    TRANSITION SCREEN — "Coming up next" 3→2→1 countdown
@@ -240,10 +279,11 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
     <div class="tile-grid cols-2" id="tileGrid"></div>
 
     <div class="bottom-action">
-      <button class="skip-btn" id="skipBtn">Skip</button>
-      <div class="continue-bar-wrap" id="continueBarWrap">
-        <div class="continue-bar" id="continueBar"></div>
-      </div>
+      <button class="skip-btn" id="skipBtn">Skip
+        <div class="continue-bar-inner-wrap" id="continueBarWrap">
+          <div class="continue-bar" id="continueBar"></div>
+        </div>
+      </button>
     </div>
 
     <!-- transition screen -->
@@ -417,7 +457,7 @@ function showCard(idx) {
   panelOpen = false;
   // reset bottom action to State A (no selection yet)
   const btn = document.getElementById('skipBtn');
-  if (btn) btn.textContent = 'Skip';
+  if (btn) { btn.textContent = 'Skip'; btn.classList.remove('continue-mode'); }
   const wrap = document.getElementById('continueBarWrap');
   if (wrap) wrap.classList.remove('show');
 
@@ -541,6 +581,7 @@ function armContinue() {
   // tick the label second-by-second
   let remaining = Math.round(CONTINUE_COUNTDOWN_MS / 1000);
   const btn = document.getElementById('skipBtn');
+  btn.classList.add('continue-mode');   // Fix 5: filled violet pill + shimmer
   btn.textContent = `Continue · ${remaining}`;
   const tick = () => {
     remaining--;
@@ -561,13 +602,13 @@ function updateBottomAction() {
   if (selCount === 0) {
     // State A — calm Skip, no timer
     clearContinueTimer();
-    btn.textContent = 'Skip';
+    btn.textContent = 'Skip'; btn.classList.remove('continue-mode');
     wrap.classList.remove('show');
   } else if (selCount === total) {
     // State C — all selected, advance after brief beat
     clearContinueTimer();
     wrap.classList.remove('show');
-    btn.textContent = 'Continue ✓';
+    btn.textContent = 'Continue ✓'; btn.classList.add('continue-mode');
     setTimeout(() => advanceCard(), 400);
   } else {
     // State B — arm/reset the countdown
