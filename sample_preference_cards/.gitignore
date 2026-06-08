@@ -1,0 +1,22 @@
+# Generated images live in GCS, not the repo
+*.jpg
+*.jpeg
+*.png
+*.webp
+/assets/
+/images/
+/local_images/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Validation output (regenerated on demand)
+expected_images.txt
+
+# Editor
+.DS_Store
+# Exception: images committed for local serving (no public GCS bucket yet)
+!assets/*.jpg

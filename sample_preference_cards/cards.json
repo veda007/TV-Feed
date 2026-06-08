@@ -1,0 +1,402 @@
+[
+  {
+    "id": "cold_q01",
+    "state": "cold",
+    "market": "IN",
+    "question": "What's your kind of escape?",
+    "question_no": "01",
+    "baseReasoning": "New user from Bangalore — no travel history yet. This probes region & travel taste, the broadest axis, to seed the ranker immediately."
+  },
+  {
+    "id": "cold_q02",
+    "state": "cold",
+    "market": "IN",
+    "question": "How does your ideal evening end?",
+    "question_no": "02",
+    "baseReasoning": "No evening patterns observed. This reads vibe-energy (calm vs lively) — the single axis that most shapes what Glance surfaces after 6pm."
+  },
+  {
+    "id": "cold_q03",
+    "state": "cold",
+    "market": "IN",
+    "question": "What kind of morning person are you?",
+    "question_no": "03",
+    "baseReasoning": "No morning signals. Morning pace (slow vs fast) predicts fitness, food, and productivity content density."
+  },
+  {
+    "id": "cold_q04",
+    "state": "cold",
+    "market": "IN",
+    "question": "What does your screen escape look like?",
+    "question_no": "04",
+    "baseReasoning": "No aesthetic signals. Screen aesthetic preference directly shapes the visual feel of every card shown."
+  },
+  {
+    "id": "cold_q05",
+    "state": "cold",
+    "market": "IN",
+    "question": "What treat would you say yes to right now?",
+    "question_no": "05",
+    "baseReasoning": "No aspiration signals. Treat preference spans food, wellness, tech, and sport — four categories in one question."
+  },
+  {
+    "id": "cold_q06",
+    "state": "cold",
+    "market": "IN",
+    "question": "Your ideal weekend looks like…",
+    "question_no": "06",
+    "baseReasoning": "No weekend patterns. Weekend mode (active / cosy / social / cultural) fills the biggest blank in the cold model."
+  },
+  {
+    "id": "cold_q07",
+    "state": "cold",
+    "market": "IN",
+    "question": "Where would you sit down to eat?",
+    "question_no": "07",
+    "baseReasoning": "No dining signals. Dining style (street / home / fine / festive) is the fastest proxy for food category depth."
+  },
+  {
+    "id": "cold_q08",
+    "state": "cold",
+    "market": "IN",
+    "question": "How do you like to recharge?",
+    "question_no": "08",
+    "baseReasoning": "No recharge pattern. Recharge style separates wellness, fitness, and home content preferences."
+  },
+  {
+    "id": "warm_q09",
+    "state": "warm",
+    "market": "IN",
+    "question": "What does a good Sunday morning feel like?",
+    "question_no": "09",
+    "baseReasoning": "User has browsed the feed but not clicked morning content. This fills the morning-pace gap."
+  },
+  {
+    "id": "warm_q10",
+    "state": "warm",
+    "market": "IN",
+    "question": "What kind of food mood are you in?",
+    "question_no": "10",
+    "baseReasoning": "User engaged with food content but restaurant vs street food split is unknown. This resolves it."
+  },
+  {
+    "id": "warm_q11",
+    "state": "warm",
+    "market": "IN",
+    "question": "What's your fitness style?",
+    "question_no": "11",
+    "baseReasoning": "User clicked fitness content but workout style is unknown. This calibrates fitness category depth."
+  },
+  {
+    "id": "warm_q12",
+    "state": "warm",
+    "market": "IN",
+    "question": "What kind of content do you actually finish?",
+    "question_no": "12",
+    "baseReasoning": "User watches content but genre split is ambiguous. This resolves the entertainment sub-category."
+  },
+  {
+    "id": "warm_q13",
+    "state": "warm",
+    "market": "IN",
+    "question": "Which kind of shopping do you enjoy?",
+    "question_no": "13",
+    "baseReasoning": "User has fashion signals but category split (fashion/tech/home) is weak. This sharpens it."
+  },
+  {
+    "id": "warm_q14",
+    "state": "warm",
+    "market": "IN",
+    "question": "How do you like to spend time outdoors?",
+    "question_no": "14",
+    "baseReasoning": "User shows outdoor signals but activity type is unclear. Trek vs park vs beach changes recommendations significantly."
+  },
+  {
+    "id": "warm_q15",
+    "state": "warm",
+    "market": "IN",
+    "question": "Which cultural experience pulls you in?",
+    "question_no": "15",
+    "baseReasoning": "User has culture interest but live vs visual vs festival split is missing. This targets event content."
+  },
+  {
+    "id": "warm_q16",
+    "state": "warm",
+    "market": "IN",
+    "question": "How do you feel about wellness?",
+    "question_no": "16",
+    "baseReasoning": "User has wellness signals but engagement type (daily/spa/nutrition) is unknown. This calibrates depth."
+  },
+  {
+    "id": "warm_q17",
+    "state": "warm",
+    "market": "IN",
+    "question": "What travel mode are you in?",
+    "question_no": "17",
+    "baseReasoning": "User has travel interest but trip style (luxury/budget/slow/local) is missing. This shapes travel card selection."
+  },
+  {
+    "id": "warm_q18",
+    "state": "warm",
+    "market": "IN",
+    "question": "What's your home like right now?",
+    "question_no": "18",
+    "baseReasoning": "User has home signals but current living situation is unknown. Rented vs owned changes home content relevance."
+  },
+  {
+    "id": "warm_q19",
+    "state": "warm",
+    "market": "IN",
+    "question": "What's your relationship with money right now?",
+    "question_no": "19",
+    "baseReasoning": "User has aspirational signals but financial stance is ambiguous. This resolves luxury vs value content weight."
+  },
+  {
+    "id": "warm_q20",
+    "state": "warm",
+    "market": "IN",
+    "question": "How connected are you to Indian culture?",
+    "question_no": "20",
+    "baseReasoning": "User's cultural connection depth is unknown. This calibrates Indian heritage and festival content density."
+  },
+  {
+    "id": "enriched_q21",
+    "state": "enriched",
+    "market": "IN",
+    "question": "Which look feels most like you today?",
+    "question_no": "21",
+    "baseReasoning": "Deep fashion profile available. This refines style sub-category (classic/street/craft/smart) for fashion card selection."
+  },
+  {
+    "id": "enriched_q22",
+    "state": "enriched",
+    "market": "IN",
+    "question": "What kind of home upgrade would you actually make?",
+    "question_no": "22",
+    "baseReasoning": "Home engagement is high. This resolves upgrade intent (art/plants/lighting/kitchen) for targeted home content."
+  },
+  {
+    "id": "enriched_q23",
+    "state": "enriched",
+    "market": "IN",
+    "question": "How do you listen to music?",
+    "question_no": "23",
+    "baseReasoning": "Music signals are present but consumption mode is unclear. Live vs solo vs social shapes event recommendations."
+  },
+  {
+    "id": "enriched_q24",
+    "state": "enriched",
+    "market": "IN",
+    "question": "What fitness goal are you actually chasing?",
+    "question_no": "24",
+    "baseReasoning": "Fitness is a consistent interest. This resolves the goal (strength/flexibility/endurance/casual) for deeper fitness content."
+  },
+  {
+    "id": "enriched_q25",
+    "state": "enriched",
+    "market": "IN",
+    "question": "What's your relationship with luxury?",
+    "question_no": "25",
+    "baseReasoning": "Aspiration signals are mixed. This directly measures luxury relationship to calibrate premium content density."
+  },
+  {
+    "id": "enriched_q26",
+    "state": "enriched",
+    "market": "IN",
+    "question": "What makes you feel most at home in Bangalore?",
+    "question_no": "26",
+    "baseReasoning": "User is Bangalore-based but local affinity depth is unknown. This targets hyper-local discovery content."
+  },
+  {
+    "id": "enriched_q27",
+    "state": "enriched",
+    "market": "IN",
+    "question": "What do weekends look like when everything goes right?",
+    "question_no": "27",
+    "baseReasoning": "Weekend behaviour is varied. This resolves the ideal-weekend profile for more accurate Saturday/Sunday content."
+  },
+  {
+    "id": "enriched_q28",
+    "state": "enriched",
+    "market": "IN",
+    "question": "What motivates you most right now?",
+    "question_no": "28",
+    "baseReasoning": "User motivation is unclear despite rich behavioural data. This fills the intent-driver gap for life-goals content."
+  },
+  {
+    "id": "cold_q09",
+    "state": "cold",
+    "market": "IN",
+    "question": "What's your idea of a good night out?",
+    "question_no": "09",
+    "baseReasoning": "No nightlife or social signals. Evening-out style maps directly to nightlife, music, and social density."
+  },
+  {
+    "id": "cold_q10",
+    "state": "cold",
+    "market": "IN",
+    "question": "What kind of content do you binge?",
+    "question_no": "10",
+    "baseReasoning": "No content consumption signals. Content type is the highest-frequency feed category and needs an early signal."
+  },
+  {
+    "id": "cold_q11",
+    "state": "cold",
+    "market": "IN",
+    "question": "Which describes your home vibe best?",
+    "question_no": "11",
+    "baseReasoning": "No home aesthetic signals. Home style predicts interior, decor, and sustainability content interest."
+  },
+  {
+    "id": "cold_q12",
+    "state": "cold",
+    "market": "IN",
+    "question": "What would make you splurge on a Sunday?",
+    "question_no": "12",
+    "baseReasoning": "No aspiration × category signals. Sunday splurge reveals luxury appetite across food, travel, and culture."
+  },
+  {
+    "id": "cold_q13",
+    "state": "cold",
+    "market": "IN",
+    "question": "What's your travel style?",
+    "question_no": "13",
+    "baseReasoning": "No travel style signals. Travel mode (luxury / budget / road / quick) shapes destination and accommodation content."
+  },
+  {
+    "id": "cold_q14",
+    "state": "cold",
+    "market": "IN",
+    "question": "How do you like to stay active?",
+    "question_no": "14",
+    "baseReasoning": "No fitness signals. Activity type determines fitness content depth and outdoor vs indoor split."
+  },
+  {
+    "id": "cold_q15",
+    "state": "cold",
+    "market": "IN",
+    "question": "What kind of fashion do you identify with?",
+    "question_no": "15",
+    "baseReasoning": "No fashion signals. Fashion identity predicts category depth and aspiration level for style content."
+  },
+  {
+    "id": "cold_q16",
+    "state": "cold",
+    "market": "IN",
+    "question": "What catches your eye in home decor?",
+    "question_no": "16",
+    "baseReasoning": "No home decor signals. Decor preference predicts home & garden content engagement."
+  },
+  {
+    "id": "cold_q17",
+    "state": "cold",
+    "market": "IN",
+    "question": "What's your relationship with tech?",
+    "question_no": "17",
+    "baseReasoning": "No tech affinity signals. Tech relationship shapes gadget and productivity content density."
+  },
+  {
+    "id": "cold_q18",
+    "state": "cold",
+    "market": "IN",
+    "question": "What do you spend on most each month?",
+    "question_no": "18",
+    "baseReasoning": "No spending category signals. Primary spend category is a strong predictor of content engagement."
+  },
+  {
+    "id": "cold_q19",
+    "state": "cold",
+    "market": "IN",
+    "question": "How social are you really?",
+    "question_no": "19",
+    "baseReasoning": "No social density signals. Social preference calibrates how many social/nightlife cards appear."
+  },
+  {
+    "id": "cold_q20",
+    "state": "cold",
+    "market": "IN",
+    "question": "What kind of career moment are you in?",
+    "question_no": "20",
+    "baseReasoning": "No career stage signals. Career moment shapes productivity, finance, and life-goals content."
+  },
+  {
+    "id": "cold_q21",
+    "state": "cold",
+    "market": "IN",
+    "question": "What kind of music is always on?",
+    "question_no": "21",
+    "baseReasoning": "No music taste signals. Music genre predicts music event and culture content."
+  },
+  {
+    "id": "cold_q22",
+    "state": "cold",
+    "market": "IN",
+    "question": "What local Bangalore experience do you love?",
+    "question_no": "22",
+    "baseReasoning": "No local affinity signals. Bangalore neighbourhood preference targets local discovery content."
+  },
+  {
+    "id": "cold_q23",
+    "state": "cold",
+    "market": "IN",
+    "question": "What do you do when you have a rare free afternoon?",
+    "question_no": "23",
+    "baseReasoning": "No free-time pattern. Spontaneous behaviour reveals social vs solo preference more honestly than direct questions."
+  },
+  {
+    "id": "cold_q24",
+    "state": "cold",
+    "market": "IN",
+    "question": "What inspires you most?",
+    "question_no": "24",
+    "baseReasoning": "No inspiration signals. Inspiration source predicts travel, culture, and career content mix."
+  },
+  {
+    "id": "cold_q25",
+    "state": "cold",
+    "market": "IN",
+    "question": "How important is sustainability to you?",
+    "question_no": "25",
+    "baseReasoning": "No sustainability signals. Sustainability stance shapes eco-brand and lifestyle content weight."
+  },
+  {
+    "id": "cold_q26",
+    "state": "cold",
+    "market": "IN",
+    "question": "What kind of learning do you enjoy?",
+    "question_no": "26",
+    "baseReasoning": "No learning style signals. Learning mode predicts productivity and culture content format preference."
+  },
+  {
+    "id": "cold_q27",
+    "state": "cold",
+    "market": "IN",
+    "question": "What describes your relationship with food?",
+    "question_no": "27",
+    "baseReasoning": "No food relationship signals. Food relationship (joy / nourishment / comfort / convenience) calibrates food content tone."
+  },
+  {
+    "id": "cold_q28",
+    "state": "cold",
+    "market": "IN",
+    "question": "Which of these would you do this weekend if you could?",
+    "question_no": "28",
+    "baseReasoning": "No weekend aspiration signals. The 'if you could' framing reveals aspiration vs current reality gap."
+  },
+  {
+    "id": "cold_q29",
+    "state": "cold",
+    "market": "IN",
+    "question": "What does financial success look like to you?",
+    "question_no": "29",
+    "baseReasoning": "No financial aspiration signals. Financial goal shapes life-goals and aspiration content density."
+  },
+  {
+    "id": "cold_q30",
+    "state": "cold",
+    "market": "IN",
+    "question": "What's your default weekend morning ritual?",
+    "question_no": "30",
+    "baseReasoning": "No morning ritual signals. Morning ritual completes the daily-rhythm model for personalised scheduling."
+  }
+]

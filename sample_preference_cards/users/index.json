@@ -1,0 +1,17 @@
+[
+  {
+    "id": "user_cold_01",
+    "state": "cold",
+    "name": "Priya (New user)"
+  },
+  {
+    "id": "user_warm_01",
+    "state": "warm",
+    "name": "Rohan (Returning user)"
+  },
+  {
+    "id": "user_enr_01",
+    "state": "enriched",
+    "name": "Anika (Power user)"
+  }
+]

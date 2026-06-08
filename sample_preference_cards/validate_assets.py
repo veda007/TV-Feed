@@ -62,8 +62,10 @@ def check_convention(image_file, row_state):
     state, q, o, _, ext = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
     if state not in VALID_STATES:
         errs.append(f"  BAD STATE: '{state}' not in {VALID_STATES}")
-    if row_state and state != row_state.lower():
-        errs.append(f"  STATE MISMATCH: filename '{state}' vs CSV state '{row_state}'")
+    # 'enriched' is abbreviated to 'enr' in filenames (per spec)
+    csv_state_abbrev = row_state.lower().replace("enriched", "enr") if row_state else None
+    if csv_state_abbrev and state != csv_state_abbrev:
+        errs.append(f"  STATE MISMATCH: filename '{state}' vs CSV state '{row_state}' (expected '{csv_state_abbrev}')")
     return errs
 
 

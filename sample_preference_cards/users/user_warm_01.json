@@ -1,0 +1,13 @@
+{
+  "id": "user_warm_01",
+  "state": "warm",
+  "name": "Rohan (Returning user)",
+  "profileSummary": "Active for 3 weeks. Opens the feed most evenings. Has clicked on food, fitness, and travel cards. Engages with nightlife rarely. Mostly browses, occasionally saves.",
+  "reasoning": {
+    "cold_q01": "Travel interest is confirmed (3 travel saves) but region preference is split — Coorg and beach both clicked. vq01 resolves the hills vs coast ambiguity.",
+    "cold_q04": "Rohan saves both minimal-interior and maximalist-interior content. The aesthetic axis is genuinely split — this question resolves it cleanly.",
+    "warm_q09": "Morning content gets low engagement despite fitness interest. vq09 checks if Rohan prefers a slow morning (brunch/lie-in) over an early start — explains the fitness drop-off.",
+    "warm_q10": "Food engagement is high but restaurant vs street food ratio is 60/40 and trending toward street. vq10 confirms this and would justify doubling down on street-food content.",
+    "warm_q11": "Fitness cards are opened but rarely saved. vq11 distinguishes between gym-consistency interest (saves would follow) and casual-outdoor activity (which drives the open but not the save)."
+  }
+}

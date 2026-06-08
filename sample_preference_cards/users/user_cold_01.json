@@ -1,0 +1,13 @@
+{
+  "id": "user_cold_01",
+  "state": "cold",
+  "name": "Priya (New user)",
+  "profileSummary": "Just signed in for the first time. Based in Bangalore. No prior behaviour — only location is known.",
+  "reasoning": {
+    "cold_q01": "No signals at all. vq01 is the broadest opener — it probes region and travel taste, the axis most likely to unlock early feed diversity.",
+    "cold_q02": "Still no evening patterns. Evening vibe (calm vs lively) is the highest-leverage single signal for after-6pm content.",
+    "cold_q03": "No morning behaviour. Morning pace determines whether Priya sees wellness and fitness or productivity and news content first.",
+    "cold_q04": "No aesthetic data. Screen aesthetic preference shapes the visual feel of every card — highest visual impact per answer.",
+    "cold_q05": "No aspiration data. Treat type spans food, wellness, tech, and sport — four categories answered in one go."
+  }
+}
