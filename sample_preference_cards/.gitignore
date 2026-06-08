@@ -18,5 +18,3 @@ expected_images.txt
 
 # Editor
 .DS_Store
-# Exception: images committed for local serving (no public GCS bucket yet)
-!assets/*.jpg

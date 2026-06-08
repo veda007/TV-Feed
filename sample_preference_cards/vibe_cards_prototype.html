@@ -87,8 +87,11 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
   cursor:pointer; border:2.5px solid transparent;
   transition:transform .22s cubic-bezier(.34,1.2,.64,1), border-color .18s, box-shadow .22s;
   z-index:1; }
-.tile-grid.cols-2 .tile { width:572px; height:284px; }
-.tile-grid.cols-3 .tile { width:380px; height:214px; }
+/* tiles sized so 2 rows + headline + bottom control all fit on 1080px with clear gaps
+   math: headline(~180px) + grid_top(244px) + row1(264) + gap(22) + row2(264) = 974px
+   bottom-action at 848px → 874px, leaving 206px margin. Clear gap: 848-808=40px  */
+.tile-grid.cols-2 .tile { width:572px; height:264px; }
+.tile-grid.cols-3 .tile { width:380px; height:200px; }
 
 /* fallback colours cycle through 8 hues */
 .tile:nth-child(1){background-color:#1A2B1F}
@@ -332,10 +335,13 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
 /* ── IMAGE_BASE_URL — change to GCS URL when bucket is public ─────────
    https://storage.googleapis.com/glance-vibe-cards/glance/
    For local serving (current): images live in assets/ next to this file. */
-const IMAGE_BASE_URL = "assets/";
+const IMAGE_BASE_URL        = "assets/";   // swap to GCS URL when bucket is public
 
-/* ── COUNTDOWN CONSTANT (Fix 2) — one-line change to tune the wait ── */
-const CONTINUE_COUNTDOWN_MS = 10000;   // 10 seconds before auto-advance
+/* ── TUNING CONSTANTS (change in one place, everything adapts) ── */
+const CONTINUE_COUNTDOWN_MS = 10000;   // per-card Continue auto-advance window
+const TRANSITION_SECONDS    = 3;       // "Coming up next" 3-2-1 duration
+const ALL_SELECTED_BEAT_MS  = 400;     // pause before advance when all options picked
+const IDLE_RESET_ON_CHANGE  = true;    // any select/deselect restarts the countdown
 
 /* ── STATE ─────────────────────────────────────────────────────────── */
 let CARDS      = [];
@@ -609,7 +615,7 @@ function updateBottomAction() {
     clearContinueTimer();
     wrap.classList.remove('show');
     btn.textContent = 'Continue ✓'; btn.classList.add('continue-mode');
-    setTimeout(() => advanceCard(), 400);
+    setTimeout(() => advanceCard(), ALL_SELECTED_BEAT_MS);
   } else {
     // State B — arm/reset the countdown
     armContinue();
@@ -632,10 +638,10 @@ function showTransition(nextIdx) {
   const screen = document.getElementById('transitionScreen');
   const numEl  = document.getElementById('countdownNum');
   screen.classList.add('show');
-  numEl.textContent = '3';
+  numEl.textContent = String(TRANSITION_SECONDS);
   numEl.classList.remove('fade');
 
-  let count = 3;
+  let count = TRANSITION_SECONDS;
   countdownTimer = setInterval(() => {
     count--;
     if (count <= 0) {
