@@ -35,7 +35,10 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
   background:linear-gradient(160deg,var(--bg-grad-top) 0%,var(--bg) 50%,var(--bg-grad-bot) 100%);
   overflow:hidden; }
 .stage::before { content:''; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(ellipse 900px 500px at 50% 62%,rgba(126,104,242,0.18) 0%,transparent 70%); }
+  background:
+    radial-gradient(ellipse 1100px 560px at 50% 40%,rgba(126,104,242,0.22) 0%,transparent 66%),
+    radial-gradient(ellipse 700px 420px at 18% 88%,rgba(126,104,242,0.10) 0%,transparent 70%),
+    radial-gradient(circle at 50% 120%,rgba(0,0,0,.55) 0%,transparent 55%); }
 
 /* ═══════════════════════════════════════════════════════════════════════
    HEADER
@@ -61,33 +64,70 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
   font-size:16px; font-weight:600; color:var(--white-60);
   cursor:pointer; transition:background .18s, color .18s; user-select:none; }
 .show-work-btn:hover { background:var(--white-12); color:var(--white); }
+/* jump-to-card dropdown */
+.jump-select { appearance:none; -webkit-appearance:none;
+  background:var(--white-06); border:1px solid var(--white-12); border-radius:999px;
+  color:var(--white-60); font-family:var(--font-sans); font-size:15px; font-weight:600;
+  padding:10px 40px 10px 18px; cursor:pointer; transition:background .18s, color .18s, border-color .18s;
+  background-image:linear-gradient(45deg,transparent 50%,var(--white-60) 50%),linear-gradient(135deg,var(--white-60) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;
+  background-size:6px 6px,6px 6px; background-repeat:no-repeat;
+  max-width:260px; }
+.jump-select:hover { background-color:var(--white-12); color:var(--white); border-color:var(--white-30); }
+.jump-select:focus { outline:none; border-color:var(--violet-400);
+  box-shadow:0 0 0 3px rgba(155,134,255,.25); }
+.jump-select optgroup { color:var(--violet-200); background:var(--panel-bg); font-style:normal; }
+.jump-select option { color:#fff; background:var(--panel-bg); font-weight:500; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    HEADLINE
 ═══════════════════════════════════════════════════════════════════════ */
-.headline-area { position:absolute; top:96px; left:0; right:0;
-  text-align:center; padding:0 340px; }
-.headline-area h1 { font-family:var(--font-serif); font-size:50px; font-weight:400;
-  letter-spacing:-0.8px; line-height:1.12; color:var(--white); margin-bottom:14px; }
-.headline-area p { font-size:22px; color:var(--white-60); line-height:1.45; }
+/* mascot orb — soft glowing squircle above the headline */
+.mascot-orb { position:absolute; top:150px; left:50%; transform:translateX(-50%);
+  width:72px; height:64px; border-radius:22px;
+  background:radial-gradient(120% 120% at 35% 25%,#B9A8FF 0%,var(--violet-400) 42%,var(--violet-500) 100%);
+  display:flex; align-items:center; justify-content:center; gap:9px; z-index:10;
+  box-shadow:0 10px 30px rgba(0,0,0,.45),
+             0 0 0 6px rgba(126,104,242,.10),
+             inset 0 2px 6px rgba(255,255,255,.45),
+             inset 0 -6px 14px rgba(80,60,180,.4); }
+/* outer glow halo */
+.mascot-orb::before { content:''; position:absolute; inset:-26px; border-radius:40px; z-index:-1;
+  background:radial-gradient(circle,rgba(126,104,242,.5) 0%,transparent 68%);
+  filter:blur(6px); }
+.mascot-orb span { width:8px; height:22px; border-radius:5px;
+  background:linear-gradient(180deg,#fff,rgba(255,255,255,.82));
+  box-shadow:0 1px 3px rgba(60,40,140,.5); }
+
+.headline-area { position:absolute; top:250px; left:0; right:0;
+  text-align:center; padding:0 260px; }
+.headline-area h1 { font-family:var(--font-sans); font-size:52px; font-weight:500;
+  letter-spacing:-0.8px; line-height:1.14; color:var(--white-80); margin-bottom:14px; }
+.headline-area h1 strong { color:#fff; font-weight:700; }
+.headline-area p { font-size:21px; color:var(--white-60); line-height:1.45;
+  letter-spacing:.01em; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    TILE GRID — 2×2 default; 3×1 for 3 options; 3×2 for 6
 ═══════════════════════════════════════════════════════════════════════ */
-.tile-grid { position:absolute; top:244px; left:50%; transform:translateX(-50%);
-  display:grid; gap:22px; }
-.tile-grid.cols-2 { grid-template-columns:repeat(2,572px); }
-.tile-grid.cols-3 { grid-template-columns:repeat(3,380px); }
+/* single horizontal row of tiles, centered (cinematic hero design) */
+.tile-grid { position:absolute; top:418px; left:50%; transform:translateX(-50%);
+  display:grid; gap:30px; }
+.tile-grid.cols-4 { grid-template-columns:repeat(4,398px); }
+.tile-grid.cols-3 { grid-template-columns:repeat(3,452px); }
 
-.tile { position:relative; border-radius:var(--tile-radius); overflow:hidden;
+.tile { position:relative; border-radius:24px; overflow:hidden;
   cursor:pointer; border:2.5px solid transparent;
-  transition:transform .22s cubic-bezier(.34,1.2,.64,1), border-color .18s, box-shadow .22s;
+  background-clip:padding-box;
+  box-shadow:0 18px 44px rgba(0,0,0,.5);
+  transition:transform .24s cubic-bezier(.34,1.2,.64,1), border-color .18s, box-shadow .24s, opacity .24s;
   z-index:1; }
-/* tiles sized so 2 rows + headline + bottom control all fit on 1080px with clear gaps
-   math: headline(~180px) + grid_top(244px) + row1(264) + gap(22) + row2(264) = 974px
-   bottom-action at 848px → 874px, leaving 206px margin. Clear gap: 848-808=40px  */
-.tile-grid.cols-2 .tile { width:572px; height:264px; }
-.tile-grid.cols-3 .tile { width:380px; height:200px; }
+/* refined inner ring for definition on any image */
+.tile::after { content:''; position:absolute; inset:0; border-radius:24px; z-index:4;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10); pointer-events:none; }
+/* portrait-leaning tiles, one row; headline+orb above, CTA below all fit 1080px */
+.tile-grid.cols-4 .tile { width:398px; height:340px; }
+.tile-grid.cols-3 .tile { width:452px; height:340px; }
 
 /* fallback colours cycle through 8 hues */
 .tile:nth-child(1){background-color:#1A2B1F}
@@ -98,33 +138,45 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
 .tile:nth-child(6){background-color:#2B1A1A}
 
 .tile-img { position:absolute; inset:0; background-size:cover; background-position:center;
-  transition:transform .28s ease; }
-.tile-scrim { position:absolute; inset:0; background:var(--tile-scrim); }
-.tile-labels { position:absolute; bottom:18px; left:20px; right:50px; z-index:2; }
-.tile-title { font-size:22px; font-weight:600; line-height:1.2;
-  text-shadow:0 2px 10px rgba(0,0,0,0.7); }
-.tile-sub { font-size:15px; color:var(--white-60); margin-top:4px; line-height:1.3;
-  text-shadow:0 1px 6px rgba(0,0,0,0.6); }
-.tile-check { position:absolute; top:14px; right:14px; z-index:3;
-  width:34px; height:34px; border-radius:50%; background:var(--violet-500);
+  transition:transform .32s ease; }
+/* balanced two-layer scrim: photo stays vivid up top, text crisp at the base */
+.tile-scrim { position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(6,5,16,0.90) 0%,rgba(6,5,16,0.62) 22%,rgba(6,5,16,0.18) 46%,transparent 72%); }
+/* faint top-down shade so the checkbox reads on bright images */
+.tile-scrim::before { content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,.34) 0%,transparent 26%); }
+.tile-labels { position:absolute; bottom:26px; left:26px; right:26px; z-index:2; }
+.tile-title { font-size:24px; font-weight:600; line-height:1.22; letter-spacing:-.01em;
+  text-shadow:0 2px 14px rgba(0,0,0,0.85); }
+.tile-sub { font-size:15px; color:var(--white-80); margin-top:5px; line-height:1.32;
+  text-shadow:0 1px 8px rgba(0,0,0,0.8); }
+
+/* selection checkbox — crisp always-visible ring (top-right), fills violet when selected */
+.tile-check { position:absolute; top:18px; right:18px; z-index:5;
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(10,8,24,.34); border:2.5px solid rgba(255,255,255,.92);
+  backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
   display:flex; align-items:center; justify-content:center;
-  font-size:16px; font-weight:800; color:#fff;
-  opacity:0; transform:scale(0.5);
-  transition:opacity .22s, transform .28s cubic-bezier(.34,1.56,.64,1); }
-.tile.focused { border-color:var(--focus-col); transform:scale(1.055); z-index:3;
-  box-shadow:0 0 0 2px rgba(255,255,255,.22),0 24px 64px rgba(0,0,0,.65); }
+  font-size:17px; font-weight:800; color:#fff;
+  transition:background .22s, border-color .22s, box-shadow .22s, transform .3s cubic-bezier(.34,1.56,.64,1); }
+.tile-check .tick { opacity:0; transform:scale(.4); transition:opacity .22s, transform .3s cubic-bezier(.34,1.56,.64,1); }
+
+.tile.focused { border-color:var(--focus-col); transform:scale(1.03); z-index:3;
+  box-shadow:0 0 0 2px rgba(255,255,255,.28),0 28px 70px rgba(0,0,0,.7); }
 .tile.focused .tile-img { transform:scale(1.06); }
 .tile.selected { border-color:var(--selected-col); }
-.tile.selected .tile-check { opacity:1; transform:scale(1); }
+.tile.selected .tile-check { background:var(--violet-500); border-color:var(--violet-500);
+  box-shadow:0 0 16px 2px rgba(155,134,255,.6); transform:scale(1.06); }
+.tile.selected .tile-check .tick { opacity:1; transform:scale(1); }
 .tile.focused.selected { border-color:var(--selected-col);
-  box-shadow:0 0 0 3px var(--violet-glow),0 0 28px 4px var(--violet-glow),0 24px 64px rgba(0,0,0,.65); }
-.tile-grid.has-foc .tile:not(.focused):not(.selected) { opacity:.6; transform:scale(.96); }
+  box-shadow:0 0 0 3px var(--violet-glow),0 0 34px 6px var(--violet-glow),0 28px 70px rgba(0,0,0,.7); }
+.tile-grid.has-foc .tile:not(.focused):not(.selected) { opacity:.72; transform:scale(.985); }
 
 /* ═══════════════════════════════════════════════════════════════════════
    SKIP
 ═══════════════════════════════════════════════════════════════════════ */
 /* bottom action area — Skip / Continue (Fix 5) */
-.bottom-action { position:absolute; top:848px; left:50%; transform:translateX(-50%);
+.bottom-action { position:absolute; top:858px; left:50%; transform:translateX(-50%);
   display:flex; flex-direction:column; align-items:center; gap:0; }
 
 /* Skip — State A: visible outlined pill, clearly a button (Fix 5d) */
@@ -253,6 +305,33 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
 .panel-section-body code { font-family:var(--font-mono); font-size:13px; color:var(--violet-200);
   background:rgba(155,134,255,.12); padding:2px 6px; border-radius:5px; }
 .panel-section-body p + p { margin-top:10px; }
+
+/* ── signal rows (what this card enriches) ── */
+.sig-row { display:flex; align-items:flex-start; gap:11px; padding:11px 0;
+  border-bottom:1px solid var(--white-06); }
+.sig-row:last-child { border-bottom:none; }
+.sig-num { flex-shrink:0; width:26px; height:26px; border-radius:7px;
+  background:rgba(155,134,255,.16); border:1px solid rgba(155,134,255,.32);
+  color:var(--violet-200); font-size:13px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; margin-top:1px; }
+.sig-meta { min-width:0; }
+.sig-name { font-size:15px; font-weight:600; color:var(--white-80); line-height:1.3; }
+.sig-prop { font-family:var(--font-mono); font-size:11.5px; color:var(--violet-200);
+  background:rgba(155,134,255,.10); padding:1px 6px; border-radius:4px;
+  display:inline-block; margin-top:4px; word-break:break-all; }
+
+/* ── per-option value breakdown ── */
+.opt-block { padding:13px 0; border-bottom:1px solid var(--white-06); }
+.opt-block:last-child { border-bottom:none; }
+.opt-name { font-size:15.5px; font-weight:600; color:var(--white); margin-bottom:9px;
+  display:flex; align-items:center; gap:8px; }
+.opt-name .opt-dot { width:6px; height:6px; border-radius:50%; background:var(--violet-400);
+  flex-shrink:0; }
+.opt-vals { display:flex; flex-wrap:wrap; gap:7px; }
+.val-chip { font-size:12.5px; line-height:1.3; padding:5px 10px; border-radius:8px;
+  background:var(--white-06); border:1px solid var(--white-12); color:var(--white-60); }
+.val-chip b { color:var(--violet-200); font-weight:600; }
+.opt-empty { font-size:13px; color:var(--white-30); font-style:italic; }
 </style>
 </head>
 <body>
@@ -263,18 +342,22 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
     <header class="header">
       <div class="wordmark">glance <span class="star">✦</span></div>
       <div class="header-right">
+        <!-- jump-to-card dropdown: skip straight to any card -->
+        <select class="jump-select" id="jumpSelect" aria-label="Jump to a card"></select>
         <!-- card-state chip: counter + the card's state (cold/warm/enriched) -->
         <div class="card-chip" id="cardChip"><span class="dot" id="stateDot">●</span><span id="cardChipLabel">— / — · — card</span></div>
         <button class="show-work-btn" id="showWorkBtn">Why this? ↗</button>
       </div>
     </header>
 
+    <div class="mascot-orb"><span></span><span></span></div>
+
     <div class="headline-area" id="headlineArea">
       <h1 id="questionText">Loading…</h1>
-      <p>Pick as many as you like — I'll bring more of what you choose.</p>
+      <p>Choose your interest of topics</p>
     </div>
 
-    <div class="tile-grid cols-2" id="tileGrid"></div>
+    <div class="tile-grid cols-4" id="tileGrid"></div>
 
     <div class="bottom-action">
       <div class="skip-btn" id="skipBtn" role="button" tabindex="0">
@@ -320,8 +403,12 @@ html,body { width:100%; height:100%; background:#000; overflow:hidden;
     <div class="panel-section-body" id="panelReasoning"><p>Loading…</p></div>
   </div>
   <div class="panel-section">
-    <div class="panel-section-label">Signals this collects</div>
+    <div class="panel-section-label">Signals this enriches</div>
     <div class="panel-section-body" id="panelSignals"><p>Loading…</p></div>
+  </div>
+  <div class="panel-section">
+    <div class="panel-section-label">What each choice tells us</div>
+    <div class="panel-section-body" id="panelOptions"><p>Loading…</p></div>
   </div>
 </aside>
 
@@ -408,6 +495,7 @@ async function loadAll() {
     ]);
     CARDS = groupCards(parseCSV(csvText));
     cardsJson.forEach(c => CARDS_JSON[c.id] = c);
+    buildJumpMenu();
     showCard(0);
   } catch(e) {
     document.getElementById('errorScreen').classList.add('show');
@@ -415,11 +503,150 @@ async function loadAll() {
   }
 }
 
+/* ── JUMP-TO-CARD MENU — grouped by state, jumps straight to any card ── */
+function buildJumpMenu() {
+  const sel = document.getElementById('jumpSelect');
+  if (!sel) return;
+  const groups = { cold:[], warm:[], enriched:[] };
+  CARDS.forEach((c, i) => { (groups[c.state] || (groups[c.state]=[])).push({ i, c }); });
+  const labels = { cold:'❄ Cold', warm:'☀ Warm', enriched:'✦ Enriched' };
+  let html = '';
+  ['cold','warm','enriched'].forEach(st => {
+    if (!groups[st] || !groups[st].length) return;
+    html += `<optgroup label="${labels[st]||st}">`;
+    groups[st].forEach(({i,c}) => {
+      const q = (c.question||'').length > 42 ? c.question.slice(0,40)+'…' : c.question;
+      html += `<option value="${i}">${i+1}. ${esc(q)}</option>`;
+    });
+    html += `</optgroup>`;
+  });
+  sel.innerHTML = html;
+  sel.addEventListener('change', e => {
+    const idx = parseInt(e.target.value, 10);
+    if (!Number.isNaN(idx) && idx !== cardIndex) {
+      // cancel any in-flight transition, then jump directly (no 3-2-1)
+      if (inTransition) { if (countdownTimer) clearInterval(countdownTimer); inTransition=false;
+        document.getElementById('transitionScreen').classList.remove('show'); }
+      document.getElementById('doneScreen').classList.remove('show');
+      showCard(idx);
+    }
+    e.target.blur();
+  });
+}
+
 /* reasoning comes from cards.json baseReasoning (already written per card state) */
 function getReasoning(cardId) {
   return (CARDS_JSON[cardId] && CARDS_JSON[cardId].baseReasoning)
     || 'This question fills a key signal gap for this card state.';
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   SIGNAL MAP — maps each option's prefs/rich tokens to the 15-signal
+   enrichment framework (see signal spec). Each signal: number, name,
+   profile property, and a human label for the value a token contributes.
+══════════════════════════════════════════════════════════════════════ */
+const SIGNALS = {
+  1:  { name:'Top interests',       prop:'category.interests.primary' },
+  2:  { name:'Look & feel',         prop:'agent.styleArchetype' },
+  3:  { name:'Shows & genres',      prop:'entertainment.content_genres' },
+  4:  { name:'Travel taste',        prop:'travel.destination_types' },
+  5:  { name:'Food taste',          prop:'food.cuisine_preferences' },
+  6:  { name:'Hobbies',             prop:'lifestyle.hobbies_and_interests' },
+  7:  { name:'Premium vs everyday', prop:'agent.visualTone' },
+  8:  { name:'Pace',                prop:'content.pace' },
+  11: { name:'Social energy',       prop:'social_life.group_size' },
+  13: { name:'Fitness & activity',  prop:'health_and_fitness' },
+};
+
+/* category (cat:) → readable value for Top interests */
+const CAT_LABEL = {
+  travel:'Travel', food:'Food & dining', sport:'Sports', entertainment:'Entertainment',
+  home:'Home & living', wellness:'Wellness', culture:'Festivals & culture',
+  outdoor:'Outdoors', social:'Going out & social', tech:'Tech & gadgets',
+};
+/* vibe:/aesthetic: → Look & feel archetype value */
+const VIBE_LABEL = {
+  calm:'Calm', lively:'High-energy', social:'Social', festive:'Festive', scenic:'Scenic',
+  curious:'Curious', active:'Active', fun:'Playful', focused:'Intense', free:'Free / open',
+  leisure:'Relaxed', purposeful:'Purposeful', neutral:'Neutral',
+  cozy:'Cozy', warm:'Warm', functional:'Functional / raw',
+};
+/* region: → Travel taste value */
+const REGION_LABEL = {
+  hills:'Hills', coast:'Coast / beach', city:'City', heritage:'Heritage', mountains:'Mountains',
+  desert:'Desert', lake:'Lake', parks:'National parks', road:'Road trips',
+};
+/* aspiration: → Premium vs everyday (visual tone) value */
+const ASPIRATION_LABEL = {
+  splurge:'Premium / aspirational', finedining:'Premium / aspirational', getaway:'Premium / aspirational',
+  treat:'A treat', dineout:'Polished', live:'Live experience', gear:'Quality, built-to-last',
+  makeover:'Aspirational refresh', everyday:'Everyday / relatable', leisure:'Easygoing',
+};
+/* pace: → Pace value */
+const PACE_LABEL = { fast:'Fast / high-tempo', slow:'Slow / lean-back', steady:'Steady' };
+/* genre prefs → Shows & genres value */
+const GENRE_LABEL = {
+  comedy:'Comedy', drama:'Drama', action:'Action', blockbuster:'Blockbusters',
+  documentary:'Documentary', regional:'Regional', story:'Story-driven', film:'Film',
+  thriller:'Thriller',
+};
+/* food-style prefs → Food taste value */
+const FOOD_LABEL = {
+  street:'Street food', streetfood:'Street food', cafe:'Café', coffee:'Coffee culture',
+  finedining:'Fine dining', restaurant:'Restaurants', diner:'Casual diner', brunch:'Brunch',
+  dessert:'Desserts', grill:'Grill / cookout', chai:'Chai & snacks', latenight:'Late-night',
+  homecooked:'Home cooking', comfort:'Comfort food', adventurous:'Adventurous eating',
+  dineout:'Dining out',
+};
+/* hobby prefs → Hobbies value */
+const HOBBY_LABEL = {
+  diy:'DIY', garden:'Gardening', music:'Music', hike:'Hiking', trek:'Trekking',
+  decor:'Decor', reno:'Home projects', creative:'Making things', gaming:'Gaming',
+};
+/* social prefs → Social energy value */
+const SOCIAL_LABEL = {
+  solo:'Solo', solitude:'Solo / quiet', together:'With people', family:'Family',
+  social:'Social', community:'Community', out:'Going out', quiet:'Intimate / quiet',
+};
+/* fitness prefs → Fitness & activity value (note: bare 'wellness' is the category,
+   not an activity — excluded here so it doesn't echo Top interests) */
+const FITNESS_LABEL = {
+  fitness:'Active workouts', yoga:'Yoga', active:'Active', intense:'High-intensity',
+  gentle:'Gentle movement', mindful:'Mindful',
+};
+
+/* Parse one option's tokens → ordered list of {sig, value} contributions. */
+function optionContributions(opt) {
+  const rich = {};
+  (opt.rich||'').split('|').forEach(t => { t=t.trim(); const i=t.indexOf(':');
+    if (i>0) { const k=t.slice(0,i), v=t.slice(i+1); (rich[k]=rich[k]||[]).push(v); } });
+  const prefs = (opt.prefs||'').split('|').map(s=>s.trim()).filter(Boolean);
+  const out = []; const used = new Set();
+  const add = (sig, value) => { if (value && !used.has(sig+'|'+value)) { used.add(sig+'|'+value); out.push({sig, value}); } };
+
+  // #1 Top interests ← cat:
+  (rich.cat||[]).forEach(c => add(1, CAT_LABEL[c]||cap(c)));
+  // #2 Look & feel ← vibe: / aesthetic:
+  (rich.vibe||[]).forEach(v => add(2, VIBE_LABEL[v]||cap(v)));
+  (rich.aesthetic||[]).forEach(v => add(2, VIBE_LABEL[v]||cap(v)));
+  // #4 Travel taste ← region:
+  (rich.region||[]).forEach(r => add(4, REGION_LABEL[r]||cap(r)));
+  // #7 Premium vs everyday ← aspiration:
+  (rich.aspiration||[]).forEach(a => add(7, ASPIRATION_LABEL[a]||cap(a)));
+  // #8 Pace ← pace:
+  (rich.pace||[]).forEach(p => add(8, PACE_LABEL[p]||cap(p)));
+  // token-driven signals from prefs
+  const isFood = (rich.cat||[]).includes('food');
+  prefs.forEach(p => {
+    if (GENRE_LABEL[p])           add(3, GENRE_LABEL[p]);
+    if (isFood && FOOD_LABEL[p])  add(5, FOOD_LABEL[p]);
+    if (HOBBY_LABEL[p])           add(6, HOBBY_LABEL[p]);
+    if (SOCIAL_LABEL[p])          add(11, SOCIAL_LABEL[p]);
+    if (FITNESS_LABEL[p])         add(13, FITNESS_LABEL[p]);
+  });
+  return out;
+}
+function cap(s){ return (s||'').charAt(0).toUpperCase()+(s||'').slice(1); }
 
 /* ── RENDER A CARD ────────────────────────────────────────────────── */
 function showCard(idx) {
@@ -446,6 +673,10 @@ function showCard(idx) {
   document.getElementById('stateDot').style.color = stateColors[card.state] || '#88BBFF';
   document.getElementById('cardChipLabel').textContent = `${idx+1} / ${CARDS.length} · ${stateName} card`;
 
+  // keep the jump dropdown in sync with the current card
+  const jump = document.getElementById('jumpSelect');
+  if (jump && jump.value !== String(idx)) jump.value = String(idx);
+
   // panel badge (also describes the card's state)
   const badge = document.getElementById('panelBadge');
   badge.className = `state-badge ${card.state}`;
@@ -455,14 +686,32 @@ function showCard(idx) {
   // reasoning
   document.getElementById('panelReasoning').innerHTML = `<p>${getReasoning(card.id)}</p>`;
 
-  // signals from first option as representative
-  const sigs = card.options.map(o => o.prefs||'').filter(Boolean).join(', ');
-  document.getElementById('panelSignals').innerHTML =
-    `<p><strong>prefs tokens:</strong> <code>${sigs}</code></p>`+
-    `<p>Selected options emit their tags to re-rank the upcoming feed immediately.</p>`;
+  // ── compute each option's signal contributions ──
+  const perOption = card.options.map(o => ({ title:o.title, contribs:optionContributions(o) }));
 
-  // grid cols
-  grid.className = 'tile-grid ' + (n <= 4 ? 'cols-2' : 'cols-3');
+  // ── "Signals this enriches" — union of signal numbers across all options ──
+  const sigNums = [];
+  perOption.forEach(po => po.contribs.forEach(c => { if (!sigNums.includes(c.sig)) sigNums.push(c.sig); }));
+  sigNums.sort((a,b)=>a-b);
+  document.getElementById('panelSignals').innerHTML = sigNums.length
+    ? sigNums.map(n => `<div class="sig-row">`+
+        `<div class="sig-num">${n}</div>`+
+        `<div class="sig-meta"><div class="sig-name">${SIGNALS[n].name}</div>`+
+        `<span class="sig-prop">${SIGNALS[n].prop}</span></div></div>`).join('')
+    : `<p class="opt-empty">No mapped signals for this card.</p>`;
+
+  // ── "What each choice tells us" — per option value contributions ──
+  document.getElementById('panelOptions').innerHTML = perOption.map(po =>
+    `<div class="opt-block">`+
+      `<div class="opt-name"><span class="opt-dot"></span>${esc(po.title)}</div>`+
+      (po.contribs.length
+        ? `<div class="opt-vals">`+ po.contribs.map(c =>
+            `<span class="val-chip"><b>${SIGNALS[c.sig].name}:</b> ${esc(c.value)}</span>`).join('') +`</div>`
+        : `<div class="opt-empty">No taste signal — treated as a soft / diversify pick.</div>`)+
+    `</div>`).join('');
+
+  // grid cols — single row: 3-up for 3 options, 4-up otherwise
+  grid.className = 'tile-grid ' + (n === 3 ? 'cols-3' : 'cols-4');
 
   // tiles
   grid.innerHTML = '';
@@ -473,7 +722,7 @@ function showCard(idx) {
     tile.innerHTML =
       `<div class="tile-img"></div>`+
       `<div class="tile-scrim"></div>`+
-      `<div class="tile-check">✓</div>`+
+      `<div class="tile-check"><span class="tick">✓</span></div>`+
       `<div class="tile-labels">`+
         `<div class="tile-title">${esc(opt.title)}</div>`+
         `<div class="tile-sub">${esc(opt.sub)}</div>`+
@@ -498,10 +747,7 @@ function esc(s) {
 }
 
 /* ── FOCUS + SELECTION ──────────────────────────────────────────────── */
-const GRID_COLS = () => {
-  const c = document.getElementById('tileGrid').classList;
-  return c.contains('cols-3') ? 3 : 2;
-};
+const GRID_COLS = () => tiles().length;  // single row: every tile is its own column
 const tiles = () => [...document.querySelectorAll('.tile')];
 const allFocusable = () => [...tiles(), document.getElementById('skipBtn')];
 
@@ -664,6 +910,11 @@ document.getElementById('closeBtn').addEventListener('click', closePanel);
 
 /* ── KEYBOARD ───────────────────────────────────────────────────── */
 document.addEventListener('keydown', e => {
+  // jump dropdown focused: let the native <select> handle its own keys
+  if (e.target && e.target.id === 'jumpSelect') {
+    if (e.key==='Escape') e.target.blur();
+    return;
+  }
   // transition: only skip keys pass
   if (inTransition) {
     if (e.key==='Enter'||e.key===' '||e.key==='Backspace') { e.preventDefault(); skipTransition(); }
