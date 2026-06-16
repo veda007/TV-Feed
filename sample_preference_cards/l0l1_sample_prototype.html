@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Glance TV — L0/L1 Feed Cards (10 cards)</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --bg:#07050C; --bg-dark:#0B0920;
+  --violet-300:#B5A3FF; --violet-400:#9B86FF; --violet-500:#7E68F2;
+  --white:#FFF; --ink-0:#FFF; --ink-1:rgba(255,255,255,.84);
+  --ink-2:rgba(255,255,255,.58); --ink-3:rgba(255,255,255,.36);
+  --panel-bg:rgba(9,7,20,.88); --panel-border:rgba(255,255,255,.10);
+  --font-serif:"New York","Georgia",Georgia,serif;
+  --font-sans:-apple-system,"Helvetica Neue","Segoe UI",sans-serif;
+  /* L0/L1 image URL base — swap to GCS when bucket is public */
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-sans);color:var(--ink-0);}
+.stage-wrapper{position:relative;flex-shrink:0}
+.stage{position:absolute;top:0;left:0;width:1920px;height:1080px;
+  transform-origin:top left;background:var(--bg);overflow:hidden}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CARD STACK
+═══════════════════════════════════════════════════════════════════════ */
+.card{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .6s}
+.card.active{opacity:1;pointer-events:auto}
+
+/* full-bleed hero image */
+.card-bg{position:absolute;inset:0;background-size:cover;background-position:center;
+  transition:filter .5s,transform .5s}
+.card.l1-open .card-bg{filter:blur(18px) brightness(.45);transform:scale(1.04)}
+
+/* vignette — bottom-left where text lives */
+.card::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(105deg,rgba(7,5,12,.85) 0%,rgba(7,5,12,.55) 35%,transparent 65%),
+             linear-gradient(180deg,transparent 42%,rgba(7,5,12,.72) 75%,rgba(7,5,12,.96) 100%)}
+
+/* fallback tint when image fails */
+.card-bg.fallback{background-color:#1a1430}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   L0 CONTENT — bottom-left stack
+═══════════════════════════════════════════════════════════════════════ */
+.l0{position:absolute;left:0;right:0;bottom:0;z-index:10;padding:0 80px 72px;
+  opacity:1;transform:translateY(0);transition:opacity .35s,transform .35s}
+.card.l1-open .l0,.card.asking .l0{opacity:0;pointer-events:none;transform:translateY(16px)}
+
+.category-pill{display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:14px}
+.category-pill .sep{color:var(--ink-3)}
+.agent-line{font-family:var(--font-serif);font-style:italic;font-weight:400;
+  font-size:22px;color:var(--ink-2);line-height:1.45;margin-bottom:10px;
+  max-width:700px}
+.headline{font-size:54px;font-weight:800;line-height:1.05;letter-spacing:-.02em;
+  color:var(--ink-0);margin-bottom:30px;max-width:820px}
+/* CTA chip */
+.cta-chip{display:inline-flex;align-items:center;gap:16px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;padding:14px 20px 14px 14px}
+.cta-chip .orb{width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,var(--violet-300),var(--violet-500));
+  flex-shrink:0}
+.cta-chip .cta-text{font-size:18px;color:var(--ink-1)}
+.cta-chip .yes-btn{margin-left:8px;padding:10px 24px;border-radius:999px;
+  background:var(--violet-500);color:#fff;font-weight:700;font-size:16px;
+  border:none;cursor:pointer;transition:.18s}
+.cta-chip.focused,.cta-chip:hover{border-color:rgba(255,255,255,.5);
+  background:rgba(255,255,255,.10)}
+.cta-chip.focused .yes-btn{box-shadow:0 0 0 3px rgba(181,163,255,.5)}
+
+/* browse hint */
+.browse-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  z-index:10}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   L1 PANEL — slides up over the blurred image
+═══════════════════════════════════════════════════════════════════════ */
+.l1-panel{position:absolute;left:0;right:0;bottom:0;z-index:20;
+  padding:48px 80px 72px;
+  opacity:0;transform:translateY(30px);pointer-events:none;
+  transition:opacity .4s cubic-bezier(.32,.72,0,1),transform .4s cubic-bezier(.32,.72,0,1)}
+.card.l1-open .l1-panel{opacity:1;transform:translateY(0);pointer-events:auto}
+
+.l1-kicker{font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--violet-300);margin-bottom:14px}
+.l1-headline{font-family:var(--font-serif);font-style:italic;font-weight:400;
+  font-size:clamp(32px,3.6vw,50px);color:var(--ink-0);line-height:1.1;
+  letter-spacing:-.01em;margin-bottom:16px;max-width:60%}
+.l1-blurb{font-size:clamp(17px,1.7vw,22px);color:var(--ink-1);line-height:1.6;
+  max-width:54%;margin-bottom:32px}
+.l1-actions{display:flex;align-items:center;gap:18px}
+.l1-btn{font-family:var(--font-sans);font-weight:700;font-size:18px;
+  padding:16px 36px;border-radius:999px;border:1px solid transparent;cursor:pointer;
+  transition:.18s}
+.l1-btn.primary{background:linear-gradient(135deg,var(--violet-400),var(--violet-500));
+  color:#fff}
+.l1-btn.ghost{background:rgba(255,255,255,.07);color:var(--ink-1);
+  border-color:rgba(255,255,255,.2)}
+.l1-btn.focused,.l1-btn:hover{box-shadow:0 0 0 4px rgba(155,134,255,.4);color:#fff}
+.l1-demo-note{font-size:13px;color:var(--ink-3);font-style:italic;margin-top:14px}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOLLOW-UP — full-screen centered ask (one question, once, on L1 exit)
+═══════════════════════════════════════════════════════════════════════ */
+.followup{position:absolute;inset:0;z-index:25;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:0 8vw;
+  opacity:0;pointer-events:none;transition:opacity .38s}
+.card.asking .followup{opacity:1;pointer-events:auto}
+
+.fu-kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--violet-300);margin-bottom:16px}
+.fu-ctx{font-family:var(--font-serif);font-style:italic;font-size:clamp(22px,2.4vw,34px);
+  color:var(--ink-1);margin-bottom:6px}
+.fu-q{font-family:var(--font-serif);font-style:italic;font-weight:400;
+  font-size:clamp(36px,4.6vw,62px);color:var(--ink-0);
+  text-shadow:0 2px 20px rgba(0,0,0,.7);margin:8px 0 16px;line-height:1.08}
+.fu-hint{font-size:15px;color:var(--ink-2);letter-spacing:.04em;margin-bottom:36px}
+.fu-opts{display:flex;flex-direction:column;gap:16px;width:min(560px,78vw)}
+.fu-opt{font:inherit;font-size:20px;font-weight:600;padding:20px 28px;
+  border-radius:16px;text-align:center;cursor:pointer;transition:.18s;
+  background:rgba(7,5,12,.72);border:1.5px solid rgba(255,255,255,.24);
+  color:var(--ink-0);text-shadow:-1px -1px 0 rgba(0,0,0,.7),1px 1px 0 rgba(0,0,0,.7)}
+.fu-opt.focused{background:rgba(126,104,242,.3);border-color:var(--violet-300);
+  transform:translateY(-2px);box-shadow:0 0 0 3px rgba(181,163,255,.35)}
+.fu-opt.picked{background:linear-gradient(135deg,var(--violet-400),var(--violet-500));
+  border-color:var(--violet-400)}
+/* auto-skip bar */
+.fu-bar-wrap{width:140px;height:5px;border-radius:3px;
+  background:rgba(155,134,255,.22);overflow:hidden;margin-top:18px}
+.fu-bar{height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--violet-400),var(--violet-500));
+  width:100%}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════════════════════════ */
+.header{position:absolute;top:0;left:0;right:0;height:80px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 54px;z-index:30}
+.wordmark{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.wordmark .star{color:var(--violet-400)}
+.header-right{display:flex;align-items:center;gap:14px}
+.progress-pill{font-size:15px;color:var(--ink-3);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);
+  border-radius:999px;padding:8px 18px}
+.show-work-btn{display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;padding:9px 18px;
+  font-size:15px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.18s}
+.show-work-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   REASONING PANEL (Show Your Work)
+═══════════════════════════════════════════════════════════════════════ */
+.panel-backdrop{position:fixed;inset:0;z-index:50;
+  background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s}
+.panel-backdrop.open{opacity:1;pointer-events:auto}
+.panel{position:fixed;top:0;right:0;bottom:0;z-index:51;width:400px;
+  background:rgba(11,9,30,.96);border-left:1px solid var(--panel-border);
+  transform:translateX(100%);transition:transform .38s cubic-bezier(.32,.72,0,1);
+  overflow-y:auto;padding:40px 36px 60px}
+.panel.open{transform:translateX(0)}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+.panel-title{font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--violet-300)}
+.panel-close{width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  color:var(--ink-2);font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s}
+.panel-close:hover{background:rgba(255,255,255,.12);color:#fff}
+.panel-section{margin-bottom:28px}
+.panel-label{font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.06)}
+.panel-body{font-size:15px;color:var(--ink-2);line-height:1.70}
+.panel-body strong{color:rgba(255,255,255,.82);font-weight:600}
+.panel-body code{font-family:monospace;font-size:13px;color:var(--violet-300);
+  background:rgba(155,134,255,.12);padding:2px 5px;border-radius:4px}
+.panel-body p+p{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="stage-wrapper">
+  <div class="stage" id="stage">
+
+    <header class="header">
+      <div class="wordmark">glance <span class="star">✦</span></div>
+      <div class="header-right">
+        <div class="progress-pill" id="progressPill">1 / 10</div>
+        <button class="show-work-btn" id="showWorkBtn">Why this? ↗</button>
+      </div>
+    </header>
+
+    <!-- cards injected by JS -->
+    <div id="cardStack"></div>
+
+    <div class="browse-hint">↑ ↓ BROWSE · OR PRESS YES TO GO DEEPER</div>
+
+  </div>
+</div>
+
+<div class="panel-backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-label="Why this card?" aria-hidden="true">
+  <div class="panel-hdr">
+    <div class="panel-title">Why this card</div>
+    <button class="panel-close" id="closeBtn">✕</button>
+  </div>
+  <div class="panel-section">
+    <div class="panel-label">Signal context</div>
+    <div class="panel-body" id="panelReasoning"><p>Loading…</p></div>
+  </div>
+  <div class="panel-section">
+    <div class="panel-label">Tags this collects</div>
+    <div class="panel-body" id="panelTags"><p>Loading…</p></div>
+  </div>
+</aside>
+
+<script>
+"use strict";
+
+/* ── IMAGE_BASE_URL — swap to GCS when bucket is public ──
+   https://storage.googleapis.com/glance-vibe-cards/l0l1/   */
+const IMAGE_BASE_URL_L0L1 = "assets/l0l1/";
+
+/* ── deep-intent gate (all 10 sample cards pass this) ── */
+const DEEP_INTENTS = new Set(["plan","book","travel","food","wellness","fitness","tech","home","sport","culture"]);
+
+const FOLLOWUP_TIMEOUT_MS = 30000;
+
+/* ── STATE ── */
+let CARDS = [];
+let cardIdx = 0;
+let layer = "l0";    // "l0" | "l1" | "followup"
+let l1Focus = 0;     // 0=primary, 1=back
+let fuFocus = 0;
+let fuTimer = null, fuAnimFrame = null;
+let panelOpen = false;
+
+/* ── SCALING ── */
+const stage = document.getElementById('stage');
+function scaleStage(){
+  const s=Math.min(window.innerWidth/1920,window.innerHeight/1080);
+  const wrap=document.querySelector('.stage-wrapper');
+  stage.style.transform=`scale(${s})`;
+  wrap.style.width=`${1920*s}px`;
+  wrap.style.height=`${1080*s}px`;
+}
+window.addEventListener('resize',scaleStage); scaleStage();
+
+/* ── CSV PARSER ── */
+function parseCSV(text){
+  const lines=text.split('\n').filter(l=>l.trim());
+  const hdr=splitLine(lines[0]);
+  return lines.slice(1).map(l=>{
+    const v=splitLine(l); const o={};
+    hdr.forEach((h,i)=>o[h.trim()]=(v[i]||'').trim());
+    return o;
+  }).filter(r=>r.id);
+}
+function splitLine(l){
+  const out=[];let cur='',q=false;
+  for(const ch of l){
+    if(ch==='"')q=!q;
+    else if(ch===','&&!q){out.push(cur);cur='';}
+    else cur+=ch;
+  }
+  out.push(cur);return out;
+}
+
+/* ── BUILD CARD DOM ── */
+function buildCard(r){
+  const isDeep = DEEP_INTENTS.has((r.intent||'').toLowerCase()) ||
+                 DEEP_INTENTS.has((r.category||'').toLowerCase());
+  const fuOpts = (r.l1_followup_options||'').split('|').map(s=>s.trim()).filter(Boolean);
+
+  const div=document.createElement('div');
+  div.className='card';
+  div.dataset.id=r.id;
+
+  // background image
+  const bg=document.createElement('div'); bg.className='card-bg';
+  const img=new Image();
+  img.onload=()=>bg.style.backgroundImage=`url('${IMAGE_BASE_URL_L0L1}${r.imageFile}')`;
+  img.onerror=()=>bg.classList.add('fallback');
+  img.src=IMAGE_BASE_URL_L0L1+r.imageFile;
+  div.appendChild(bg);
+
+  // L0
+  div.innerHTML+=`
+    <div class="l0">
+      <div class="category-pill">
+        ${esc(r.category||'')} <span class="sep">·</span> ${esc(r.subcategory||'')}
+      </div>
+      <div class="agent-line">${esc(r.agent_line||'')}</div>
+      <div class="headline">${esc(r.headline||'')}</div>
+      ${isDeep?`<div class="cta-chip" id="cta-${r.id}" tabindex="-1">
+        <div class="orb"></div>
+        <span class="cta-text">${esc(r.cta_label||'Yes')}</span>
+        <button class="yes-btn">Yes</button>
+      </div>`:''}
+    </div>
+    <div class="l1-panel">
+      <div class="l1-kicker">${esc(r.category||'')} · going deeper</div>
+      <div class="l1-headline">${esc(r.headline||'')}</div>
+      <div class="l1-blurb">${esc(r.l1_panel_blurb||'')}</div>
+      <div class="l1-actions">
+        <button class="l1-btn primary" id="l1act-${r.id}">${esc(r.cta_label||'Explore this')}</button>
+        <button class="l1-btn ghost" id="l1back-${r.id}">← Back</button>
+      </div>
+      <div class="l1-demo-note">Demo only — nothing is booked or sent.</div>
+    </div>
+    <div class="followup">
+      <div class="fu-kicker">${esc(r.category||'')} · ${esc(r.subcategory||'')}</div>
+      <div class="fu-ctx">${esc(r.headline||'')}</div>
+      <div class="fu-q"><span class="agent-mascot-orb">🎙</span> ${esc(r.l1_followup_question||'Want more like this?')}</div>
+      <div class="fu-hint">Pick any · or skip</div>
+      <div class="fu-opts" id="fuopts-${r.id}">
+        ${fuOpts.map((opt,i)=>`<button class="fu-opt" data-idx="${i}">${esc(opt)}</button>`).join('')}
+      </div>
+      <div class="fu-bar-wrap"><div class="fu-bar" id="fubar-${r.id}"></div></div>
+    </div>`;
+
+  // wire events
+  if(isDeep){
+    const chip=div.querySelector(`#cta-${r.id}`);
+    const yesBtn=div.querySelector(`#cta-${r.id} .yes-btn`);
+    if(chip) chip.addEventListener('click',()=>openL1());
+    if(yesBtn) yesBtn.addEventListener('click',e=>{e.stopPropagation();openL1();});
+    div.querySelector(`#l1act-${r.id}`)?.addEventListener('click',()=>exitToFollowup());
+    div.querySelector(`#l1back-${r.id}`)?.addEventListener('click',()=>exitToFollowup());
+    div.querySelectorAll(`#fuopts-${r.id} .fu-opt`).forEach(b=>{
+      b.addEventListener('click',()=>{
+        const i=+b.dataset.idx; fuPickOpt(i);
+      });
+    });
+  }
+  return div;
+}
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ── CARD NAVIGATION ── */
+function showCard(i){
+  layer='l0'; l1Focus=0; fuFocus=0; clearFuTimer();
+  cardIdx=i;
+  document.querySelectorAll('.card').forEach((c,idx)=>{
+    c.classList.toggle('active',idx===i);
+    c.classList.remove('l1-open','asking');
+  });
+  document.getElementById('progressPill').textContent=`${i+1} / ${CARDS.length}`;
+  updatePanelContent();
+}
+function goNext(){ if(cardIdx<CARDS.length-1) showCard(cardIdx+1); }
+function goPrev(){ if(cardIdx>0) showCard(cardIdx-1); }
+
+/* ── L1 FLOW ── */
+function openL1(){
+  layer='l1'; l1Focus=0;
+  const c=document.querySelectorAll('.card')[cardIdx];
+  c.classList.add('l1-open');
+  paintL1Focus();
+}
+function exitToFollowup(){
+  layer='followup'; fuFocus=0;
+  const c=document.querySelectorAll('.card')[cardIdx];
+  c.classList.remove('l1-open'); c.classList.add('asking');
+  paintFuFocus();
+  // 30s auto-skip
+  clearFuTimer();
+  const bar=document.getElementById(`fubar-${CARDS[cardIdx].id}`);
+  if(bar){ bar.style.transition='none'; bar.style.width='100%';
+    requestAnimationFrame(()=>{
+      bar.style.transition=`width ${FOLLOWUP_TIMEOUT_MS}ms linear`;
+      bar.style.width='0%';
+    });
+  }
+  fuTimer=setTimeout(()=>commitFollowup([]),FOLLOWUP_TIMEOUT_MS);
+}
+function commitFollowup(picks){
+  clearFuTimer();
+  // picks → prefs/rich tags; for demo: just log and advance
+  console.log('[Glance] follow-up picks:', picks.length ? picks : '(none — no signal)');
+  goNext();
+}
+function clearFuTimer(){
+  if(fuTimer){clearTimeout(fuTimer);fuTimer=null;}
+  if(fuAnimFrame){cancelAnimationFrame(fuAnimFrame);fuAnimFrame=null;}
+}
+
+/* ── FOLLOW-UP OPTION PICK ── */
+let fuPicked=new Set();
+function fuPickOpt(i){
+  const card=CARDS[cardIdx];
+  const opts=document.querySelectorAll(`#fuopts-${card.id} .fu-opt`);
+  const isDiversify=(opts[i]?.textContent||'').trim().toLowerCase()==='surprise me';
+  if(isDiversify){ commitFollowup([]); return; }
+  opts[i].classList.toggle('picked');
+  if(opts[i].classList.contains('picked')) fuPicked.add(i); else fuPicked.delete(i);
+  // advance after small beat on pick
+  clearFuTimer();
+  const bar=document.getElementById(`fubar-${card.id}`);
+  if(bar){bar.style.transition='none';bar.style.width='100%';
+    requestAnimationFrame(()=>{
+      bar.style.transition=`width ${FOLLOWUP_TIMEOUT_MS}ms linear`;
+      bar.style.width='0%';
+    });
+  }
+  fuTimer=setTimeout(()=>{
+    const picks=[...fuPicked].map(j=>opts[j]?.textContent.trim()).filter(Boolean);
+    commitFollowup(picks);
+  }, FOLLOWUP_TIMEOUT_MS);
+  paintFuFocus();
+}
+
+/* ── FOCUS PAINT ── */
+function paintL1Focus(){
+  const card=document.querySelectorAll('.card')[cardIdx];
+  [document.getElementById(`l1act-${CARDS[cardIdx].id}`),
+   document.getElementById(`l1back-${CARDS[cardIdx].id}`)]
+    .forEach((el,i)=>el?.classList.toggle('focused',i===l1Focus));
+}
+function paintFuFocus(){
+  const card=CARDS[cardIdx];
+  const opts=[...document.querySelectorAll(`#fuopts-${card.id} .fu-opt`)];
+  opts.forEach((o,i)=>o.classList.toggle('focused',i===fuFocus));
+}
+
+/* ── PANEL ── */
+function updatePanelContent(){
+  const r=CARDS[cardIdx];
+  document.getElementById('panelReasoning').innerHTML=`<p>${esc(r.reasoning||'No reasoning data for this card.')}</p>`;
+  document.getElementById('panelTags').innerHTML=
+    `<p><strong>prefs:</strong> <code>${esc(r.prefs||'—')}</code></p>`+
+    `<p><strong>rich:</strong> <code>${esc(r.rich||'—')}</code></p>`;
+}
+function openPanel(){
+  panelOpen=true;
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+  document.getElementById('panel').setAttribute('aria-hidden','false');
+}
+function closePanel(){
+  panelOpen=false;
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('open');
+  document.getElementById('panel').setAttribute('aria-hidden','true');
+}
+document.getElementById('showWorkBtn').addEventListener('click',openPanel);
+document.getElementById('backdrop').addEventListener('click',closePanel);
+document.getElementById('closeBtn').addEventListener('click',closePanel);
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown',e=>{
+  if(panelOpen){
+    if(e.key==='Escape'||e.key==='Backspace'){e.preventDefault();closePanel();}
+    return;
+  }
+  if(layer==='l0'){
+    if(e.key==='ArrowDown'){e.preventDefault();goNext();}
+    else if(e.key==='ArrowUp'){e.preventDefault();goPrev();}
+    else if(e.key==='Enter'||e.key===' '){e.preventDefault();openL1();}
+  } else if(layer==='l1'){
+    if(e.key==='ArrowRight'){e.preventDefault();l1Focus=Math.min(1,l1Focus+1);paintL1Focus();}
+    else if(e.key==='ArrowLeft'){e.preventDefault();l1Focus=Math.max(0,l1Focus-1);paintL1Focus();}
+    else if(e.key==='Enter'||e.key===' '){e.preventDefault();exitToFollowup();}
+    else if(e.key==='Backspace'){e.preventDefault();exitToFollowup();}
+  } else if(layer==='followup'){
+    const card=CARDS[cardIdx];
+    const opts=[...document.querySelectorAll(`#fuopts-${card.id} .fu-opt`)];
+    const n=opts.length;
+    if(e.key==='ArrowDown'){e.preventDefault();if(fuFocus<n-1)fuFocus++;paintFuFocus();}
+    else if(e.key==='ArrowUp'){e.preventDefault();if(fuFocus>0)fuFocus--;paintFuFocus();}
+    else if(e.key==='Enter'||e.key===' '){e.preventDefault();fuPickOpt(fuFocus);}
+    else if(e.key==='Backspace'){e.preventDefault();clearFuTimer();goNext();}
+  }
+});
+
+/* ── LOAD ── */
+async function loadAll(){
+  try{
+    const text=await fetch('l0l1_cards.csv').then(r=>{
+      if(!r.ok) throw new Error('csv');
+      return r.text();
+    });
+    CARDS=parseCSV(text);
+    const stack=document.getElementById('cardStack');
+    CARDS.forEach(r=>stack.appendChild(buildCard(r)));
+    fuPicked.clear();
+    showCard(0);
+  } catch(e){
+    stage.innerHTML+=`<div style="position:absolute;inset:0;display:flex;align-items:center;
+      justify-content:center;text-align:center;font-size:22px;color:rgba(255,255,255,.6);
+      font-style:italic;padding:80px">
+      Couldn't load cards. Serve over <strong>http://</strong> — e.g.
+      <code style="background:rgba(155,134,255,.15);padding:2px 8px;border-radius:4px">
+      python3 -m http.server 8000</code></div>`;
+    console.error(e);
+  }
+}
+loadAll();
+</script>
+</body>
+</html>
